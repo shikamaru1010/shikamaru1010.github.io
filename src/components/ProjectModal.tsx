@@ -123,9 +123,20 @@ export default function ProjectModal({
               </p>
             )}
 
-            {project.links && project.links.length > 0 && (
+            {(project.liveUrl || (project.links && project.links.length > 0)) && (
               <div className="mt-5 flex flex-wrap gap-2">
-                {project.links.map((l) => (
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-primary h-9 px-4 text-xs"
+                  >
+                    Visit site
+                    <ArrowUpRight width={14} height={14} />
+                  </a>
+                )}
+                {project.links?.map((l) => (
                   <a
                     key={l.href}
                     href={l.href}

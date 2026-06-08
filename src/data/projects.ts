@@ -26,6 +26,8 @@ export type Project = {
   tech: string[];
   /** Bullet points shown in the detail modal. */
   highlights: string[];
+  /** Live, public site — shows a "Visit site" link in the card corner + modal. */
+  liveUrl?: string;
   links?: ProjectLink[];
   note?: string;
 };
@@ -140,19 +142,22 @@ export const projects: Project[] = [
     ],
   },
   {
-    id: 'botakralj',
-    title: 'Botakralj / Pilatiq',
-    subtitle: 'Product catalog site for a Pilates equipment brand',
+    id: 'pilatiq',
+    title: 'Pilatiq Reformeri',
+    subtitle: 'Catalog site for a Pilates reformer brand (client)',
     blurb:
-      'A production catalog website with visuals, product variants, SEO and client handoff, delivered over several sprints.',
+      'A production catalog website for Pilatiq Pilates reformers — clean product presentation with variants and strong visuals, built for search visibility and a smooth client handoff.',
     year: '2024',
     status: 'In production',
-    featured: false,
+    featured: true,
     categories: ['Client Delivery', 'Web & Apps'],
-    tech: ['React', 'Vite', 'SEO'],
+    tech: ['React', 'Vite', 'SEO', 'Responsive design'],
     highlights: [
-      'Visual design, product variants and a clean client handoff; iterated with the client across multiple sprints.',
+      'Designed and built the product catalog with variants and strong visuals for a Pilates equipment brand.',
+      'Optimized for SEO and performance, then handed off cleanly to the client.',
+      'Iterated with the client across multiple sprints, from brief to live site.',
     ],
+    // liveUrl: 'https://...',
   },
   {
     id: 'brand-app',
@@ -170,19 +175,40 @@ export const projects: Project[] = [
     ],
   },
   {
-    id: 'client-sites',
-    title: 'Freelance client websites',
-    subtitle: 'Stan Pro Tim · Kutlešić · restaurant menus',
+    id: 'stan-pro-tim',
+    title: 'Stan Pro Tim',
+    subtitle: 'Website for a property-management company, Zlatibor (client)',
     blurb:
-      'Several delivered production websites for real clients — from requirements gathering and design to deployment and maintenance.',
-    year: '2022 — 2024',
+      'A multi-page website for a Zlatibor property-management company: a custom brand palette, service pages, testimonials and a clear contact path.',
+    year: '2023',
     status: 'In production',
-    featured: false,
+    featured: true,
     categories: ['Client Delivery', 'Web & Apps'],
-    tech: ['JavaScript', 'React', 'Node.js', 'Docker', 'HTML/CSS'],
+    tech: ['JavaScript', 'HTML/CSS', 'Responsive design'],
     highlights: [
-      'Stan Pro Tim (Zlatibor) property-management site, Kutlešić company site, and restaurant menu/ordering sites — each from brief to live, responsive delivery.',
+      'Gathered requirements from the client and designed around a custom brand palette.',
+      'Built service pages, testimonials and a contact section with a responsive, mobile-first layout.',
+      'Delivered from brief to live — deployed and maintained.',
     ],
+    // liveUrl: 'https://...',
+  },
+  {
+    id: 'kutlesic-vikendice',
+    title: 'Kutlešić Vikendice',
+    subtitle: 'Website for holiday cottages (client)',
+    blurb:
+      'A presentation website for Kutlešić Vikendice (holiday cottages): a clean, inviting layout that showcases the accommodation, with responsive design and easy contact.',
+    year: '2023',
+    status: 'In production',
+    featured: true,
+    categories: ['Client Delivery', 'Web & Apps'],
+    tech: ['JavaScript', 'HTML/CSS', 'Responsive design'],
+    highlights: [
+      'Showcased the cottages with a clean, inviting visual layout.',
+      'Responsive, mobile-first design with a straightforward contact path for guests.',
+      'Delivered end to end for the client — design, build and deployment.',
+    ],
+    // liveUrl: 'https://...',
   },
   {
     id: 'dsa-java',

@@ -86,7 +86,7 @@ export default function Resume({ onBack }: { onBack: () => void }) {
                 Selected projects
               </h2>
               <div className="space-y-2">
-                {featuredProjects.map((p) => (
+                {featuredProjects.slice(0, 4).map((p) => (
                   <div key={p.id}>
                     <div className="flex items-baseline justify-between">
                       <h3 className="font-semibold text-zinc-900">
