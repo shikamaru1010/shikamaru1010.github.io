@@ -16,7 +16,7 @@ export const experience: Experience[] = [
     points: [
       'Deliver production web apps and internal tools for local businesses — from understanding the problem through development, deployment and ongoing support.',
       'Built a Django + AI internal system for a butcher/grill business: daily P&L reports, Serbian-regulation PDF declarations and scheduled cycles.',
-      'Shipped a production catalog site (Botakralj/Pilatiq) and several client websites, working directly with owners on requirements and iteration.',
+      'Shipped a production catalog site (Pilatiq Reformeri) and several client websites, working directly with owners on requirements and iteration.',
     ],
     tech: ['Python/Django', 'JavaScript', 'Node.js', 'Docker', 'Tailwind', 'AI integrations'],
   },
@@ -47,13 +47,15 @@ export const education: Education = {
   degree: 'B.Sc. — Information Systems & Technologies (TEP module)',
   period: '2023 — Present (3rd year, expected 2027)',
   detail:
-    'Hands-on with networking and systems tooling beyond the curriculum: Wireshark, GNS3, Cisco Packet Tracer, Docker and Linux tooling.',
+    'FON is the Faculty of Organizational Sciences — alongside the technical core, the programme builds management, economics and strong mathematics foundations (organizational + analytical thinking). Beyond the curriculum I work hands-on with Wireshark, GNS3, Cisco Packet Tracer, Docker and Linux tooling.',
   courses: [
     'Computer Networks & Internet Technologies — TCP/IP, HTTP, Wireshark, Python sockets',
     'Software Design — GoF patterns, 3-tier architecture, Java / JDBC, client-server project',
     'Information Systems Design — UML, requirements analysis, system modeling',
     'Operations Research 1 & 2 — linear programming, optimization, Markov chains',
-    'Databases, Data Structures & Algorithms, Statistics & Probability',
+    'Mathematics — Calculus, Discrete Mathematics, Probability & Statistics, Numerical Analysis',
+    'Management & Organization — management, economics, systems theory (FON core)',
+    'Databases, Data Structures & Algorithms',
   ],
 };
 

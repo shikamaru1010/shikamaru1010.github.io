@@ -10,15 +10,19 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     label: 'Frameworks',
-    items: ['Next.js', 'React', 'React Native (Expo)', 'Vite', 'Django', 'FastAPI', 'Node.js'],
+    items: ['Next.js', 'React', 'React Native (Expo)', 'Vite', 'FastAPI', 'Node.js'],
   },
   {
-    label: 'Data & Infrastructure',
-    items: ['PostgreSQL / Supabase', 'SQLite', 'MySQL', 'Oracle', 'Docker', 'Git & GitHub'],
+    label: 'Databases',
+    items: ['PostgreSQL / Supabase', 'SQLite', 'MySQL', 'Oracle'],
   },
   {
     label: 'AI & Automation',
-    items: ['Claude / OpenRouter tool-use', 'Agent pipelines', 'APScheduler', 'Data pipelines', 'PDF generation'],
+    items: ['Claude / OpenRouter tool-use', 'Grok', 'Agent pipelines', 'APScheduler', 'Data pipelines'],
+  },
+  {
+    label: 'Tools & Workflow',
+    items: ['CLI / Terminal (PowerShell, bash)', 'Git & GitHub', 'Docker', 'Obsidian', 'Figma'],
   },
   {
     label: 'Networking & CS',

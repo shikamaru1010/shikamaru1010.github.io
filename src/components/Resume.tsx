@@ -42,7 +42,7 @@ export default function Resume({ onBack }: { onBack: () => void }) {
           <div className="text-right text-[11px] leading-relaxed text-zinc-600">
             <div>{profile.email}</div>
             <div>{profile.github.replace('https://', '')}</div>
-            <div>{profile.linkedin.replace('https://www.', '')}</div>
+            <div>linkedin.com/in/{profile.linkedinHandle}</div>
             <div>{profile.location}</div>
           </div>
         </header>
