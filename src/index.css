@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light theme — warm, editorial neutrals with a confident indigo accent */
+    --bg: 250 250 249;
+    --surface: 255 255 255;
+    --surface-2: 245 245 244;
+    --fg: 28 25 23;
+    --muted: 87 83 78;
+    --subtle: 140 137 132;
+    --border: 231 229 228;
+    --accent: 79 70 229;
+    --accent-fg: 255 255 255;
+    --accent-soft: 238 242 255;
+  }
+
+  .dark {
+    --bg: 11 11 14;
+    --surface: 20 20 24;
+    --surface-2: 28 28 33;
+    --fg: 245 245 244;
+    --muted: 161 161 170;
+    --subtle: 113 113 122;
+    --border: 39 39 42;
+    --accent: 129 140 248;
+    --accent-fg: 11 11 14;
+    --accent-soft: 30 27 60;
+  }
+
+  * {
+    border-color: rgb(var(--border));
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: rgb(var(--accent) / 0.18);
+  }
+
+  /* Consistent, accessible focus ring */
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-content px-5 sm:px-8;
+  }
+
+  .eyebrow {
+    @apply font-mono text-xs font-medium uppercase tracking-[0.18em] text-accent;
+  }
+
+  .card {
+    @apply rounded-2xl border border-border bg-surface shadow-soft;
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded-full border border-border bg-surface-2 px-3 py-1 text-xs font-medium text-muted;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 h-11 text-sm font-semibold transition-all active:scale-[0.98] disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-accent text-accent-fg hover:opacity-90;
+  }
+
+  .btn-ghost {
+    @apply btn border border-border bg-surface text-fg hover:bg-surface-2;
+  }
+
+  .link-underline {
+    @apply relative text-fg/80 hover:text-fg transition-colors;
+  }
+}
+
+/* Subtle ambient background, theme-aware. Lives behind everything. */
+.ambient {
+  background:
+    radial-gradient(60rem 40rem at 12% -10%, rgb(var(--accent) / 0.10), transparent 60%),
+    radial-gradient(50rem 36rem at 100% 0%, rgb(var(--accent) / 0.06), transparent 55%);
+}
+
+/* ---------- Print / résumé ---------- */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm 14mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .resume-page {
+    background: #fff !important;
+    padding: 0 !important;
+  }
+
+  .resume-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  a {
+    color: #111 !important;
+    text-decoration: none !important;
+  }
+}
