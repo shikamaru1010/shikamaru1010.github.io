@@ -107,7 +107,8 @@ export const projects: Project[] = [
       'Digital QR menu & ordering app (Next.js 16 / React 19, Supabase, Zustand, Resend email, Framer Motion): bilingual SR/EN, real-time order notifications, Dockerized, deployed on Vercel + Supabase.',
       'Direct work with the business owner — turning real operational pain into software, with compliance and reporting that have to be precise.',
     ],
-    note: 'Private client repos. Delivered, in active use and maintained.',
+    liveUrl: 'https://www.rostiljsisko.rs/sr',
+    note: 'Private client repos. Live site deployed; in active use and maintained.',
   },
 
   // ---------- More projects (compact list) ----------
@@ -157,7 +158,7 @@ export const projects: Project[] = [
       'Optimized for SEO and performance, then handed off cleanly to the client.',
       'Iterated with the client across multiple sprints, from brief to live site.',
     ],
-    // liveUrl: 'https://...',
+    liveUrl: 'https://pilatiq.rs/',
   },
   {
     id: 'brand-app',
@@ -190,7 +191,7 @@ export const projects: Project[] = [
       'Built service pages, testimonials and a contact section with a responsive, mobile-first layout.',
       'Delivered from brief to live — deployed and maintained.',
     ],
-    // liveUrl: 'https://...',
+    liveUrl: 'https://stanprotim.rs/',
   },
   {
     id: 'kutlesic-vikendice',
@@ -208,7 +209,7 @@ export const projects: Project[] = [
       'Responsive, mobile-first design with a straightforward contact path for guests.',
       'Delivered end to end for the client — design, build and deployment.',
     ],
-    // liveUrl: 'https://...',
+    liveUrl: 'https://vikendicekutlesic.rs/',
   },
   {
     id: 'dsa-java',
