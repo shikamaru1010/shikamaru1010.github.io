@@ -14,8 +14,8 @@ export const profile = {
   linkedin: 'https://www.linkedin.com/in/ratko%C5%A1i%C5%A1ovi%C4%87/',
   linkedinHandle: 'ratkošišović',
 
-  // Public URL of this site — update once after deploying (used by "Copy pitch").
-  siteUrl: 'https://ratko-sisovic.vercel.app',
+  // Public URL of this site (GitHub Pages user site) — used by "Copy pitch".
+  siteUrl: 'https://shikamaru1010.github.io',
 
   about: [
     'I build software that has to keep working — automated systems with real observability, full-stack web and mobile apps, and internal tools that businesses actually run on. I care about the unglamorous parts: clear logs, graceful failure, and interfaces people understand without a manual.',
