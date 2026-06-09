@@ -26,3 +26,5 @@ npm-debug.log*
 .grok/
 AGENTS.md
 dokumentacija/
+CLAUDE.md
+*.tsbuildinfo
