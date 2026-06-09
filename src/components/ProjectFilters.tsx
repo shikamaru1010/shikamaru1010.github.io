@@ -35,8 +35,18 @@ export default function ProjectFilters({
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search projects, tech, keywords…"
             aria-label="Search projects"
-            className="h-11 w-full rounded-full border border-border bg-surface pl-10 pr-4 text-sm text-fg placeholder:text-subtle focus:border-accent focus:outline-none"
+            className="h-11 w-full rounded-full border border-border bg-surface pl-10 pr-9 text-sm text-fg placeholder:text-subtle focus:border-accent focus-visible:outline-none"
           />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch('')}
+              aria-label="Clear search"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 grid h-7 w-7 place-items-center rounded-full text-subtle transition-colors hover:text-fg"
+            >
+              <Close width={14} height={14} />
+            </button>
+          )}
         </div>
         <div aria-live="polite" className="font-mono text-xs text-subtle sm:w-40 sm:text-right">
           Showing {resultCount} of {totalCount}

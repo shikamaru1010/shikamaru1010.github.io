@@ -34,7 +34,9 @@ export default function Hero({ onOpenResume }: { onOpenResume: () => void }) {
           className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1 text-xs font-medium text-muted backdrop-blur"
         >
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-70" />
+            {!reduce && (
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-70" />
+            )}
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
           </span>
           {profile.status}
