@@ -117,6 +117,74 @@
     radial-gradient(50rem 36rem at 100% 0%, rgb(var(--accent) / 0.06), transparent 55%);
 }
 
+/* ---------- Project case study ("ops console / engineering dossier") ---------- */
+/* A deliberately distinct visual world from the editorial CV: blueprint grid,
+   accent glow, grain, glass instrument panels and a mono-forward type system. */
+.cs-canvas {
+  position: relative;
+  isolation: isolate;
+  background-color: rgb(var(--bg));
+}
+
+/* Blueprint grid, faded out toward the bottom so long copy stays readable. */
+.cs-canvas::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgb(var(--border) / 0.7) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--border) / 0.7) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(120% 70% at 50% -10%, #000 35%, transparent 78%);
+          mask-image: radial-gradient(120% 70% at 50% -10%, #000 35%, transparent 78%);
+  opacity: 0.55;
+}
+
+/* Accent glow, anchored top-right like an instrument readout light. */
+.cs-canvas::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(46rem 26rem at 82% -6%, rgb(var(--accent) / 0.16), transparent 60%),
+    radial-gradient(40rem 24rem at 4% 2%, rgb(var(--accent) / 0.07), transparent 60%);
+}
+
+/* Fine grain overlay for texture/depth (very low opacity). */
+.cs-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Glass instrument panel. */
+.cs-panel {
+  @apply rounded-xl border border-border bg-surface/70 shadow-soft backdrop-blur-sm;
+}
+
+/* Mono micro-label used throughout the console. */
+.cs-label {
+  @apply font-mono text-[11px] font-medium uppercase tracking-[0.2em];
+}
+
+/* Tech "port" tag — small, technical, mono. */
+.cs-port {
+  @apply inline-flex items-center rounded border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted;
+}
+
+/* Actor pill in the pipeline (Claude / Human / System...). */
+.cs-actor {
+  @apply inline-flex items-center rounded-full bg-accent-soft px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-accent;
+}
+
 /* ---------- Print / résumé ---------- */
 @media print {
   @page {

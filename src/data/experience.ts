@@ -27,8 +27,8 @@ export const experience: Experience[] = [
     period: '2025 — Present',
     points: [
       'Build complex automated systems that must run reliably and stay diagnosable — agents, data pipelines and observability tooling.',
-      'tradingAgent: a daily AI trading pipeline with live FastAPI dashboards, risk guardrails, circuit breakers and human-in-the-loop approval.',
-      'dev-dashboard + "Brain": self-built monitoring over dozens of repos, syncing into a structured knowledge base with zero runtime dependencies.',
+      'Built tradingAgent — a daily AI trading pipeline with live FastAPI dashboards, risk guardrails, circuit breakers and human-in-the-loop approval.',
+      'Built dev-dashboard + "Brain" — monitoring over dozens of repos, syncing into a structured knowledge base with zero runtime dependencies.',
     ],
     tech: ['Python', 'TypeScript', 'Next.js', 'React Native', 'FastAPI', 'REST APIs'],
   },

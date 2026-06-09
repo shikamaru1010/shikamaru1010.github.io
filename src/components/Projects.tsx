@@ -69,11 +69,19 @@ export default function Projects() {
       )}
 
       <p className="mt-8 text-center text-xs text-subtle">
-        Several repositories are private (API keys / client work). Full code, architecture and
+        Several repositories are private (proprietary & client work). Full code, architecture and
         walk-throughs available on request.
       </p>
 
-      <ProjectModal project={open} onClose={() => setOpen(null)} />
+      <ProjectModal
+        project={open}
+        onClose={() => setOpen(null)}
+        onViewCaseStudy={(p) => {
+          setOpen(null);
+          window.location.hash = `project/${p.id}`;
+          window.scrollTo(0, 0);
+        }}
+      />
     </section>
   );
 }

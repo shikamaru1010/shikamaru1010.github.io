@@ -6,9 +6,11 @@ import { ArrowUpRight, Check, Close } from './icons';
 export default function ProjectModal({
   project,
   onClose,
+  onViewCaseStudy,
 }: {
   project: Project | null;
   onClose: () => void;
+  onViewCaseStudy: (project: Project) => void;
 }) {
   const reduce = useReducedMotion();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -91,6 +93,16 @@ export default function ProjectModal({
             </div>
 
             <p className="mt-4 text-[15px] leading-relaxed text-fg/90">{project.blurb}</p>
+
+            {project.caseStudy && (
+              <button
+                onClick={() => onViewCaseStudy(project)}
+                className="btn-primary mt-4 h-10 px-5 text-sm"
+              >
+                View detailed case study
+                <ArrowUpRight width={15} height={15} />
+              </button>
+            )}
 
             <div className="mt-5">
               <div className="mb-2 font-mono text-xs uppercase tracking-[0.14em] text-muted">
