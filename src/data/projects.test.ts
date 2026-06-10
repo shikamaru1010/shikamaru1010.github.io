@@ -41,6 +41,15 @@ describe('projects data integrity', () => {
     }
   });
 
+  it('media, when present, has valid src paths and non-empty alt text', () => {
+    for (const p of projects) {
+      for (const m of p.media ?? []) {
+        expect(m.src).toMatch(/^(\/|https?:\/\/)/);
+        expect(m.alt.trim()).not.toBe('');
+      }
+    }
+  });
+
   it('case studies, when present, have a non-empty intro', () => {
     for (const p of projects) {
       if (p.caseStudy) expect(p.caseStudy.intro.trim()).not.toBe('');

@@ -13,6 +13,20 @@ export type ProjectLink = {
   href: string;
 };
 
+/**
+ * A screenshot or short GIF of a project. Files live in
+ * `public/screenshots/<project-id>/` and are referenced root-relative
+ * (e.g. `/screenshots/trading-agent/dashboard.png`); GIFs are plain `<img>`s.
+ * The FIRST item is also used as the card thumbnail.
+ */
+export type ProjectMedia = {
+  src: string;
+  /** Describe what the screenshot shows — required for accessibility. */
+  alt: string;
+  /** Short line shown under the image in the case study gallery. */
+  caption?: string;
+};
+
 /** One box in the "Architecture & structure" grid of a case study. */
 export type ArchNode = {
   title: string;
@@ -69,6 +83,8 @@ export type Project = {
   highlights: string[];
   /** Live, public site — shows a "Visit site" link in the card corner + modal. */
   liveUrl?: string;
+  /** Screenshots/GIFs — first one becomes the card thumbnail; all show in the case study gallery. */
+  media?: ProjectMedia[];
   links?: ProjectLink[];
   note?: string;
   /** Optional rich on-site case study (renders a button in the modal + a `#project/<id>` page). */
