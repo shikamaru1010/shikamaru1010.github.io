@@ -17,6 +17,7 @@ export default function ProjectCard({
   onOpen: (p: Project) => void;
 }) {
   const featured = project.featured;
+  const cover = project.media?.[0];
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -36,6 +37,26 @@ export default function ProjectCard({
         featured ? '' : 'sm:flex-row sm:items-center sm:gap-4'
       }`}
     >
+      {cover && featured && (
+        <div className="mb-4 aspect-video overflow-hidden rounded-lg border border-border bg-surface-2">
+          <img
+            src={cover.src}
+            alt={cover.alt}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          />
+        </div>
+      )}
+      {cover && !featured && (
+        <img
+          src={cover.src}
+          alt={cover.alt}
+          loading="lazy"
+          decoding="async"
+          className="hidden h-14 w-14 shrink-0 rounded-lg border border-border bg-surface-2 object-cover sm:block"
+        />
+      )}
       <div className={featured ? '' : 'flex-1'}>
         <div className="flex items-start justify-between gap-3">
           <div>
