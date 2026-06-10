@@ -92,6 +92,18 @@ export default function ProjectModal({
               <p className="text-muted">{project.subtitle}</p>
             </div>
 
+            {project.media?.[0] && (
+              <div className="mt-4 aspect-video overflow-hidden rounded-xl border border-border bg-surface-2">
+                <img
+                  src={project.media[0].src}
+                  alt={project.media[0].alt}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
+
             <p className="mt-4 text-[15px] leading-relaxed text-fg/90">{project.blurb}</p>
 
             {project.caseStudy && (

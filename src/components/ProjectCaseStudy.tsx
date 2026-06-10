@@ -118,6 +118,30 @@ export default function ProjectCaseStudy({
           </div>
         )}
 
+        {/* Screenshots / GIFs — visual evidence strip (unnumbered, like the metric strip) */}
+        {project.media && project.media.length > 0 && (
+          <div className="mt-10 grid gap-3 sm:grid-cols-2">
+            {project.media.map((m, i) => (
+              <Reveal key={m.src} delay={Math.min(i * 0.06, 0.3)}>
+                <figure className="cs-panel overflow-hidden">
+                  <img
+                    src={m.src}
+                    alt={m.alt}
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-video w-full bg-surface-2 object-cover"
+                  />
+                  {m.caption && (
+                    <figcaption className="border-t border-border px-4 py-2.5 text-xs leading-relaxed text-muted">
+                      {m.caption}
+                    </figcaption>
+                  )}
+                </figure>
+              </Reveal>
+            ))}
+          </div>
+        )}
+
         {/* Architecture & structure — system modules */}
         {cs.architecture && cs.architecture.length > 0 && (
           <Section index="02" title="Architecture & structure" caption="System modules">
