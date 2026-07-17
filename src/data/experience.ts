@@ -9,6 +9,16 @@ export type Experience = {
 
 export const experience: Experience[] = [
   {
+    role: 'Software Engineering Intern',
+    org: 'Podyx',
+    location: 'Belgrade, Serbia (hybrid/remote)',
+    period: 'Jul 2026 — Present',
+    points: [
+      'Professional internship at Podyx — an all-in-one SaaS platform for podcast and creative studio management (bookings, payments, invoicing, client management) used by 200+ studios worldwide.',
+      'Contribute features and fixes to a production SaaS codebase, working in an established team workflow with code review and ticket-based delivery.',
+    ],
+  },
+  {
     role: 'Freelance Web & Internal Tools Developer',
     org: 'Independent',
     location: 'Belgrade, Serbia',
