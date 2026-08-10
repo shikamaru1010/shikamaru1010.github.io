@@ -8,7 +8,7 @@ import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const OUTPUT_PATH = fileURLToPath(new URL('../src/data/daily-message.json', import.meta.url));
-const MODEL = process.env.OPENROUTER_MODEL || 'anthropic/claude-3.5-haiku';
+const MODEL = process.env.OPENROUTER_MODEL || 'anthropic/claude-haiku-4.5';
 const MAX_LEN = 160;
 
 const apiKey = process.env.OPENROUTER_API_KEY;
