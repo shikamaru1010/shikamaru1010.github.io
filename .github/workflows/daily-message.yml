@@ -1,0 +1,34 @@
+name: Generate daily footer message
+
+on:
+  schedule:
+    # 05:00 UTC daily — well before anyone in Belgrade is likely browsing.
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: node scripts/generate-daily-message.mjs
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+      - name: Commit updated message
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/daily-message.json
+          git diff --cached --quiet || git commit -m "chore: refresh daily footer message"
+          git push

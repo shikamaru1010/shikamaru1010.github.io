@@ -15,6 +15,10 @@
     --accent: 79 70 229;
     --accent-fg: 255 255 255;
     --accent-soft: 238 242 255;
+
+    /* Plain elevation — unchanged from the original design. */
+    --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -12px rgb(0 0 0 / 0.12);
+    --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.05), 0 24px 48px -20px rgb(0 0 0 / 0.25);
   }
 
   .dark {
@@ -28,6 +32,20 @@
     --accent: 129 140 248;
     --accent-fg: 11 11 14;
     --accent-soft: 30 27 60;
+
+    /* Glass top-edge highlight + deep neutral elevation + a faint accent rim at
+       rest; the rim blooms into a real glow on hover (see --shadow-lift). Black
+       drop shadows barely read against an already-dark surface, so depth here
+       comes from the inset highlight and the accent tint, not just blur. */
+    --shadow-soft:
+      0 1px 0 0 rgb(255 255 255 / 0.05) inset,
+      0 10px 30px -14px rgb(0 0 0 / 0.7),
+      0 0 0 1px rgb(var(--accent) / 0.07);
+    --shadow-lift:
+      0 1px 0 0 rgb(255 255 255 / 0.07) inset,
+      0 28px 60px -18px rgb(0 0 0 / 0.8),
+      0 0 36px -4px rgb(var(--accent) / 0.4),
+      0 0 0 1px rgb(var(--accent) / 0.35);
   }
 
   * {
@@ -52,10 +70,26 @@
     }
   }
 
+  /*
+   * Light/dark toggle: useTheme.ts drives a circular "wipe" via the View
+   * Transitions API, expanding a clip-path from the toggle button with the
+   * Web Animations API. Turn off the browser's default cross-fade so only
+   * that custom reveal plays — otherwise the two blend into a muddy blur.
+   * (Skipped entirely under prefers-reduced-motion — see useTheme.ts.)
+   */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
   body {
     @apply bg-bg text-fg font-sans antialiased;
     font-feature-settings: 'cv11', 'ss01';
     text-rendering: optimizeLegibility;
+    /* Baseline crossfade for the light/dark swap on browsers without the View
+       Transitions API below — keeps the fallback from being an abrupt flip. */
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
 
   ::selection {
@@ -86,7 +120,7 @@
   }
 
   .card {
-    @apply rounded-2xl border border-border bg-surface shadow-soft;
+    @apply rounded-2xl border border-border bg-surface shadow-soft transition-shadow duration-300;
   }
 
   .chip {

@@ -1,6 +1,6 @@
 import type { KeyboardEvent } from 'react';
 import type { Project } from '../data/projects';
-import { ArrowUpRight } from './icons';
+import { ArrowUpRight, ImageIcon } from './icons';
 
 const statusStyles: Record<Project['status'], string> = {
   'In production': 'text-emerald-600 dark:text-emerald-400',
@@ -18,6 +18,7 @@ export default function ProjectCard({
 }) {
   const featured = project.featured;
   const cover = project.media?.[0];
+  const placeholder = !cover ? project.mediaPlaceholder : undefined;
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -33,7 +34,7 @@ export default function ProjectCard({
       onClick={() => onOpen(project)}
       onKeyDown={onKeyDown}
       aria-label={`Open details for ${project.title}`}
-      className={`card group relative flex w-full cursor-pointer flex-col p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lift focus-visible:-translate-y-0.5 ${
+      className={`card group relative flex h-full w-full cursor-pointer flex-col p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lift focus-visible:-translate-y-0.5 ${
         featured ? '' : 'sm:flex-row sm:items-center sm:gap-4'
       }`}
     >
@@ -48,6 +49,12 @@ export default function ProjectCard({
           />
         </div>
       )}
+      {placeholder && featured && (
+        <div className="mb-4 flex aspect-video flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed border-border bg-surface-2 px-6 text-subtle">
+          <ImageIcon width={20} height={20} />
+          <span className="text-center text-[11px] leading-snug">{placeholder}</span>
+        </div>
+      )}
       {cover && !featured && (
         <img
           src={cover.src}
@@ -56,6 +63,14 @@ export default function ProjectCard({
           decoding="async"
           className="hidden h-14 w-14 shrink-0 rounded-lg border border-border bg-surface-2 object-cover sm:block"
         />
+      )}
+      {placeholder && !featured && (
+        <div
+          title={placeholder}
+          className="hidden h-14 w-14 shrink-0 place-items-center rounded-lg border border-dashed border-border bg-surface-2 text-subtle sm:grid"
+        >
+          <ImageIcon width={16} height={16} />
+        </div>
       )}
       <div className={featured ? '' : 'flex-1'}>
         <div className="flex items-start justify-between gap-3">

@@ -37,8 +37,8 @@ export const skillGroups: SkillGroup[] = [
 // Highlighted differentiators shown near the top of the page.
 export const principles: { title: string; body: string }[] = [
   {
-    title: 'Make the invisible visible',
-    body: 'Every system I build gets dashboards, structured logs and clear state. If I can’t see what’s happening in ten seconds, it isn’t done.',
+    title: 'Turn every idea into a real-world project',
+    body: 'I don’t stop at a prototype. Every idea gets shipped as a real product — fast, reliable and built to save the end user time and effort, not just to look good in a demo.',
   },
   {
     title: 'Fail safely and explainably',

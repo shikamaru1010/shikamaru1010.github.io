@@ -9,7 +9,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "pdf": "node scripts/generate-pdf.mjs"
+    "pdf": "node scripts/generate-pdf.mjs",
+    "daily-message": "node scripts/generate-daily-message.mjs"
   },
   "dependencies": {
     "framer-motion": "^11.11.17",

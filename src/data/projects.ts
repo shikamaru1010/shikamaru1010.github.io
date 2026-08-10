@@ -85,6 +85,11 @@ export type Project = {
   liveUrl?: string;
   /** Screenshots/GIFs — first one becomes the card thumbnail; all show in the case study gallery. */
   media?: ProjectMedia[];
+  /**
+   * Reserves the card's image slot with a short label instead of a real screenshot —
+   * for a featured project that doesn't have one yet. Ignored once `media` is set.
+   */
+  mediaPlaceholder?: string;
   links?: ProjectLink[];
   note?: string;
   /** Optional rich on-site case study (renders a button in the modal + a `#project/<id>` page). */
@@ -92,194 +97,6 @@ export type Project = {
 };
 
 export const projects: Project[] = [
-  {
-    id: 'trading-agent',
-    title: 'tradingAgent',
-    subtitle: 'AI-driven daily trading pipeline',
-    blurb:
-      'Python + Claude agent that runs a daily S&P 500 rotation end to end — data, scoring, risk, execution — with live dashboards and human-in-the-loop approval.',
-    year: '2025 — present',
-    status: 'Active development',
-    featured: true,
-    categories: ['AI & Automation', 'Tooling & Observability'],
-    tech: ['Python', 'Claude tool-use', 'FastAPI', 'Interactive Brokers / Alpaca', 'Telegram', 'yfinance'],
-    highlights: [
-      'Full daily pipeline: market-calendar check, concurrent price fetch for ~500 tickers, technical + fundamental scoring with an SPY-overlap penalty, then risk-aware position sizing.',
-      'Safety first: circuit breakers, position limits, retry logic, persisted state, and explicit human approval over Telegram before anything executes.',
-      'Built custom live + historical dashboards (FastAPI) so the portfolio state, P&L and every decision are visible and explainable in seconds.',
-      'Designed to fail safely and leave a clear audit trail — the system has to be debuggable when external APIs misbehave.',
-    ],
-    note: 'Private repo (proprietary strategy). Architecture and code walk-through available on request.',
-  },
-  {
-    id: 'belgrade-buddy',
-    title: 'BelgradeBuddy AI',
-    subtitle: 'AI companion app for international visitors',
-    blurb:
-      'A React Native (Expo) + Supabase mobile app for international Expo 2027 visitors: an AI chatbot with smart model routing, an arrival wizard, offline support and real-time features.',
-    year: '2025 — present',
-    status: 'Active development',
-    featured: true,
-    categories: ['Mobile', 'AI & Automation', 'Web & Apps'],
-    tech: ['React Native (Expo)', 'NativeWind', 'Supabase', 'Edge Functions', 'OpenRouter / Claude', 'i18n'],
-    highlights: [
-      'Context-aware AI chatbot with smart model routing to balance quality, latency and cost.',
-      'Offline-first by design: phrasebook and FAQ keep working with no signal — built for stressed travellers in low-connectivity moments.',
-      'Real-time features via Supabase, an arrival wizard for high-stress first-hour scenarios, and full internationalization (EN/SR + more).',
-      'Heavy focus on graceful degradation and genuinely helpful error states.',
-    ],
-    note: 'Large solo product — full spec and phased roadmap, currently in active development.',
-  },
-  {
-    id: 'dev-dashboard',
-    title: 'dev-dashboard + "Brain" system',
-    subtitle: 'Self-built developer observability & knowledge tooling',
-    blurb:
-      'A Next.js + TypeScript tool that scans all my local git repos and GitHub, aggregates activity and stats, and syncs structured data into an Obsidian knowledge base.',
-    year: '2025 — present',
-    status: 'Maintained',
-    featured: true,
-    categories: ['Tooling & Observability', 'Web & Apps', 'AI & Automation'],
-    tech: ['Next.js 16', 'TypeScript', 'Node', 'Tailwind 4', 'Git', 'GitHub API', 'Obsidian', 'PowerShell'],
-    highlights: [
-      'Scans dozens of repositories and GitHub accounts, then aggregates activity into one dashboard so I always know what is active and what needs attention.',
-      'Syncs into a structured second-brain knowledge base (developerBrain) — searchable history and structured data, exactly what good operational systems need.',
-      'Zero third-party runtime dependencies by design; custom git/GitHub/Obsidian integration libraries.',
-      'Part of a larger personal automation + agent system (with a planned orchestrator that routes requests to the right agent).',
-    ],
-    note: 'Used daily as my own monitoring and productivity layer.',
-    // Detailed case study — drafted from a scan of the local repo (case-study-scan skill);
-    // secrets / paths / email scrubbed. Tier: DETAILED (own tooling). Edit freely.
-    caseStudy: {
-      intro:
-        'The observability layer over my own work, dev-dashboard scans every local git repository and my GitHub account, merges them into one view, and syncs structured notes into a unified Obsidian "second brain" — so I always know what is active, paused or abandoned, and the knowledge base stays current without manual upkeep. Built with zero third-party runtime dependencies, it is the first working slice of a larger personal agent system.',
-      metrics: [
-        { value: '0', label: 'Runtime deps' },
-        { value: '40+', label: 'Languages detected' },
-        { value: '30+', label: 'Project types' },
-        { value: '3', label: 'Brain domains' },
-      ],
-      architecture: [
-        {
-          title: 'Local repo scanner',
-          detail:
-            'A recursive filesystem walker that finds projects by .git plus file markers, handles nested repos, and filters out tutorials, vendored code and noise.',
-          tech: ['Node', 'git CLI'],
-        },
-        {
-          title: 'Git extractor',
-          detail:
-            'Runs the native git CLI per repo for commit count, last-commit date, branch and remote — respecting .gitignore and submodule edge cases for free.',
-          tech: ['git', 'child_process'],
-        },
-        {
-          title: 'GitHub sync',
-          detail:
-            'Paginated GitHub API fetch of every owned repo with stars and descriptions, merged into the local view by matching remote URLs.',
-          tech: ['GitHub API', 'fetch'],
-        },
-        {
-          title: 'Aggregation + cache',
-          detail:
-            'Merges local and GitHub data, dedupes, classifies each project active / paused / abandoned by recency, and caches the result to disk.',
-          tech: ['TypeScript'],
-        },
-        {
-          title: 'Dashboard UI',
-          detail:
-            'A Next.js App Router dashboard surfacing project status, language and type distributions, and commit totals at a glance.',
-          tech: ['Next.js 16', 'React 19', 'Tailwind 4'],
-        },
-        {
-          title: 'Obsidian brain sync',
-          detail:
-            'Writes idempotent project notes into the vault — auto frontmatter + README section — while preserving everything I write by hand below a manual marker.',
-          tech: ['Obsidian', 'Markdown'],
-        },
-        {
-          title: 'Nightly git log',
-          detail:
-            "A scheduled PowerShell task records each day's commits into the developer brain automatically, following the same idempotent + manual-marker pattern.",
-          tech: ['PowerShell', 'Task Scheduler'],
-        },
-        {
-          title: 'Agent manifest (planned)',
-          detail:
-            'A defined agent hierarchy (orchestrator → per-domain agents) intended to synthesize cross-domain insights across the three brains.',
-          tech: ['YAML'],
-        },
-      ],
-      workflow: [
-        {
-          actor: 'Human',
-          title: 'Trigger a scan',
-          detail: 'I hit Refresh in the dashboard (or call the scan endpoint).',
-        },
-        {
-          actor: 'System',
-          title: 'Scan local repos',
-          detail:
-            'The walker finds repos by .git and file markers, then pulls commit count, last activity and branch via the git CLI.',
-        },
-        {
-          actor: 'GitHub',
-          title: 'Pull remote repos',
-          detail: 'The GitHub API returns all my owned repos with stars and descriptions.',
-        },
-        {
-          actor: 'Data',
-          title: 'Merge & classify',
-          detail:
-            'Local and GitHub are matched by remote URL, deduped, sorted by activity and classified active / paused / abandoned, then cached.',
-        },
-        {
-          actor: 'Human',
-          title: 'Review the dashboard',
-          detail: 'One view of every project, the language mix, and what needs attention.',
-        },
-        {
-          actor: 'System',
-          title: 'Sync to the brain',
-          detail:
-            'Active projects are written as idempotent notes into the Obsidian vault, preserving my hand-written sections.',
-        },
-        {
-          actor: 'System',
-          title: 'Nightly log',
-          detail:
-            "A scheduled task appends each day's commits into the developer brain — no manual upkeep.",
-        },
-      ],
-      decisions: [
-        'Zero third-party runtime dependencies — custom git / GitHub / Obsidian integration so I control behaviour and keep the supply-chain surface minimal.',
-        'Native git CLI over parsing .git internals — it respects .gitignore and handles submodules and edge cases for free.',
-        'Detect non-git projects by file markers (Docker, design files, game engines, VMs) so design and infra work counts, not just code.',
-        'One unified Obsidian vault across three domains (student / developer / life) so [[links]] and queries span everything.',
-        'Classify status by days-since-activity (active ≤30d, paused ≤180d, otherwise abandoned) — simple and predictable.',
-      ],
-      guardrails: [
-        'Read-only scanning — the tool observes, it never mutates a source repo.',
-        'Idempotent sync with a manual-edit marker — re-running never clobbers notes I wrote by hand.',
-        'Per-project error isolation — a failing repo is logged and skipped so the sync continues.',
-        'The scan degrades gracefully when a data source is unavailable, rather than failing the whole run.',
-        'Configurable scan roots — scanning can be limited to chosen folders for speed and privacy.',
-      ],
-      challenges: [
-        'Telling real projects apart from tutorials, vendored code and generic folders took multi-heuristic filtering.',
-        'Nested repositories — a vault that is itself a git repo containing more repos — meant the walker could not stop at the first .git.',
-        'Matching local repos to their GitHub counterparts across ssh and https remote formats.',
-        'Keeping the Obsidian sync idempotent while preserving hand-written content.',
-        'Windows path handling — illegal filename characters, symlink loops, and full-disk scan performance.',
-      ],
-      outcomes: [
-        'Used as my own monitoring and productivity layer — one place shows what is active, paused or abandoned across all my repos.',
-        'The developer brain stays current automatically: project notes and a daily commit log sync without manual upkeep.',
-        'The first working slice of a larger agent system, with a planned orchestrator to synthesize across the three brains.',
-      ],
-      privacyNote:
-        'Overview of my own internal tooling. Full code and a deeper walk-through are available on request.',
-    },
-  },
   {
     id: 'mesara',
     title: 'Mesara Šisko',
@@ -515,6 +332,194 @@ export const projects: Project[] = [
       'Delivered end to end for the client — design, build and deployment.',
     ],
     liveUrl: 'https://vikendicekutlesic.rs/',
+  },
+  {
+    id: 'trading-agent',
+    title: 'tradingAgent',
+    subtitle: 'AI-driven daily trading pipeline',
+    blurb:
+      'Python + Claude agent that runs a daily S&P 500 rotation end to end — data, scoring, risk, execution — with live dashboards and human-in-the-loop approval.',
+    year: '2025 — present',
+    status: 'Active development',
+    featured: true,
+    categories: ['AI & Automation', 'Tooling & Observability'],
+    tech: ['Python', 'Claude tool-use', 'FastAPI', 'Interactive Brokers / Alpaca', 'Telegram', 'yfinance'],
+    highlights: [
+      'Full daily pipeline: market-calendar check, concurrent price fetch for ~500 tickers, technical + fundamental scoring with an SPY-overlap penalty, then risk-aware position sizing.',
+      'Safety first: circuit breakers, position limits, retry logic, persisted state, and explicit human approval over Telegram before anything executes.',
+      'Built custom live + historical dashboards (FastAPI) so the portfolio state, P&L and every decision are visible and explainable in seconds.',
+      'Designed to fail safely and leave a clear audit trail — the system has to be debuggable when external APIs misbehave.',
+    ],
+    note: 'Private repo (proprietary strategy). Architecture and code walk-through available on request.',
+  },
+  {
+    id: 'belgrade-buddy',
+    title: 'BelgradeBuddy AI',
+    subtitle: 'AI companion app for international visitors',
+    blurb:
+      'A React Native (Expo) + Supabase mobile app for international visitors to Belgrade: an AI chatbot with smart model routing, an arrival wizard, offline support and real-time features.',
+    year: '2025 — present',
+    status: 'Active development',
+    featured: true,
+    categories: ['Mobile', 'AI & Automation', 'Web & Apps'],
+    tech: ['React Native (Expo)', 'NativeWind', 'Supabase', 'Edge Functions', 'OpenRouter / Claude', 'i18n'],
+    highlights: [
+      'Context-aware AI chatbot with smart model routing to balance quality, latency and cost.',
+      'Offline-first by design: phrasebook and FAQ keep working with no signal — built for stressed travellers in low-connectivity moments.',
+      'Real-time features via Supabase, an arrival wizard for high-stress first-hour scenarios, and full internationalization (EN/SR + more).',
+      'Heavy focus on graceful degradation and genuinely helpful error states.',
+    ],
+    note: 'Large solo product — full spec and phased roadmap, currently in active development.',
+  },
+  {
+    id: 'dev-dashboard',
+    title: 'dev-dashboard + "Brain" system',
+    subtitle: 'Self-built developer observability & knowledge tooling',
+    blurb:
+      'A Next.js + TypeScript tool that scans all my local git repos and GitHub, aggregates activity and stats, and syncs structured data into an Obsidian knowledge base.',
+    year: '2025 — present',
+    status: 'Maintained',
+    featured: true,
+    categories: ['Tooling & Observability', 'Web & Apps', 'AI & Automation'],
+    tech: ['Next.js 16', 'TypeScript', 'Node', 'Tailwind 4', 'Git', 'GitHub API', 'Obsidian', 'PowerShell'],
+    highlights: [
+      'Scans dozens of repositories and GitHub accounts, then aggregates activity into one dashboard so I always know what is active and what needs attention.',
+      'Syncs into a structured second-brain knowledge base (developerBrain) — searchable history and structured data, exactly what good operational systems need.',
+      'Zero third-party runtime dependencies by design; custom git/GitHub/Obsidian integration libraries.',
+      'Part of a larger personal automation + agent system (with a planned orchestrator that routes requests to the right agent).',
+    ],
+    note: 'Used daily as my own monitoring and productivity layer.',
+    // Detailed case study — drafted from a scan of the local repo (case-study-scan skill);
+    // secrets / paths / email scrubbed. Tier: DETAILED (own tooling). Edit freely.
+    caseStudy: {
+      intro:
+        'The observability layer over my own work, dev-dashboard scans every local git repository and my GitHub account, merges them into one view, and syncs structured notes into a unified Obsidian "second brain" — so I always know what is active, paused or abandoned, and the knowledge base stays current without manual upkeep. Built with zero third-party runtime dependencies, it is the first working slice of a larger personal agent system.',
+      metrics: [
+        { value: '0', label: 'Runtime deps' },
+        { value: '40+', label: 'Languages detected' },
+        { value: '30+', label: 'Project types' },
+        { value: '3', label: 'Brain domains' },
+      ],
+      architecture: [
+        {
+          title: 'Local repo scanner',
+          detail:
+            'A recursive filesystem walker that finds projects by .git plus file markers, handles nested repos, and filters out tutorials, vendored code and noise.',
+          tech: ['Node', 'git CLI'],
+        },
+        {
+          title: 'Git extractor',
+          detail:
+            'Runs the native git CLI per repo for commit count, last-commit date, branch and remote — respecting .gitignore and submodule edge cases for free.',
+          tech: ['git', 'child_process'],
+        },
+        {
+          title: 'GitHub sync',
+          detail:
+            'Paginated GitHub API fetch of every owned repo with stars and descriptions, merged into the local view by matching remote URLs.',
+          tech: ['GitHub API', 'fetch'],
+        },
+        {
+          title: 'Aggregation + cache',
+          detail:
+            'Merges local and GitHub data, dedupes, classifies each project active / paused / abandoned by recency, and caches the result to disk.',
+          tech: ['TypeScript'],
+        },
+        {
+          title: 'Dashboard UI',
+          detail:
+            'A Next.js App Router dashboard surfacing project status, language and type distributions, and commit totals at a glance.',
+          tech: ['Next.js 16', 'React 19', 'Tailwind 4'],
+        },
+        {
+          title: 'Obsidian brain sync',
+          detail:
+            'Writes idempotent project notes into the vault — auto frontmatter + README section — while preserving everything I write by hand below a manual marker.',
+          tech: ['Obsidian', 'Markdown'],
+        },
+        {
+          title: 'Nightly git log',
+          detail:
+            "A scheduled PowerShell task records each day's commits into the developer brain automatically, following the same idempotent + manual-marker pattern.",
+          tech: ['PowerShell', 'Task Scheduler'],
+        },
+        {
+          title: 'Agent manifest (planned)',
+          detail:
+            'A defined agent hierarchy (orchestrator → per-domain agents) intended to synthesize cross-domain insights across the three brains.',
+          tech: ['YAML'],
+        },
+      ],
+      workflow: [
+        {
+          actor: 'Human',
+          title: 'Trigger a scan',
+          detail: 'I hit Refresh in the dashboard (or call the scan endpoint).',
+        },
+        {
+          actor: 'System',
+          title: 'Scan local repos',
+          detail:
+            'The walker finds repos by .git and file markers, then pulls commit count, last activity and branch via the git CLI.',
+        },
+        {
+          actor: 'GitHub',
+          title: 'Pull remote repos',
+          detail: 'The GitHub API returns all my owned repos with stars and descriptions.',
+        },
+        {
+          actor: 'Data',
+          title: 'Merge & classify',
+          detail:
+            'Local and GitHub are matched by remote URL, deduped, sorted by activity and classified active / paused / abandoned, then cached.',
+        },
+        {
+          actor: 'Human',
+          title: 'Review the dashboard',
+          detail: 'One view of every project, the language mix, and what needs attention.',
+        },
+        {
+          actor: 'System',
+          title: 'Sync to the brain',
+          detail:
+            'Active projects are written as idempotent notes into the Obsidian vault, preserving my hand-written sections.',
+        },
+        {
+          actor: 'System',
+          title: 'Nightly log',
+          detail:
+            "A scheduled task appends each day's commits into the developer brain — no manual upkeep.",
+        },
+      ],
+      decisions: [
+        'Zero third-party runtime dependencies — custom git / GitHub / Obsidian integration so I control behaviour and keep the supply-chain surface minimal.',
+        'Native git CLI over parsing .git internals — it respects .gitignore and handles submodules and edge cases for free.',
+        'Detect non-git projects by file markers (Docker, design files, game engines, VMs) so design and infra work counts, not just code.',
+        'One unified Obsidian vault across three domains (student / developer / life) so [[links]] and queries span everything.',
+        'Classify status by days-since-activity (active ≤30d, paused ≤180d, otherwise abandoned) — simple and predictable.',
+      ],
+      guardrails: [
+        'Read-only scanning — the tool observes, it never mutates a source repo.',
+        'Idempotent sync with a manual-edit marker — re-running never clobbers notes I wrote by hand.',
+        'Per-project error isolation — a failing repo is logged and skipped so the sync continues.',
+        'The scan degrades gracefully when a data source is unavailable, rather than failing the whole run.',
+        'Configurable scan roots — scanning can be limited to chosen folders for speed and privacy.',
+      ],
+      challenges: [
+        'Telling real projects apart from tutorials, vendored code and generic folders took multi-heuristic filtering.',
+        'Nested repositories — a vault that is itself a git repo containing more repos — meant the walker could not stop at the first .git.',
+        'Matching local repos to their GitHub counterparts across ssh and https remote formats.',
+        'Keeping the Obsidian sync idempotent while preserving hand-written content.',
+        'Windows path handling — illegal filename characters, symlink loops, and full-disk scan performance.',
+      ],
+      outcomes: [
+        'Used as my own monitoring and productivity layer — one place shows what is active, paused or abandoned across all my repos.',
+        'The developer brain stays current automatically: project notes and a daily commit log sync without manual upkeep.',
+        'The first working slice of a larger agent system, with a planned orchestrator to synthesize across the three brains.',
+      ],
+      privacyNote:
+        'Overview of my own internal tooling. Full code and a deeper walk-through are available on request.',
+    },
   },
   {
     id: 'dsa-java',

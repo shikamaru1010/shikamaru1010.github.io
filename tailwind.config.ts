@@ -33,8 +33,10 @@ export default {
         content: '72rem',
       },
       boxShadow: {
-        soft: '0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -12px rgb(0 0 0 / 0.12)',
-        lift: '0 1px 2px rgb(0 0 0 / 0.05), 0 24px 48px -20px rgb(0 0 0 / 0.25)',
+        // Theme-aware — plain elevation in light mode, layered glass-highlight +
+        // accent glow in dark mode. Values live in src/index.css (:root / .dark).
+        soft: 'var(--shadow-soft)',
+        lift: 'var(--shadow-lift)',
       },
       keyframes: {
         'fade-up': {

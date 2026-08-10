@@ -89,6 +89,14 @@ export const Pin = (p: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+export const ImageIcon = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base} {...p}>
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    <circle cx="9" cy="9" r="2" />
+    <path d="m21 15-5-5L5 21" />
+  </svg>
+);
+
 export const Menu = (p: SVGProps<SVGSVGElement>) => (
   <svg {...base} {...p}>
     <line x1="4" y1="6" x2="20" y2="6" />

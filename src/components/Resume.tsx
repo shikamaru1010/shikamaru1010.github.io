@@ -28,7 +28,10 @@ export default function Resume({ onBack }: { onBack: () => void }) {
       </div>
 
       {/* The sheet */}
-      <div className="resume-sheet mx-auto max-w-[820px] bg-white px-10 py-9 text-[12.5px] leading-snug text-zinc-800 shadow-soft sm:rounded-xl">
+      <div
+        className="resume-sheet mx-auto max-w-[820px] bg-white px-10 py-9 text-[12.5px] leading-snug text-zinc-800 sm:rounded-xl"
+        style={{ boxShadow: '0 1px 2px rgb(0 0 0 / 0.05), 0 24px 48px -20px rgb(0 0 0 / 0.35)' }}
+      >
         {/* Header */}
         <header className="flex items-end justify-between border-b border-zinc-200 pb-4">
           <div>
