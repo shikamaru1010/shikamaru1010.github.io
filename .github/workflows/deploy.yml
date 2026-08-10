@@ -4,6 +4,10 @@ on:
   push:
     branches: [master]
   workflow_dispatch:
+  # Reusable — daily-message.yml calls this after committing a refreshed
+  # message, since commits pushed with the default GITHUB_TOKEN don't
+  # themselves trigger the `push` event above.
+  workflow_call:
 
 permissions:
   contents: read
@@ -18,7 +22,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # Explicit branch ref (not the default github.sha) so a workflow_call
+      # triggered right after daily-message.yml's commit picks up that new
+      # commit instead of the ref the run originally started from.
       - uses: actions/checkout@v4
+        with:
+          ref: master
       - uses: actions/setup-node@v4
         with:
           node-version: 22
