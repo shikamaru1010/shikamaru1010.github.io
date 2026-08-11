@@ -9,9 +9,7 @@ export default function Footer() {
           <blockquote className="text-pretty text-[15px] italic leading-relaxed text-fg/75">
             “{dailyMessage.text}”
           </blockquote>
-          <figcaption className="mt-2 font-mono text-xs text-subtle">
-            — generated daily by a small AI worker
-          </figcaption>
+          <figcaption className="mt-2 font-mono text-xs text-subtle">— {dailyMessage.author}</figcaption>
         </figure>
 
         <div className="mt-8 flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs text-subtle sm:flex-row">

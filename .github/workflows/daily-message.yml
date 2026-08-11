@@ -24,8 +24,6 @@ jobs:
           node-version: 22
 
       - run: node scripts/generate-daily-message.mjs
-        env:
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
 
       - name: Commit updated message
         id: commit
