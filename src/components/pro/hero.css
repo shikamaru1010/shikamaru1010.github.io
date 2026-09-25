@@ -1,0 +1,68 @@
+/* ------------------------------------------------------------------
+   Professional hero: the name, the lede and the record card
+   (SPEC §6.1.1 as amended by the owner feedback in DECISIONS: a quiet
+   scale, no text fitted to the width of the page).
+------------------------------------------------------------------- */
+
+.hero { padding-top: 64px; }
+
+/* The name: one display size (--s5), 600, set like a heading rather than a poster. */
+.name {
+  font-size: var(--s5); line-height: 1.05; letter-spacing: -.03em; font-weight: 600;
+  margin-left: -.05em;   /* optical: the R's stem on the margin, like every left edge below it */
+  text-wrap: balance;
+}
+
+.hero-body { margin-top: 40px; align-items: start; }
+
+.lead {
+  grid-column: 4 / span 8; grid-row: 1;
+  font-size: var(--s3); line-height: 1.4; letter-spacing: -.01em; font-weight: 400;
+  max-width: 34em; text-wrap: pretty;
+}
+.lead-nb { white-space: nowrap; }
+
+/* ---------------- the record card ----------------
+   Each entry: a 13px term over its value, between hairlines. margin-top puts the
+   first term's baseline on the lede's first baseline. Measured in Chrome at both
+   desktop lede sizes (21px and 20px): the lede's first baseline sits 22.7px below
+   its top, the first term's 23.7px below the card's top (Chrome rounds ascent and
+   descent to whole pixels, so this is a measured constant, not a formula). */
+.record {
+  grid-column: 1 / span 3; grid-row: 1;
+  margin-top: -1px;
+  border-bottom: 1px solid var(--rule);
+}
+.record > div { border-top: 1px solid var(--rule); padding: 8px 0 10px; }
+.record dt { font-size: var(--s1); line-height: 1.4; font-weight: 500; color: var(--ink-2); }
+.record dd { font-size: var(--s2); line-height: 1.4; color: var(--ink); text-wrap: pretty; }
+.record-acts { display: flex; flex-wrap: wrap; gap: 0 18px; }
+/* a 44px hit area around one-line links, without moving the text */
+.record a { position: relative; }
+.record a::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%); }
+
+/* ---------------- tablet (721–1100): the lede keeps column 4, the card goes under it ---------------- */
+@media (min-width: 721px) and (max-width: 1100px) {
+  .lead { grid-column: 4 / -1; }
+  .record { grid-column: 1 / -1; grid-row: 2; margin-top: 40px; }
+  .record > div {
+    display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--g);
+    align-items: baseline;
+  }
+  .record dt { grid-column: 1 / span 3; }
+  .record dd { grid-column: 4 / -1; }
+}
+
+/* ---------------- phone: the lede first, then the card as term | value rows ---------------- */
+@media (max-width: 720px) {
+  .hero { padding-top: 32px; }
+  .hero-body { margin-top: 20px; }
+  .lead { grid-column: 1 / -1; grid-row: 1; }
+  .record { grid-column: 1 / -1; grid-row: 2; margin-top: 28px; }
+  .record > div {
+    display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--g);
+    align-items: baseline; padding: 10px 0 11px;
+  }
+  .record dt { grid-column: 1; }
+  .record dd { grid-column: 2 / -1; }
+}

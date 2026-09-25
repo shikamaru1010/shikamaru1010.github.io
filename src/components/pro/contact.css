@@ -1,0 +1,92 @@
+/* ------------------------------------------------------------------
+   Contact and colophon: Professional ends on one ink plate
+   (SPEC §6.1.5 as amended by the owner feedback in DECISIONS: the
+   address at --s4, a one-line colophon, no grid button).
+------------------------------------------------------------------- */
+
+/* The plate re-scopes the tokens, so every primitive inside (.sec-head, .h2,
+   .label, .u, the focus ring, selection) reads right on ink. Contrast on #111110:
+   ink 17.4:1, ink-2 6.9:1, accent 3.95:1 (the @ at ≥ 26px, and the focus ring). */
+.ink-plate {
+  --paper: #111110;
+  --ink: #F2F1EC;
+  --ink-2: #9D9C98;
+  --rule: #3E3E3C;
+  --rule-strong: #F2F1EC;
+  --sel-bg: #D83218;
+  --sel-fg: #FFFFFF;
+  background: #111110;
+  color: #F2F1EC;
+}
+
+/* ---------------- contact ---------------- */
+.contact { margin-top: 176px; padding-top: 72px; }
+/* on the plate the address belongs to its heading: a shorter gap than a section's rows get */
+.contact .sec-head { margin-bottom: 40px; }
+
+/* the address: a --s4 line with the one accent mark of the plate, the @ */
+.contact-mail { font-size: var(--s4); line-height: 1.1; letter-spacing: -.03em; font-weight: 600; }
+.mail {
+  margin-left: -.03em;   /* optical: the r on the margin */
+  text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .16em;
+  text-decoration-color: var(--rule);
+  transition: text-decoration-color .15s;
+}
+.mail:hover { text-decoration-color: var(--accent); }
+.mail .at { color: var(--accent); }
+
+.copy-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 24px; }
+.copy {
+  appearance: none; background: none; border: 1px solid var(--rule-strong); border-radius: 0;
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px;
+  font-size: var(--s1); font-weight: 500; color: var(--ink); cursor: pointer;
+  transition: background-color .15s, color .15s;
+}
+.copy:hover { background: var(--rule); }
+.copy:active { background: var(--ink); color: var(--paper); }
+.copy-status { color: var(--ink); }
+
+.reach { margin-top: 64px; border-top: 1px solid var(--rule); padding-top: 14px; align-items: start; }
+.reach > div { grid-column: span 3; }
+.reach > div:nth-child(3) { grid-column: 7 / span 2; }
+.reach > .reach-walk { grid-column: 9 / -1; }
+.reach dt { font-size: var(--s1); line-height: 1.4; font-weight: 500; color: var(--ink-2); margin-bottom: 4px; }
+.reach dd a { display: inline-flex; align-items: center; min-height: 32px; }
+.reach .reach-walk dd { max-width: 36ch; }
+
+/* ---------------- colophon: one quiet line, and the way to the other side ---------------- */
+.foot { padding: 112px 0 28px; }
+.colophon {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 24px;
+  border-top: 1px solid var(--rule); padding-top: 14px;
+  font-size: var(--s1); line-height: 1.55; font-weight: 500; color: var(--ink-2);
+}
+.colophon-line { text-wrap: pretty; }
+.colophon-turn { color: var(--ink); }
+
+/* ---------------- tablet (721–1100) ---------------- */
+@media (min-width: 721px) and (max-width: 1100px) {
+  .reach > div,
+  .reach > div:nth-child(3) { grid-column: span 4; }
+  .reach > .reach-walk { grid-column: 1 / -1; margin-top: 20px; }
+}
+
+/* ---------------- phone ---------------- */
+@media (max-width: 720px) {
+  .contact { margin-top: 112px; padding-top: 48px; }
+  .contact .sec-head { margin-bottom: 28px; }
+  .copy-row { margin-top: 20px; }
+  .reach { margin-top: 40px; row-gap: 18px; }
+  .reach > div { grid-column: span 2; }
+  /* GitHub | LinkedIn share a row; the CV link and the code note each get the full width */
+  .reach > div:nth-child(3),
+  .reach > .reach-walk { grid-column: 1 / -1; }
+  .reach dd a { min-height: 44px; }
+
+  .foot { padding-top: 72px; }
+  .colophon { display: block; }
+  /* the three parts of the line stack; the dots go */
+  .colophon-line > span:not(.colophon-sep) { display: block; }
+  .colophon-sep { display: none; }
+  .colophon-turn { margin-top: 10px; }
+}
