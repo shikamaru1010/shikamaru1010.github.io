@@ -33,7 +33,6 @@ export type SystemFigure =
       daysPerColumn: number;
       maxDays: number;
       thresholds: { active: number; paused: number };
-      activeNote: string;
     }
   | {
       kind: 'signal';
@@ -49,14 +48,16 @@ export type ArchNode = {
   tech?: string[];
 };
 
-/** One step in the "How it works" flow of a case study. */
+/**
+ * One step in the "How it works" flow of a case study: who acts, and what the step is. The
+ * architecture says what each part does, so a step is only its title (each fact once per page).
+ */
 export type WorkflowStep = {
   /** Who acts, as written next to the step: 'Customer', 'Me', 'System', 'GitHub'… */
   actor: string;
-  /** A person is drawn as a circle, the system as a square (DECISIONS 10). */
+  /** A person is drawn as a circle, the system as a square. */
   kind: 'person' | 'system';
   title: string;
-  detail: string;
 };
 
 /** A headline number in the case study "At a glance" strip. The value is a number ('40+'), never a word. */
@@ -116,7 +117,10 @@ const desktop = (id: string, alt: string): ProjectMedia => ({
   width: 1440,
   height: 900,
   device: 'desktop',
-  variants: [{ src: `/screenshots/${id}/desktop-720.webp`, width: 720 }],
+  variants: [
+    { src: `/screenshots/${id}/desktop-720.webp`, width: 720 },
+    { src: `/screenshots/${id}/desktop-1200.webp`, width: 1200 },
+  ],
 });
 
 const phone = (id: string, alt: string): ProjectMedia => ({
@@ -165,7 +169,7 @@ export const projects: Project[] = [
     // High-level case study (client work): no secrets, customer data, business logic or pricing.
     caseStudy: {
       intro:
-        'Mesara Šisko is production software for a Serbian butcher and grill business, delivered as two connected parts: a customer-facing QR menu and ordering app, and an internal operations system. Diners scan a QR code to browse a bilingual menu, order with help from an AI chatbot and track their order in real time, while the kitchen receives and updates orders live. Scheduled AI agents handle daily reporting and compliance paperwork.',
+        'Mesara Šisko is production software for a Serbian butcher and grill business. Diners scan a QR code to browse a bilingual menu, order with help from an AI chatbot and track their order in real time, while the kitchen receives and updates orders live. Scheduled AI agents handle daily P&L reports and the PDF declarations Serbian regulations require.',
       architecture: [
         {
           title: 'Bilingual menu',
@@ -199,47 +203,17 @@ export const projects: Project[] = [
         {
           title: 'Internal operations system',
           detail:
-            'A separate Django and AI system that compiles daily P&L reports and Serbian-regulation PDF declarations on scheduled cycles.',
+            'A separate Django and AI system that compiles the daily P&L reports and PDF declarations on scheduled cycles.',
           tech: ['Django', 'APScheduler', 'Claude agents'],
         },
       ],
       workflow: [
-        {
-          actor: 'Customer',
-          kind: 'person',
-          title: 'Scan & browse',
-          detail: 'A QR code opens the bilingual menu on the customer’s phone.',
-        },
-        {
-          actor: 'Customer',
-          kind: 'person',
-          title: 'Build the order',
-          detail: 'Items go into a persisted cart, with help from the AI chatbot when needed.',
-        },
-        {
-          actor: 'System',
-          kind: 'system',
-          title: 'Validate & record',
-          detail: 'The order is checked against the live menu, recorded, and the restaurant is notified.',
-        },
-        {
-          actor: 'Staff',
-          kind: 'person',
-          title: 'Prepare',
-          detail: 'The kitchen dashboard shows the order in real time; staff move it new → preparing → done.',
-        },
-        {
-          actor: 'Customer',
-          kind: 'person',
-          title: 'Track',
-          detail: 'The customer sees live status updates until the order is ready.',
-        },
-        {
-          actor: 'System',
-          kind: 'system',
-          title: 'Back office',
-          detail: 'On a schedule, the internal system compiles daily reports and compliance PDFs for the owner.',
-        },
+        { actor: 'Customer', kind: 'person', title: 'Scan & browse' },
+        { actor: 'Customer', kind: 'person', title: 'Build the order' },
+        { actor: 'System', kind: 'system', title: 'Validate & record' },
+        { actor: 'Staff', kind: 'person', title: 'Prepare' },
+        { actor: 'Customer', kind: 'person', title: 'Track' },
+        { actor: 'System', kind: 'system', title: 'Back office' },
       ],
       decisions: [
         'Bilingual (Serbian and English) from day one, with localized URLs, to serve both locals and Zlatibor-area tourists.',
@@ -260,7 +234,7 @@ export const projects: Project[] = [
         'Weight-based pricing needed a custom cart UI plus strict server-side validation.',
         'Keeping the menu fast on phones despite its size and many images.',
       ],
-      outcomes: ['The internal system saves the owner daily manual work on reports and regulatory paperwork.'],
+      outcomes: ['The internal system saves the owner daily manual work on reports and declarations.'],
       privacyNote:
         'Private client repositories. This is a high-level overview: business logic, configuration and customer data are not shown. The live ordering site is public, and a deeper walk-through is available on request.',
     },
@@ -344,7 +318,7 @@ export const projects: Project[] = [
     title: 'tradingAgent',
     subtitle: 'AI-driven daily trading pipeline',
     blurb:
-      'A Python and Claude agent that runs a daily S&P 500 rotation from start to finish: data, scoring, risk, execution. A FastAPI dashboard shows the portfolio, P&L and the reason behind every decision.',
+      'A Python and Claude agent that runs a daily S&P 500 rotation from start to finish: data, scoring, risk, execution. A FastAPI dashboard shows the portfolio and P&L.',
     year: '2025–now',
     status: 'Active development',
     group: 'system',
@@ -366,7 +340,7 @@ export const projects: Project[] = [
         { label: 'Score', note: 'Technical and fundamental, with an SPY‑overlap penalty', actor: 'system' },
         { label: 'Size', note: 'Against circuit breakers and position limits', actor: 'system' },
         { label: 'Approve', note: 'Me, on Telegram. Nothing executes before this.', actor: 'person' },
-        { label: 'Execute', note: 'Place the order and log the reason', actor: 'system' },
+        { label: 'Execute', note: 'Place the order', actor: 'system' },
       ],
     },
   },
@@ -389,25 +363,20 @@ export const projects: Project[] = [
     ],
     note: 'Used daily as my own monitoring and productivity layer.',
     notes: [
-      'It only reads the repositories it scans.',
+      'It never changes a source repository.',
       'A repository that fails to scan is logged and skipped, and the rest of the sync continues.',
     ],
     figure: {
       kind: 'status-axis',
-      caption: 'Status, by days since the last commit',
+      caption: 'Status, by days since the last activity',
       daysPerColumn: 30,
       maxDays: 360,
       thresholds: { active: 30, paused: 180 },
-      activeNote: 'Gets a note in the vault',
     },
     // Detailed case study of my own tooling; secrets, paths and email scrubbed.
     caseStudy: {
       intro:
-        'dev-dashboard is the observability layer over my own work. It scans my local git repositories and my GitHub account, merges them into one view, and syncs structured notes into one Obsidian vault, so I can see what is active, paused or abandoned and the notes stay current without manual upkeep. It is the first working slice of a larger personal agent system.',
-      metrics: [
-        { value: '40+', label: 'Languages detected' },
-        { value: '30+', label: 'Project types' },
-      ],
+        'dev-dashboard scans my local git repositories and my GitHub account, merges them into one view, and syncs structured notes into one Obsidian vault, so I can see what is active, paused or abandoned and the notes stay current without manual upkeep. It is the first part of a larger personal agent system.',
       architecture: [
         {
           title: 'Local repo scanner',
@@ -430,7 +399,7 @@ export const projects: Project[] = [
         {
           title: 'Aggregation and cache',
           detail:
-            'Merges local and GitHub data, dedupes, classifies each project active / paused / abandoned by recency, and caches the result to disk.',
+            'Merges local and GitHub data, dedupes, classifies each project by recency and caches the result to disk.',
           tech: ['TypeScript'],
         },
         {
@@ -442,13 +411,13 @@ export const projects: Project[] = [
         {
           title: 'Obsidian vault sync',
           detail:
-            'Writes idempotent project notes into the vault (auto frontmatter plus a README section) while preserving everything I write by hand below a manual marker.',
+            'Writes a note for each active project into the vault: auto frontmatter plus a README section.',
           tech: ['Obsidian', 'Markdown'],
         },
         {
           title: 'Nightly git log',
           detail:
-            'A scheduled PowerShell task records each day’s commits into the vault automatically, following the same idempotent, manual‑marker pattern.',
+            'A scheduled PowerShell task records each day’s commits into the vault.',
           tech: ['PowerShell', 'Task Scheduler'],
         },
         {
@@ -459,51 +428,13 @@ export const projects: Project[] = [
         },
       ],
       workflow: [
-        {
-          actor: 'Me',
-          kind: 'person',
-          title: 'Trigger a scan',
-          detail: 'I press Refresh in the dashboard, or call the scan endpoint.',
-        },
-        {
-          actor: 'System',
-          kind: 'system',
-          title: 'Scan local repos',
-          detail:
-            'The walker finds repos by .git and file markers, then pulls commit count, last activity and branch via the git CLI.',
-        },
-        {
-          actor: 'GitHub',
-          kind: 'system',
-          title: 'Pull remote repos',
-          detail: 'The GitHub API returns all my owned repos with stars and descriptions.',
-        },
-        {
-          actor: 'System',
-          kind: 'system',
-          title: 'Merge & classify',
-          detail:
-            'Local and GitHub are matched by remote URL, deduped, sorted by activity and classified active / paused / abandoned, then cached.',
-        },
-        {
-          actor: 'Me',
-          kind: 'person',
-          title: 'Review the dashboard',
-          detail: 'One view of every project, the language mix, and what needs attention.',
-        },
-        {
-          actor: 'System',
-          kind: 'system',
-          title: 'Sync to the vault',
-          detail:
-            'Active projects are written as idempotent notes into the Obsidian vault, preserving my hand-written sections.',
-        },
-        {
-          actor: 'System',
-          kind: 'system',
-          title: 'Nightly log',
-          detail: 'A scheduled task appends each day’s commits into the vault.',
-        },
+        { actor: 'Me', kind: 'person', title: 'Trigger a scan' },
+        { actor: 'System', kind: 'system', title: 'Scan local repos' },
+        { actor: 'GitHub', kind: 'system', title: 'Pull remote repos' },
+        { actor: 'System', kind: 'system', title: 'Merge & classify' },
+        { actor: 'Me', kind: 'person', title: 'Review the dashboard' },
+        { actor: 'System', kind: 'system', title: 'Sync to the vault' },
+        { actor: 'System', kind: 'system', title: 'Nightly log' },
       ],
       decisions: [
         'No third-party libraries in the scanner and the sync: the git, GitHub and Obsidian integrations are my own, so I control the behavior and keep the supply-chain surface small.',
@@ -513,8 +444,8 @@ export const projects: Project[] = [
         'Classify status by days since the last activity (active ≤30d, paused ≤180d, otherwise abandoned): simple and predictable.',
       ],
       guardrails: [
-        'Read-only scanning: the tool observes, it never changes a source repo.',
-        'Idempotent sync with a manual-edit marker: re-running never overwrites notes I wrote by hand.',
+        'Read-only scanning: it never changes a source repository.',
+        'Idempotent sync with a manual marker: re-running never overwrites notes I wrote by hand.',
         'Per-project error isolation: a failing repo is logged and skipped, so the sync continues.',
         'The scan degrades gracefully when a data source is unavailable, rather than failing the whole run.',
         'Configurable scan roots: scanning can be limited to chosen folders for speed and privacy.',
@@ -549,7 +480,7 @@ export const projects: Project[] = [
     figure: {
       kind: 'signal',
       caption: 'What works where',
-      online: { label: 'Online', note: 'AI chat with model routing, and the real‑time features' },
+      online: { label: 'Online', note: 'AI chat and the real‑time features' },
       offline: { label: 'No signal', note: 'The phrasebook and FAQ keep working' },
     },
   },

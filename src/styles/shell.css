@@ -20,8 +20,11 @@
    phone, larger text spacing) it wraps onto a second line that is cut off, so the header
    shows "Ratko" instead of a clipped "Ratko Š". */
 .brand > span:not(.sr-only) { display: flex; flex-wrap: wrap; column-gap: .3em; height: 1.55em; overflow: hidden; }
-.nav { grid-column: 8 / -1; justify-self: end; display: flex; gap: 28px; font-weight: 500; }
+.nav { grid-column: 8 / -1; justify-self: end; display: flex; gap: var(--sp-6); font-weight: 500; }
 .nav a { display: inline-flex; align-items: center; min-height: 44px; white-space: nowrap; }
+/* every link in a top bar (the name or "Back to the site", the sections, the CV bar's actions):
+   no underline at rest, the accent underline on hover */
+.brand:hover,
 .nav a:hover { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: .3em; text-decoration-thickness: 1px; }
 .nav-cv { font-weight: 600; position: relative; }
 /* a 44px-wide target without moving the link: the hit area reaches into the gap before it */

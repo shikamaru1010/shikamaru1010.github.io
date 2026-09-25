@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import Resume from './components/cv/Resume';
@@ -8,6 +9,7 @@ import ProfessionalHome from './components/ProfessionalHome';
 import CaseStudy from './components/study/CaseStudy';
 import { education, experience } from './data/experience';
 import { studyProjects } from './data/projects';
+import updated from './data/updated.json';
 import { BUILD_DATE, careerAxis } from './lib/timeline';
 
 // Server-renders every page tree in node: render must be pure (no window /
@@ -27,6 +29,23 @@ const pages: Array<[string, string]> = [
 ];
 const html = Object.fromEntries(pages);
 const count = (s: string, re: RegExp) => (s.match(re) ?? []).length;
+
+/**
+ * The CV sheet's text as scripts/generate-pdf.mjs reads it in the browser (the sheet's
+ * textContent): the tags stripped, React's five escapes decoded, whitespace collapsed.
+ */
+function sheetText(markup: string): string {
+  const sheet = markup.slice(markup.indexOf('<article class="resume-sheet"'), markup.lastIndexOf('</article>'));
+  return sheet
+    .replace(/<[^>]*>/g, '')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 describe('render', () => {
   it.each(pages)('%s has no banned words', (_, markup) => {
@@ -77,6 +96,12 @@ describe('render', () => {
     const axis = careerAxis([...experience.map((x) => x.start), education.start], education.expectedEnd, BUILD_DATE);
     expect(html.ProfessionalHome).toContain(`style="--today:${axis.today};--years:${axis.years.length}"`);
     for (const y of axis.years) expect(html.ProfessionalHome).toContain(`<b>${y}</b>`);
+  });
+
+  // The PDF recruiters download is committed; this ties it to the data (generate-pdf.mjs writes cvHash).
+  it('the committed CV PDF was printed from the current data', () => {
+    const hash = createHash('sha256').update(sheetText(html.Resume)).digest('hex');
+    expect(hash, 'CV content changed: run npm run pdf').toBe(updated.cvHash);
   });
 
   it('the Personal footer signs in Cyrillic', () => {

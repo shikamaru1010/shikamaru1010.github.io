@@ -6,7 +6,7 @@ type SignalFigure = Extract<SystemFigure, { kind: 'signal' }>;
 
 /**
  * BelgradeBuddy's offline-first design as one line across the grid: solid ink while there is a
- * signal (columns 1–6), dashed accent when there is none (7–12) (SPEC §6.1.2).
+ * signal (columns 1–6), dashed accent when there is none (7–12).
  */
 export default function SignalLine({ figure }: { figure: SignalFigure }): JSX.Element {
   return (

@@ -18,7 +18,7 @@ function axisSegments(figure: AxisFigure): { columns: number; segments: Segment[
   return {
     columns,
     segments: [
-      { key: 'active', from: 0, start: 1, span: activeSpan, label: t.active, note: figure.activeNote },
+      { key: 'active', from: 0, start: 1, span: activeSpan, label: t.active, note: fill(t.activeNote, { days: thresholds.active }) },
       {
         key: 'paused',
         from: thresholds.active,
@@ -42,7 +42,7 @@ function axisSegments(figure: AxisFigure): { columns: number; segments: Segment[
 /**
  * dev-dashboard's status rule drawn to scale: twelve equal steps of `daysPerColumn` days across
  * the full measure (no gutters in the axis, so every 30 days is the same length), with the real
- * thresholds from the data (SPEC §6.1.2).
+ * thresholds from the data.
  */
 export default function StatusAxis({ figure }: { figure: AxisFigure }): JSX.Element {
   const { columns, segments } = axisSegments(figure);

@@ -19,7 +19,7 @@ function Sep(): JSX.Element {
 }
 
 /**
- * The one colophon line every page ends on (DECISIONS B): ©, how the site is built, the content
+ * The one colophon line every page ends on: ©, how the site is built, the content
  * date. On the home pages it carries the way to the other side (`turn`).
  */
 export default function ColophonLine({ turn }: { turn?: Mode }): JSX.Element {

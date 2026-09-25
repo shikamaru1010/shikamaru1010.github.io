@@ -6,7 +6,7 @@ import { setMode, useMode, useModeHref, warmPortrait } from '../../lib/useMode';
 /**
  * The Professional | Personal switch. Two real links (`?mode=…`), so modifier-clicks open
  * a mode in a new tab; after mount the same wrapper becomes a radiogroup with roving
- * tabindex and Arrow / Home / End (DECISIONS 9). The wrapper keeps its element type, so
+ * tabindex and Arrow / Home / End. The wrapper keeps its element type, so
  * the upgrade only changes attributes and nothing remounts.
  */
 export default function ModeToggle(): JSX.Element {
@@ -17,7 +17,7 @@ export default function ModeToggle(): JSX.Element {
   useEffect(() => {
     setEnhanced(true);
     // During the wipe the page is a snapshot and every click lands on <html>. Map a click that
-    // falls on a switch cell back to that cell, so a second press settles at once (DECISIONS 9).
+    // falls on a switch cell back to that cell, so a second press settles at once.
     const onWipeClick = (e: globalThis.MouseEvent) => {
       const root = document.documentElement;
       if (e.target !== root || !root.classList.contains('is-wiping') || !isPlainClick(e)) return;

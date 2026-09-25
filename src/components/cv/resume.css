@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------
    CV (#resume). A sticky, no-print toolbar over one white A4 sheet.
-   The sheet is a document with its own scale (SPEC §6.3, the §1.3
-   exception): name 28, role 12, h3 12, h2 11, body 11/1.45, meta 10;
-   weight 600 at most (owner feedback, DECISIONS A).
+   The sheet is a document with its own scale, the one exception to the
+   site's five sizes: name 28, role 12, h3 12, h2 11, body 11/1.45,
+   meta 10; weight 600 at most.
    At 96 dpi the sheet's content box (794 − 2 × 53 = 688px) is exactly
    the printable width of A4 with 14mm margins, so the screen shows the
    line breaks the PDF will have; on wide screens the whole sheet is
@@ -17,30 +17,28 @@
 
 .resume-page { background: var(--paper); min-height: 100vh; }
 
-/* ---------------- toolbar ---------------- */
+/* ---------------- toolbar: the site header's height, grid and link treatment ----------------
+   Back on the margin (the brand's place), "CV" on column 4 (a case study's kicker), the actions
+   at the end (the nav's place). */
 .resume-bar {
   position: sticky; top: 0; z-index: 20;
   background: var(--paper);
   border-bottom: 1px solid var(--rule);
   font-size: var(--s1);
 }
-.resume-bar-row {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); column-gap: var(--g);
-  align-items: center; height: 56px;
-}
+.resume-bar-row { height: var(--head-h); align-items: center; }
 .resume-bar-link { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; white-space: nowrap; }
-.resume-bar-row > .resume-bar-link { justify-self: start; }
-.resume-bar-label { justify-self: center; }
-.resume-bar-actions { justify-self: end; display: flex; align-items: center; gap: 24px; }
+.resume-bar-row > .resume-bar-link { grid-column: 1 / span 3; justify-self: start; }
+.resume-bar-label { grid-column: 4 / span 4; justify-self: start; }
+.resume-bar-actions { grid-column: 8 / -1; justify-self: end; display: flex; align-items: center; gap: var(--sp-5); }
 .resume-bar-actions .resume-bar-link { font-weight: 500; }
 .resume-print {
   appearance: none; background: none; border: 0; padding: 0; margin: 0; cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px;
   font-size: var(--s1); font-weight: 500; white-space: nowrap;
-  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .22em;
-  text-decoration-color: var(--rule); transition: text-decoration-color .15s;
 }
-.resume-print:hover { text-decoration-color: var(--accent); }
+.resume-bar-link:hover,
+.resume-print:hover { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: .3em; text-decoration-thickness: 1px; }
 
 /* ---------------- the sheet ---------------- */
 .resume-main { padding: 32px 0 64px; }
@@ -68,10 +66,13 @@
   display: inline-block; width: 0; height: 0; margin-left: .16em;
   border: 3px solid var(--rs-accent);         /* the one 6 × 6 vermilion mark, a full stop */
 }
-.resume-role { margin-top: 6px; font-size: var(--rs-role); line-height: 1.4; font-weight: 500; color: var(--rs-ink-2); }
+.resume-role { margin-top: 6px; font-size: var(--rs-role); line-height: 1.4; font-weight: 500; color: var(--rs-ink-2); text-wrap: balance; }
 .resume-summary { margin-top: 10px; max-width: 72ch; text-wrap: pretty; }
 .resume-contact { flex: none; font-style: normal; text-align: right; padding-top: 2px; }
 .resume-contact li { white-space: nowrap; }
+/* on a desktop screen the contact links get 24px rows, so each is a 24px target (WCAG 2.5.8);
+   the PDF and print keep the A4 density */
+@media screen and (min-width: 850px) and (pointer: fine) { .resume-contact li { line-height: 24px; } }
 
 /* on screen a link is marked by a hairline underline; print drops it */
 .resume-link {
@@ -133,8 +134,7 @@
 /* ---------------- phones, narrow tablets (< 850px, where A4 does not fit) and touch screens:
    a full-width document at reading sizes, the columns stack ---------------- */
 @media screen and (max-width: 849px), screen and (pointer: coarse) {
-  .resume-bar-row { column-gap: 12px; }
-  .resume-bar-actions { gap: 16px; }
+  .resume-bar-actions { gap: var(--sp-4); }
   .resume-main { padding: 0; }
   .resume-sheet {
     /* on a phone the sheet is read, not previewed: set it on the site's own scale */
@@ -169,10 +169,12 @@
   .resume-plain, .resume-col-side .resume-sec > .resume-text { padding-top: 12px; }
   .resume-foot { margin-top: 32px; padding-top: 12px; border-top: 1px solid var(--rs-rule); flex-wrap: wrap; }
 }
-/* up to 399px the centred "CV" would sit against "Download PDF"; the page says what it is */
-@media screen and (max-width: 399px) {
+/* phones: one row, back and the actions, like a case study's header; the page says what it is */
+@media screen and (max-width: 720px) {
+  .resume-bar-row { display: flex; justify-content: space-between; gap: var(--sp-3); }
   .resume-bar-label { display: none; }
-  .resume-bar-row { grid-template-columns: minmax(0, 1fr) auto; }
+  /* with larger text spacing on the narrowest phones, "Back to the site" wraps instead of pushing the actions off */
+  .resume-bar-row > .resume-bar-link { min-width: 0; white-space: normal; line-height: 1.3; }
 }
 
 /* ---------------- print: one A4 page ---------------- */

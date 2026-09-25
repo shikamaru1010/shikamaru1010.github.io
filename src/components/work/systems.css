@@ -1,29 +1,30 @@
 /* ------------------------------------------------------------------
-   Systems of my own: title | blurb | stack + engineering notes, then a
-   figure on the page grid. Prototype 214–228, 411–413, 511–516.
+   Systems of my own: title | blurb | stack, engineering notes and the
+   case-study link, then a figure on the page grid.
 ------------------------------------------------------------------- */
 
 .systems { margin-top: var(--sp-10); }
-.sys { border-top: 1px solid var(--rule); padding: 28px 0 72px; }
+.sys { border-top: 1px solid var(--rule); padding: var(--sp-5) 0 var(--sp-8); }
+.sys:first-of-type { border-top: 0; padding-top: 0; }   /* the sub-head's rule is its top rule */
 .sys-row { align-items: start; }
 .sys-title { grid-column: 1 / span 3; }
 .sys-title h4 { font-size: var(--s3); line-height: 1.05; letter-spacing: -.03em; font-weight: 600; }
 .sys-title .label { margin-top: 10px; }
-.sys-title .case-link { margin-top: 6px; }
 .sys-body { grid-column: 4 / span 5; max-width: 46ch; text-wrap: pretty; }
-.sys-stack { grid-column: 9 / -1; color: var(--ink-2); line-height: 1.45; max-width: 30ch; }
+.sys-stack { grid-column: 9 / -1; }
 .sys-stack p,
 .sys-stack .notes li { text-wrap: pretty; }
+.sys-acts { margin-top: var(--sp-2); }
 
 @media (min-width: 721px) and (max-width: 1100px) {
   .sys-title { grid-column: 1 / span 4; }
   .sys-body { grid-column: 5 / -1; }
-  .sys-stack { grid-column: 5 / -1; margin-top: 14px; max-width: none; }
+  .sys-stack { grid-column: 5 / -1; margin-top: var(--sp-4); }
 }
 
 @media (max-width: 720px) {
   .systems { margin-top: var(--sp-9); }
-  .sys { padding: 22px 0 48px; }
+  .sys { padding: var(--sp-5) 0 var(--sp-7); }
   .sys-row { row-gap: 14px; }
   .sys-title,
   .sys-body,

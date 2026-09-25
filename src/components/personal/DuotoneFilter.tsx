@@ -1,5 +1,5 @@
 /**
- * The Personal photo's duotone (DECISIONS 3): luminance mapped from the page's
+ * The Personal photo's duotone: luminance mapped from the page's
  * warm ink (#15130F, shadows) to its bone (#EEE6D8, highlights), so the photo
  * is printed in the page's own two inks. `.p-photo img` references it with
  * `filter: url(#duotone-personal)`. Rendered once, in PersonalHome.

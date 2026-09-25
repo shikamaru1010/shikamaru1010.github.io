@@ -1,16 +1,21 @@
 import type { ReactNode } from 'react';
 
-const NBH = '\u2011';
+const NBH = '‑';
+
+/** A word with a hyphen inside ('customer-facing', 'client-server', 'real‑time'), as one capture. */
+const COMPOUND = /([\p{L}\p{N}]+(?:[-‑][\p{L}\p{N}]+)+)/u;
 
 /**
- * The data writes a compound that must not break at its hyphen ('real‑time', 'SPY‑overlap') with
- * U+2011. Golos Text has no glyph for it, so it is shown with an ordinary hyphen inside a
- * no-wrap span (.nw in base.css): the same break rule, in the page's own hyphen.
+ * Running text never breaks a compound at its hyphen: each hyphenated word goes into a no-wrap
+ * span (.nw in base.css), so the line breaks before or after it. The data may still write the
+ * hyphen as U+2011 ('SPY‑overlap'); Golos Text has no glyph for it, so it is printed as an
+ * ordinary hyphen inside the span: the same break rule, in the page's own hyphen.
  */
 export function keepCompounds(text: string): ReactNode {
-  if (!text.includes(NBH)) return text;
-  return text.split(/(\S*\u2011\S*)/).map((part, i) =>
-    part.includes(NBH) ? (
+  const parts = text.split(COMPOUND);
+  if (parts.length === 1) return text;
+  return parts.map((part, i) =>
+    i % 2 === 1 ? (
       <span key={i} className="nw">
         {part.replaceAll(NBH, '-')}
       </span>

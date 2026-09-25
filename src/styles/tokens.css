@@ -36,8 +36,11 @@
   --max: 1520px;               /* .wrap max width incl. margins */
   --head-h: 64px;
 
-  /* spacing: one scale for margins, paddings and gaps (--sp-9 / --sp-10 are the steps
-     between blocks and sections). A value off the scale needs a reason next to it. */
+  /* spacing: one scale for margins, paddings and gaps; --sp-9 / --sp-10 are the steps between
+     blocks and sections, and every such step is one of these. The few small px values left in
+     the section files are optical, not spacing: they set a line's text under its hairline (14px)
+     or a mark on a line or a baseline (a marker's half width, a tick). The CV sheet (resume.css)
+     has its own print scale. */
   --sp-1: 4px;
   --sp-2: 8px;
   --sp-3: 12px;

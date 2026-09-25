@@ -6,7 +6,7 @@ import './figures.css';
 type PipelineFigure = Extract<SystemFigure, { kind: 'pipeline' }>;
 
 /**
- * tradingAgent's day as stops on the page grid, two columns each (SPEC §6.1.2, DECISIONS 10).
+ * tradingAgent's day as stops on the page grid, two columns each.
  * Shape code: a square is the system, a circle is a person stepping in, so the gate differs by
  * shape, not by colour alone.
  */

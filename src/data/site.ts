@@ -62,6 +62,7 @@ export const site = {
       active: 'Active',
       paused: 'Paused',
       abandoned: 'Abandoned',
+      activeNote: 'Up to {days} days',
       pausedNote: '{from} to {to} days',
       abandonedNote: 'More than {days} days',
     },

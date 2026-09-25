@@ -1,6 +1,7 @@
 /* ------------------------------------------------------------------
    Base: reset, the grid, the type roles and the shared primitives.
-   Sections use these classes read-only (SPEC §1.8, §1.9).
+   Sections use these classes read-only: a section's own CSS never
+   redefines them.
 ------------------------------------------------------------------- */
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -74,19 +75,20 @@ main[tabindex="-1"]:focus,
 /* the head and its note share the first baseline */
 .sec-head {
   display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--g);
-  border-top: 1px solid var(--rule-strong); padding-top: 14px; margin-bottom: 64px; align-items: baseline;
+  border-top: 1px solid var(--rule-strong); padding-top: 14px; margin-bottom: var(--sp-8); align-items: baseline;
 }
 .h2 { grid-column: 1 / span 6; font-size: var(--s4); line-height: .95; letter-spacing: -.04em; font-weight: 600; }
 .sec-note { grid-column: 9 / -1; color: var(--ink-2); max-width: 30ch; }
 .sub-head {
   display: flex; justify-content: space-between; align-items: baseline;
-  border-top: 1px solid var(--rule); padding-top: 12px; margin-bottom: 28px;
+  border-top: 1px solid var(--rule); padding-top: 12px; margin-bottom: var(--sp-6);
 }
 .sub-head h3 { font-size: var(--s2); font-weight: 600; }
 
-/* ---------------- engineering notes (a short list under a stack) ---------------- */
+/* ---------------- engineering notes (a short list under a stack) ----------------
+   The checkable facts of a row, so body size in ink; the stack above them is a label. */
 .notes { margin-top: 10px; }
-.notes li { position: relative; padding-left: 14px; font-size: var(--s1); line-height: 1.45; color: var(--ink); max-width: 44ch; }
+.notes li { position: relative; padding-left: 14px; font-size: var(--s2); line-height: 1.45; color: var(--ink); max-width: 44ch; }
 .notes li + li { margin-top: 6px; }
 .notes li::before { content: ''; position: absolute; left: 0; top: .72em; width: 7px; height: 1px; background: var(--ink-2); }
 /* Windows high contrast drops backgrounds: draw the dash in the text colour */
@@ -103,8 +105,8 @@ html:not([data-mode="personal"]) .only-personal { display: none !important; }
 
 /* ---------------- phone ---------------- */
 @media (max-width: 720px) {
-  .sec { padding-top: 104px; }
-  .sec-head { margin-bottom: 36px; align-items: start; }
+  .sec { padding-top: var(--sp-9); }
+  .sec-head { margin-bottom: var(--sp-6); align-items: start; }
   .h2 { grid-column: 1 / -1; }
   .sec-note { grid-column: 1 / -1; padding-top: 14px; }
   .sub-head { flex-wrap: wrap; gap: 4px 16px; }

@@ -20,9 +20,9 @@ function followPrimary(e: MouseEvent<HTMLElement>): void {
 }
 
 /**
- * One client (DECISIONS E): the text on columns 1–4, and its own desktop and phone screenshots,
- * at one height, on columns 5–12, visible at rest. ≤900 the screenshots come first; on phones
- * only the desktop one, at the full width.
+ * One client: the text on columns 1–4, and its own desktop and phone screenshots, at one
+ * height, visible at rest: the desktop capture on columns 5–10, the phone on 11–12. ≤900 the
+ * screenshots come first; on phones only the desktop one, at the full width.
  */
 function Client({ p }: { p: Project }): JSX.Element {
   const desk = mediaOf(p, 'desktop');
@@ -39,7 +39,7 @@ function Client({ p }: { p: Project }): JSX.Element {
           <p className="cl-year tnum">{p.year}</p>
         </div>
         <p className="cl-what">{p.subtitle}</p>
-        <p className="cl-stack">{stackLine(p.tech.slice(0, STACK_SHOWN))}</p>
+        <p className="cl-stack label">{stackLine(p.tech.slice(0, STACK_SHOWN))}</p>
         {p.notes?.length ? (
           <ul className="notes">
             {p.notes.map((n) => (
@@ -56,6 +56,7 @@ function Client({ p }: { p: Project }): JSX.Element {
           {study && (
             <a className="case-link" href={`#project/${p.id}`} data-primary="">
               {site.work.caseStudy}
+              <span className="sr-only">: {p.title}</span>
               <span aria-hidden="true">{' →'}</span>
             </a>
           )}
@@ -67,7 +68,7 @@ function Client({ p }: { p: Project }): JSX.Element {
             className="cl-desk"
             src={desk.src}
             srcSet={srcSet(desk)}
-            sizes="(max-width: 720px) calc(100vw - 32px), (max-width: 900px) calc(74vw - 41px), (max-width: 1100px) 41vw, min(46vw, 702px)"
+            sizes="(max-width: 720px) calc(100vw - 32px), (max-width: 900px) calc((100vw - 36px) * .75 - 20px), (max-width: 1100px) calc((100vw - 36px) * 5 / 12 - 20px), (max-width: 1520px) calc((100vw - 56px) / 2 - 24px), 708px"
             alt={desk.alt}
             width={desk.width}
             height={desk.height}
@@ -79,7 +80,7 @@ function Client({ p }: { p: Project }): JSX.Element {
               className="cl-phone"
               src={phone.src}
               srcSet={srcSet(phone)}
-              sizes="(max-width: 900px) 21vw, (max-width: 1100px) 12vw, min(14vw, 205px)"
+              sizes="(max-width: 900px) calc((100vw - 36px) / 4 - 20px), (max-width: 1100px) calc((100vw - 36px) / 6 - 20px), (max-width: 1520px) calc((100vw - 56px) / 6 - 24px), 220px"
               alt={phone.alt}
               width={phone.width}
               height={phone.height}
@@ -96,7 +97,7 @@ function Client({ p }: { p: Project }): JSX.Element {
 /** Client sites, live: one row each, Mesara first. */
 export default function Clients(): JSX.Element {
   return (
-    <div className="clients">
+    <div>
       <div className="sub-head">
         <h3>{site.work.clients}</h3>
       </div>

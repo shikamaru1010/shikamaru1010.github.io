@@ -25,22 +25,26 @@ function System({ p }: { p: Project }): JSX.Element {
         <div className="sys-title">
           <h4>{p.title}</h4>
           <p className="label tnum">{`${p.year} · ${p.statusNote ?? p.status}`}</p>
-          {p.caseStudy && (
-            <a className="case-link" href={`#project/${p.id}`}>
-              {site.work.caseStudy}
-              <span aria-hidden="true">{' →'}</span>
-            </a>
-          )}
         </div>
         <p className="sys-body">{p.blurb}</p>
+        {/* the link comes last, as in a client row: after what the project is */}
         <div className="sys-stack">
-          <p>{stackLine(p.tech)}</p>
+          <p className="label">{stackLine(p.tech)}</p>
           {p.notes && p.notes.length > 0 && (
             <ul className="notes">
               {p.notes.map((n) => (
                 <li key={n}>{n}</li>
               ))}
             </ul>
+          )}
+          {p.caseStudy && (
+            <p className="sys-acts">
+              <a className="case-link" href={`#project/${p.id}`}>
+                {site.work.caseStudy}
+                <span className="sr-only">: {p.title}</span>
+                <span aria-hidden="true">{' →'}</span>
+              </a>
+            </p>
           )}
         </div>
       </div>
@@ -49,7 +53,7 @@ function System({ p }: { p: Project }): JSX.Element {
   );
 }
 
-/** Systems of my own (SPEC §6.1.2): title, blurb, stack with engineering notes, then the figure. */
+/** Systems of my own: title, blurb, stack with engineering notes, then the figure. */
 export default function Systems(): JSX.Element {
   return (
     <div className="systems">

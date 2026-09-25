@@ -54,7 +54,7 @@ const steps: Step[] = [
 ];
 
 /**
- * The Professional hero (DECISIONS C, the owner's choice): the name stands on the career
+ * The Professional hero (the owner's choice): the name stands on the career
  * time axis, the work rises above it in steps towards the lede and the CV, one vermilion
  * line marks today, and one strip under the axis carries the languages and the links.
  */

@@ -1,11 +1,11 @@
 import type { WorkflowStep } from '../../data/projects';
 import { site } from '../../data/site';
-import { keepCompounds } from '../../lib/compounds';
 
 // "How it works": the steps on a vertical stop line (the home pipeline's phone
-// form, at every width). Shape code (DECISIONS 10): a square is the system, a
-// filled circle is a person stepping in (the step's `kind`). The actor is also
-// written out next to every step, so the shape is never the only signal.
+// form, at every width). Shape code: a square is the system, a filled circle is
+// a person stepping in (the step's `kind`). The actor is also written out next
+// to every step, so the shape is never the only signal. A step is its title
+// only: the architecture above says what each part does.
 
 export default function StudyFlow({ steps }: { steps: WorkflowStep[] }): JSX.Element {
   return (
@@ -31,10 +31,7 @@ export default function StudyFlow({ steps }: { steps: WorkflowStep[] }): JSX.Ele
         {steps.map((step) => (
           <li key={step.title} className={`study-step grid${step.kind === 'person' ? ' is-person' : ''}`}>
             <p className="study-actor label">{step.actor}</p>
-            <div className="study-step-body">
-              <h3 className="study-step-title">{step.title}</h3>
-              <p className="study-step-detail">{keepCompounds(step.detail)}</p>
-            </div>
+            <h3 className="study-step-title">{step.title}</h3>
           </li>
         ))}
       </ol>

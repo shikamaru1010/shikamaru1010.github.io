@@ -3,8 +3,8 @@ import ColophonLine from '../shell/ColophonLine';
 import './personal.css';
 
 /**
- * The Personal close: my name in Serbian Cyrillic (the only Cyrillic moment,
- * DECISIONS 15), then the colophon line every page ends on, with the way back to
+ * The Personal close: my name in Serbian Cyrillic (the only Cyrillic moment on
+ * the site), then the colophon line every page ends on, with the way back to
  * the professional side. App renders it inside <footer class="only-personal">.
  */
 export default function PersonalFooter(): JSX.Element {

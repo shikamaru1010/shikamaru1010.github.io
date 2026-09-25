@@ -85,7 +85,7 @@ function axisName(key: string, index: number): string {
 }
 
 /**
- * The work log drawn on the grid (DECISIONS 2): one continuous day axis from
+ * The work log drawn on the grid: one continuous day axis from
  * the 1st of the first month to the "as of" date, one square per entry, stacked
  * bottom-up on its day; the busiest day in the accent. The marks are hidden
  * from assistive tech, which gets the month-by-month numbers in the caption

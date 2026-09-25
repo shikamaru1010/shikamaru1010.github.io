@@ -1,7 +1,6 @@
 /* ------------------------------------------------------------------
-   Contact and colophon: Professional ends on one ink plate
-   (SPEC §6.1.5 as amended by the owner feedback in DECISIONS: the
-   address at --s4, a one-line colophon, no grid button).
+   Contact and colophon: Professional ends on one ink plate: the
+   address at --s4, the ways in, and the one-line colophon.
 ------------------------------------------------------------------- */
 
 /* The plate re-scopes the tokens, so every primitive inside (.sec-head, .h2,
@@ -20,9 +19,9 @@
 }
 
 /* ---------------- contact ---------------- */
-.contact { margin-top: 176px; padding-top: 72px; }
+.contact { margin-top: var(--sp-10); padding-top: var(--sp-8); }
 /* on the plate the address belongs to its heading: a shorter gap than a section's rows get */
-.contact .sec-head { margin-bottom: 40px; }
+.contact .sec-head { margin-bottom: var(--sp-7); }
 
 /* the address: a --s4 line with the one accent mark of the plate, the @. It and the copy button
    start on column 4 (the lede's and the stacks' axis), so the address is the plate's content
@@ -42,7 +41,7 @@
 .mail::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%); }
 .mail .at { color: var(--accent); }
 
-.copy-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 24px; }
+.copy-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-4); margin-top: var(--sp-5); }
 .copy {
   appearance: none; background: none; border: 1px solid var(--rule-strong); border-radius: 0;
   display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px;
@@ -53,7 +52,7 @@
 .copy:active { background: var(--ink); color: var(--paper); }
 .copy-status { color: var(--ink); }
 
-.reach { margin-top: 64px; border-top: 1px solid var(--rule); padding-top: 14px; align-items: start; }
+.reach { margin-top: var(--sp-8); border-top: 1px solid var(--rule); padding-top: 14px; align-items: start; }
 .reach > div { grid-column: span 3; }
 .reach > .reach-walk { grid-column: 9 / -1; }   /* under the availability note */
 .reach dt { font-size: var(--s1); line-height: 1.4; font-weight: 500; color: var(--ink-2); margin-bottom: 4px; }
@@ -61,7 +60,7 @@
 .reach .reach-walk dd { max-width: 36ch; }
 
 /* ---------------- the colophon on the plate (the line itself is shell.css) ---------------- */
-.foot { padding: 112px 0 28px; }
+.foot { padding: var(--sp-9) 0 var(--sp-6); }
 
 /* touch screens of any width: 44px targets */
 @media (pointer: coarse) {
@@ -71,21 +70,21 @@
 /* ---------------- tablet (721–1100) ---------------- */
 @media (min-width: 721px) and (max-width: 1100px) {
   .reach > div { grid-column: span 4; }
-  .reach > .reach-walk { grid-column: 1 / -1; margin-top: 20px; }
+  .reach > .reach-walk { grid-column: 1 / -1; margin-top: var(--sp-5); }
 }
 
 /* ---------------- phone ---------------- */
 @media (max-width: 720px) {
-  .contact { margin-top: 112px; padding-top: 48px; }
-  .contact .sec-head { margin-bottom: 28px; }
+  .contact { margin-top: var(--sp-9); padding-top: var(--sp-7); }
+  .contact .sec-head { margin-bottom: var(--sp-6); }
   .contact-mail,
   .copy-row { margin-left: 0; }
-  .copy-row { margin-top: 20px; }
-  .reach { margin-top: 40px; row-gap: 18px; }
+  .copy-row { margin-top: var(--sp-5); }
+  .reach { margin-top: var(--sp-7); row-gap: var(--sp-4); }
   .reach > div { grid-column: span 2; }
   /* GitHub | LinkedIn share a row; the code note gets the full width */
   .reach > .reach-walk { grid-column: 1 / -1; }
   .reach dd a { min-height: 44px; }
 
-  .foot { padding-top: 72px; }
+  .foot { padding-top: var(--sp-8); }
 }

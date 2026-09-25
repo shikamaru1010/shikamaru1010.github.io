@@ -8,10 +8,11 @@ import './skills.css';
 const S = site.skills;
 
 /**
- * One piece of evidence, as plain text: a project (plus the part of it) or a FON course.
- * Not links: the projects are all in Work, just above, so a link would only point back up the page.
+ * One piece of evidence, as plain text: a project (plus the part of it) or a FON course, with the
+ * comma that follows it inside, so a line never starts with the comma. Not links: the projects
+ * are all in Work, just above, so a link would only point back up the page.
  */
-function EvidenceItem({ e }: { e: Evidence }): JSX.Element | null {
+function EvidenceItem({ e, sep }: { e: Evidence; sep: string }): JSX.Element | null {
   if ('project' in e) {
     const p = projectById(e.project);
     if (!p) return null; // data.test.ts guarantees every id resolves
@@ -19,6 +20,7 @@ function EvidenceItem({ e }: { e: Evidence }): JSX.Element | null {
       <span className="skills-ev">
         {p.title}
         {e.part ? <span className="skills-part"> ({e.part})</span> : null}
+        {sep}
       </span>
     );
   }
@@ -26,14 +28,20 @@ function EvidenceItem({ e }: { e: Evidence }): JSX.Element | null {
     return (
       <span className="skills-ev">
         {e.course} <span className="skills-part">{S.course}</span>
+        {sep}
       </span>
     );
   }
-  return <span className="skills-ev">{e.text}</span>;
+  return (
+    <span className="skills-ev">
+      {e.text}
+      {sep}
+    </span>
+  );
 }
 
 /**
- * Skills as a table on the grid (DECISIONS 1): area | skill | where I used it.
+ * Skills as a table on the grid: area | skill | where I used it.
  * The ARIA roles repeat the native ones on purpose: on phones the cells are
  * display: block, and some browsers drop table semantics when that happens.
  */
@@ -82,8 +90,8 @@ export default function Skills(): JSX.Element {
                   <td className="skills-used" role="cell">
                     {s.evidence.map((e, j) => (
                       <Fragment key={j}>
-                        {j > 0 ? ', ' : null}
-                        <EvidenceItem e={e} />
+                        {j > 0 ? ' ' : null}
+                        <EvidenceItem e={e} sep={j < s.evidence.length - 1 ? ',' : ''} />
                       </Fragment>
                     ))}
                   </td>

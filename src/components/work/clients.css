@@ -1,12 +1,14 @@
 /* ------------------------------------------------------------------
-   Client work (DECISIONS E): each client its own row, with its own
-   desktop and phone screenshots visible at rest. Prominence comes from
-   the images and the space around them, not from larger type.
-   Desktop: the text on columns 1–4, the screenshots on 5–12 (5 | 7 on
-   small laptops and tablets in landscape); ≤900 the screenshots first.
-   The screenshots sit on a four-part grid with a 4.94% gap: the desktop
-   capture takes three parts and the phone one, and at 16:10 and 390:844
-   those come out exactly the same height, so nothing is cropped.
+   Client work: each client its own row, with its own desktop and phone
+   screenshots visible at rest. Prominence comes from the images and the
+   space around them, not from larger type.
+   The captures sit on the page's own columns and gutter (a subgrid):
+   text 1–4 · desktop 5–10 · phone 11–12; on small laptops and tablets in
+   landscape text 1–5 · desktop 6–10 · phone 11–12; ≤900 the captures come
+   first, desktop 1–9 · phone 10–12; phones show the desktop one alone.
+   The phone capture is cropped from the top to the desktop's height, so
+   the two end on one line: --desk-h is the desktop's height from the grid
+   (the row is in a .wrap, so 100cqi is the measure).
 ------------------------------------------------------------------- */
 
 .client { border-top: 1px solid var(--rule); padding: var(--sp-5) 0 var(--sp-9); align-items: start; }
@@ -18,14 +20,16 @@
 .cl-name { font-size: var(--s3); line-height: 1.1; letter-spacing: -.025em; font-weight: 600; text-wrap: balance; }
 .cl-year { color: var(--ink-2); white-space: nowrap; }
 .cl-what { margin-top: var(--sp-2); max-width: 34ch; text-wrap: pretty; }
-.cl-stack { margin-top: var(--sp-5); color: var(--ink-2); line-height: 1.45; max-width: 34ch; text-wrap: pretty; }
+.cl-stack { margin-top: var(--sp-5); text-wrap: pretty; }
 .cl-text .notes li { text-wrap: pretty; }
 .cl-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--sp-5); margin-top: var(--sp-3); }
 .cl-acts a { display: inline-flex; align-items: center; min-height: 44px; }
 
 .cl-shots {
+  --desk-span: 6;
+  --desk-h: calc(((100cqi + var(--g)) * var(--desk-span) / var(--cols) - var(--g)) * 10 / 16);
   grid-column: 5 / -1; grid-row: 1;
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 4.94%;
+  display: grid; grid-template-columns: subgrid; align-items: start;
   cursor: pointer;
 }
 .cl-shots img {
@@ -33,28 +37,26 @@
   outline: 1px solid var(--rule); outline-offset: -1px; transition: outline-color .15s;
 }
 .cl-shots:hover img { outline-color: var(--rule-strong); }
-.cl-desk { grid-column: 1 / span 3; aspect-ratio: 16 / 10; }
-.cl-phone { grid-column: 4; aspect-ratio: 780 / 1688; }
+.cl-shots .cl-desk { grid-column: 1 / span var(--desk-span); aspect-ratio: 16 / 10; }
+.cl-shots .cl-phone { grid-column: calc(var(--desk-span) + 1) / -1; height: var(--desk-h); object-fit: cover; object-position: top; }
 
 @media (min-width: 901px) and (max-width: 1100px) {
   .cl-text { grid-column: 1 / span 5; }
-  .cl-shots { grid-column: 6 / -1; }
+  .cl-shots { grid-column: 6 / -1; --desk-span: 5; }
 }
 
-/* ---------------- ≤900: the screenshots first, across the measure, then the text;
-   the year on the right edge, under the phone capture ---------------- */
+/* ---------------- ≤900: the screenshots first, across the measure, then the text ---------------- */
 @media (max-width: 900px) {
   .client { row-gap: var(--sp-5); padding-bottom: var(--sp-8); }
-  .cl-shots { grid-column: 1 / -1; grid-row: 1; }
+  .cl-shots { grid-column: 1 / -1; grid-row: 1; --desk-span: 9; }
   .cl-text { grid-column: 1 / -1; grid-row: 2; padding-right: 0; }
 }
 
 /* ---------------- phones: only the desktop capture, at the full width ---------------- */
 @media (max-width: 720px) {
   .client { row-gap: var(--sp-4); padding: var(--sp-4) 0 var(--sp-7); }
-  .cl-shots { display: block; }
-  .cl-phone { display: none; }
-  .cl-text { grid-column: 1 / -1; }
-  .cl-what, .cl-stack { max-width: none; }
+  .cl-shots { --desk-span: 4; }
+  .cl-shots .cl-phone { display: none; }
+  .cl-what { max-width: none; }
   .cl-stack { margin-top: var(--sp-4); }
 }

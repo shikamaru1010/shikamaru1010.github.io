@@ -1,7 +1,7 @@
 import { personal } from '../../data/personal';
 import ExternalLink from '../shell/ExternalLink';
 
-/** Where else to find me: each link with its handle; external ones open in a new tab (R7). */
+/** Where else to find me: each link with its handle; external ones open in a new tab. */
 export default function Elsewhere(): JSX.Element {
   return (
     <section className="wrap p-sec" id="elsewhere" aria-labelledby="else-h">

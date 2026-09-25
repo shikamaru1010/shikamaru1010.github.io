@@ -1,5 +1,5 @@
 /* =====================================================================
-   Professional hero: the name stands on the time axis (DECISIONS C).
+   Professional hero: the name stands on the time axis.
 
    One ink rule does two jobs. It is the ground the name stands on, and it
    is the time axis. Above it the work rises to the right in steps, each bar
@@ -36,7 +36,7 @@
 /* ---------------- the top right: one sentence and the CV ---------------- */
 .hx-intro { grid-column: 7 / -1; grid-row: 1; }
 .hx-lede { font-size: var(--s3); line-height: 1.4; letter-spacing: -.01em; max-width: 30em; text-wrap: pretty; }
-.hx-cv { display: flex; flex-wrap: wrap; gap: 0 28px; margin-top: 12px; }
+.hx-cv { display: flex; flex-wrap: wrap; gap: 0 var(--sp-6); margin-top: var(--sp-3); }
 .hx-cv a { display: inline-flex; align-items: center; min-height: 44px; }
 .hx-cv-view {
   font-weight: 600;
@@ -47,7 +47,7 @@
 
 /* ---------------- the steps, drawn to scale ---------------- */
 .hx-steps { grid-column: 1 / -1; grid-row: 2; margin: var(--steps-top) 0 0; }
-.hx-step + .hx-step { margin-top: 22px; }
+.hx-step + .hx-step { margin-top: var(--sp-5); }
 /* the label starts where its bar starts; if that would run it past the edge, the first track gives way */
 .hx-lab {
   display: grid; grid-template-columns: minmax(0, calc((var(--a) + var(--s)) * var(--u))) max-content;
@@ -81,13 +81,12 @@
 /* ---------------- the ground line: the name and the role stand on the axis ---------------- */
 .hx-title {
   grid-column: 1 / -1; grid-row: 3;
-  display: flex; flex-wrap: wrap; align-items: last baseline; gap: 0 18px;
+  display: flex; flex-wrap: wrap; align-items: last baseline; gap: 0 var(--sp-4);
   margin-top: var(--sp-8); padding-bottom: 10px;
 }
 .hx-name {
   font-size: var(--s5); line-height: 1; letter-spacing: -.03em; font-weight: 600;
   margin-left: -.05em;   /* optical: the R's stem on the margin, like every left edge below it */
-  white-space: nowrap;
 }
 .hx-role { font-size: var(--s3); line-height: 1.3; }
 /* where the today line reaches the name line (721–791px), it passes behind the role, as behind the step labels */
@@ -138,7 +137,7 @@
 /* ---------------- tablets ---------------- */
 @media (min-width: 721px) and (max-width: 1100px) {
   .hx { padding-top: var(--sp-7); --steps-top: var(--sp-6); }
-  .hx-step + .hx-step { margin-top: 18px; }
+  .hx-step + .hx-step { margin-top: var(--sp-4); }
   .hx-title { margin-top: var(--sp-7); }
 }
 /* where the newest label no longer fits after its bar start, it ends 10px short of today, over its bar */
@@ -148,6 +147,11 @@
 @media (min-width: 721px) and (max-width: 900px) {
   .hx-intro, .hx-mail { grid-column: 5 / -1; }   /* the 2024 line */
   .hx-lang { grid-column: 1 / span 4; }
+  /* a label's "since …" goes on a line of its own under the name, so every label fits over its bar
+     and starts where the bar starts; the newest (a short bar) still ends 10px short of today */
+  .hx-yrs { display: block; }
+  .hx-yrs::before { content: none; }
+  .hx-today { margin-top: calc(var(--steps-top) + 2 * var(--lab) + var(--lift)); }
 }
 
 /* ---------------- phones: the steps become a list of four lines; the name stands on the rule over it ---------------- */

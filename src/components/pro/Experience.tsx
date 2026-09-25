@@ -1,5 +1,6 @@
 import { education, experience, type Experience as Role } from '../../data/experience';
 import { site } from '../../data/site';
+import { keepCompounds } from '../../lib/compounds';
 import { fill, formatPeriod, ordinal } from '../../lib/format';
 import './experience.css';
 
@@ -64,7 +65,8 @@ export default function Experience(): JSX.Element {
               {courses.map((c) => (
                 <li key={c.name}>
                   <span className="xp-course">{c.name}</span>
-                  {c.detail ? <span className="xp-detail"> · {c.detail}</span> : null}
+                  {/* a no-break space before the dot: it stays with the course name */}
+                  {c.detail ? <span className="xp-detail">{'\u00a0· '}{keepCompounds(c.detail)}</span> : null}
                 </li>
               ))}
             </ul>

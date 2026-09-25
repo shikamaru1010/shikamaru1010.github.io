@@ -68,14 +68,14 @@ export default function Resume(): JSX.Element {
     <div className="resume-page">
       <SkipLink />
       <header className="resume-bar">
-        <div className="resume-bar-row wrap">
-          <a className="resume-bar-link u" href="#top" onClick={returnHome}>
+        <div className="resume-bar-row wrap grid">
+          <a className="resume-bar-link" href="#top" onClick={returnHome}>
             <span aria-hidden="true">←&nbsp;</span>
             {site.cv.back}
           </a>
           <p className="resume-bar-label label">{site.cv.label}</p>
           <div className="resume-bar-actions">
-            <a className="resume-bar-link u" href={site.cv.pdf} download>
+            <a className="resume-bar-link" href={site.cv.pdf} download>
               {site.cv.download}
             </a>
             <button type="button" className="resume-print" onClick={() => window.print()}>

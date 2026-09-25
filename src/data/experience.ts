@@ -34,18 +34,18 @@ export const experience: Experience[] = [
     start: '2023',
     summary: 'websites and internal tools for local businesses',
     points: [
-      'Websites and internal tools for local businesses, from the first conversation with the owner to deployment and ongoing support.',
+      'I work directly with business owners, from the first conversation to deployment and ongoing support.',
       'For Mesara Šisko I built the internal system that produces daily P&L reports and the PDF declarations Serbian regulations require, on a schedule.',
     ],
   },
   {
-    role: 'Independent developer',
+    role: 'Independent Developer',
     org: 'Personal projects',
     location: '',
     start: '2025',
     summary: 'agent pipelines, data pipelines and monitoring',
     // tradingAgent and dev-dashboard are told in Work (home) and Selected projects (CV), not again here
-    points: ['Agent pipelines, data pipelines and monitoring of my own, built with guardrails and logs so a failure can be traced.'],
+    points: ['Agent pipelines, data pipelines and monitoring, with guardrails and logging.'],
   },
 ];
 

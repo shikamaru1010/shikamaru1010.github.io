@@ -11,9 +11,9 @@ import ExternalLink from '../shell/ExternalLink';
 import SkipLink from '../shell/SkipLink';
 import StudyFlow from './StudyFlow';
 
-// A case study (#project/<id>), in the Swiss language and always in the
-// Professional palette (tokens.css gates Personal to data-route="home").
-// No in-page hash links here: the hash router would leave the page (SPEC R7).
+// A case study (#project/<id>), always in the Professional palette (tokens.css
+// gates Personal to data-route="home"). No in-page hash links here: the hash
+// router would read one as a route and leave the page.
 
 function ListSection({
   id,
@@ -69,7 +69,7 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
   return (
     <>
       <SkipLink />
-      <header className="site-head study-head">
+      <header className="site-head">
         <div className="wrap grid">
           <a className="brand" href={back} onClick={returnHome}>
             <span aria-hidden="true">←&nbsp;</span>
@@ -84,7 +84,7 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
         </div>
       </header>
 
-      <main id="main" className="study">
+      <main id="main">
         <div className="study-top wrap">
           {/* the page's focus target after a route change (App); no ring, it marks a place */}
           <h1 className="study-title" tabIndex={-1} data-focus-target="">
@@ -117,7 +117,7 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
             )}
           </dl>
 
-          <p className="study-intro">{cs.intro}</p>
+          <p className="study-intro">{keepCompounds(cs.intro)}</p>
         </div>
 
         {cs.metrics?.length ? (
@@ -143,7 +143,7 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
                 className="study-shot study-shot-desk"
                 src={desktop.src}
                 srcSet={srcSet(desktop)}
-                sizes="(max-width: 720px) 70vw, min(71vw, 1070px)"
+                sizes="(max-width: 720px) calc(100vw - 32px), (max-width: 1100px) calc((100vw - 36px) * .75 - 20px), (max-width: 1520px) calc((100vw - 56px) * .75 - 24px), 1074px"
                 alt={desktop.alt}
                 width={desktop.width}
                 height={desktop.height}
@@ -154,7 +154,7 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
                 className="study-shot study-shot-phone"
                 src={phone.src}
                 srcSet={srcSet(phone)}
-                sizes="(max-width: 720px) 22vw, min(23vw, 340px)"
+                sizes="(max-width: 1100px) calc((100vw - 36px) / 4 - 20px), (max-width: 1520px) calc((100vw - 56px) / 4 - 24px), 342px"
                 alt={phone.alt}
                 width={phone.width}
                 height={phone.height}
@@ -230,7 +230,7 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
           <div className="study-private-wrap wrap">
             <dl className="study-private">
               <dt className="label">{site.study.sections.privacy}</dt>
-              <dd>{cs.privacyNote}</dd>
+              <dd>{keepCompounds(cs.privacyNote)}</dd>
             </dl>
           </div>
         ) : null}

@@ -1,7 +1,8 @@
 // The live mode: a tiny external store over <html data-mode>, plus setMode(),
 // which owns every side effect of a switch (URL, title, theme-color, scroll,
 // announcement, focus and the one wipe transition), and syncModeFromUrl(),
-// which follows ?mode when the visitor moves through history.
+// which brings the mode in line with ?mode. App calls it on every popstate and
+// hashchange, before it reads the route: App is the one owner of URL → state.
 //
 // No DOM access at module level or during render (node tests import this).
 import { useEffect, useState, useSyncExternalStore } from 'react';
@@ -21,8 +22,6 @@ const listeners = new Set<() => void>();
 let active: ViewTransition | null = null;
 /** The last mode asked for; the transition callback applies this, so no press is lost. */
 let latest: Mode | null = null;
-/** The popstate listener is added once, on the first subscription (never at module level). */
-let historyBound = false;
 
 export function getMode(): Mode {
   if (typeof document === 'undefined') return DEFAULT_MODE;
@@ -32,11 +31,6 @@ export function getMode(): Mode {
 }
 
 export function subscribeMode(cb: () => void): () => void {
-  if (!historyBound && typeof window !== 'undefined') {
-    historyBound = true;
-    // popstate fires for every same-document traversal, hash-only ones included
-    window.addEventListener('popstate', syncModeFromUrl);
-  }
   listeners.add(cb);
   return () => {
     listeners.delete(cb);

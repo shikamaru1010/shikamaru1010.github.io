@@ -38,23 +38,48 @@ function focusPage(target: HTMLElement | null): void {
   el.focus({ preventScroll: true });
 }
 
+/** The bottom of the sticky header: what is above it is covered. */
+function headerBottom(): number {
+  return document.querySelector('.site-head')?.getBoundingClientRect().bottom ?? 0;
+}
+
+/** Some of the element is on screen, below the sticky header. */
+function inView(el: HTMLElement): boolean {
+  const r = el.getBoundingClientRect();
+  return r.bottom > headerBottom() && r.top < window.innerHeight;
+}
+
+/** The row or section at the top of the screen, just under the header. */
+function boxAtTop(): HTMLElement | null {
+  const hit = document.elementFromPoint(window.innerWidth / 2, headerBottom() + 8);
+  const box = hit?.closest<HTMLElement>('article[id], section[id], li[id]');
+  return box && box.id !== 'top' ? box : null;
+}
+
 /**
- * Back to home through history: focus returns to the link the visitor left by, so the next Tab
- * continues from the place the scroll position was restored to, not from the top of the page.
- * Falls back to the box around that link; false when neither is there (App then uses focusPage).
+ * Back (or Forward) to home: focus goes where the restored scroll position is, so the next Tab
+ * continues from there, not from the top of the page. First the link the visitor left by, or
+ * the box around it, if it is on screen; else the row or section at the top of the screen;
+ * <main> only when the page is at its top. The saved link is kept for the next return: the
+ * capture click in App overwrites it when home is left by a link again.
  */
-function focusReturn(saved: NavState['homeFocus']): boolean {
-  if (!saved) return false;
-  const links = visibleLinks(saved.href);
-  const link = links[saved.i] ?? links[0];
-  if (link) {
-    link.focus({ preventScroll: true });
-    return true;
+function focusReturn(saved: NavState['homeFocus']): void {
+  if (saved) {
+    const links = visibleLinks(saved.href);
+    const link = links[saved.i] ?? links[0];
+    if (link && inView(link)) {
+      link.focus({ preventScroll: true });
+      return;
+    }
+    const box = visibleElement(saved.within);
+    if (box && box.id !== 'main' && box.id !== 'root' && inView(box)) {
+      focusPage(box);
+      return;
+    }
   }
-  const box = visibleElement(saved.within);
-  if (!box || box.id === 'main' || box.id === 'root') return false;
-  focusPage(box);
-  return true;
+  const top = window.scrollY > 0 ? boxAtTop() : null;
+  if (top) focusPage(top);
+  else focusMain({ preventScroll: true });
 }
 
 export default function App(): JSX.Element {
@@ -126,6 +151,14 @@ export default function App(): JSX.Element {
 
   // Scrolling and focus, without fighting the browser's own restoration (route.ts, scrollStep).
   useLayoutEffect(() => {
+    // The browser restores the scroll position of an entry it returns to, after this effect has
+    // run: right for home, which is restored anyway, but a CV or case study opens at the top,
+    // next to the h1 that gets focus. The mode is kept per history entry.
+    try {
+      history.scrollRestoration = route.kind === 'home' ? 'auto' : 'manual';
+    } catch {
+      /* ignore */
+    }
     if (route.kind === 'home' && route.rewriteHash !== undefined) {
       try {
         history.replaceState(history.state, '', location.pathname + location.search + route.rewriteHash);
@@ -142,9 +175,8 @@ export default function App(): JSX.Element {
     if (scroll.kind === 'top') window.scrollTo(0, 0);
     else if (scroll.kind === 'restore') {
       window.scrollTo(0, scroll.y);
-      const { homeFocus } = navState();
-      if (homeFocus) patchNavState({ homeFocus: undefined }); // used once: a later return may come another way
-      if (focus && focusReturn(homeFocus)) return;
+      if (focus) focusReturn(navState().homeFocus);
+      return;
     } else if (scroll.kind === 'anchor') {
       target = visibleElement(scroll.id);
       if (target) target.scrollIntoView();

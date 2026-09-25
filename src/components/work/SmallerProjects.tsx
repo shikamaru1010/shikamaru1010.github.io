@@ -5,7 +5,7 @@ import { stackLine } from '../../lib/format';
 /** How many technologies each smaller project shows. */
 const STACK_SHOWN = 3;
 
-/** Smaller projects (SPEC §6.1.2): one line each on the grid. Styles live in work.css. */
+/** Smaller projects: one line each on the grid. Styles live in work.css. */
 export default function SmallerProjects(): JSX.Element {
   return (
     <div className="also">

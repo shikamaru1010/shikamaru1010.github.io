@@ -1,8 +1,9 @@
 /* ------------------------------------------------------------------
-   Personal home (SPEC §6.2). Warm ink, bone, one vermilion-orange.
+   Personal home. Warm ink, bone, one vermilion-orange.
    Column 6 is the second axis everywhere: the photo and every block of
    content start on it; names and labels hold columns 1–5.
-   Every selector starts with .p- (R4). The work-log figure is worklog.css.
+   Every selector starts with .p-, so nothing here reaches the Professional
+   tree that shares the document. The work-log figure is worklog.css.
 ------------------------------------------------------------------- */
 
 /* ---------------- hero ----------------
@@ -18,7 +19,7 @@
 }
 .p-line {
   grid-column: 1 / span 5; grid-row: 2; margin-top: 24px;
-  font-size: var(--s3); line-height: 1.3; letter-spacing: -.015em; font-weight: 500;
+  font-size: var(--s3); line-height: 1.3; letter-spacing: -.015em; font-weight: 400;
   max-width: 24em; text-wrap: balance;
 }
 .p-body { grid-column: 1 / span 5; grid-row: 3; margin-top: 16px; max-width: 38ch; text-wrap: pretty; }
@@ -31,7 +32,7 @@
 }
 
 /* ---------------- sections: a label on columns 1–5, the content from column 6 ---------------- */
-.p-sec { margin-top: 168px; }
+.p-sec { margin-top: var(--sp-10); }
 /* the label and the text beside it share a baseline, not a top edge (the log's sentence is larger) */
 .p-row { align-items: baseline; }
 .p-label { grid-column: 1 / span 5; }
@@ -50,21 +51,21 @@
 .p-now li + li { margin-top: var(--sp-4); }
 .p-now b { font-weight: 600; }
 .p-tools { grid-column: 6 / span 6; margin-top: var(--sp-7); padding-top: 14px; border-top: 1px solid var(--rule); color: var(--ink-2); }
-.p-tools b { color: var(--ink); font-weight: 500; }
+.p-tools b { color: var(--ink); font-weight: 400; }
 
 /* today's thought: on the column-6 axis like the rest; the opening quote hangs in the gutter
    so the words start on the column */
 .p-thought { grid-column: 6 / span 6; }
 .p-thought blockquote { font-size: var(--s4); line-height: 1.06; letter-spacing: -.04em; font-weight: 500; text-indent: -.4em; text-wrap: balance; }
 .p-q { color: var(--accent); }
-.p-thought figcaption { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 4px 24px; align-items: baseline; }
-.p-author { font-weight: 500; }
+.p-thought figcaption { margin-top: var(--sp-6); display: flex; flex-wrap: wrap; gap: 4px 24px; align-items: baseline; }
+.p-author { font-weight: 400; }
 
 /* side projects (the vault and its domains): each domain a row, its name on columns 1–5 and
    what writes into it from column 6 */
 .p-lede { grid-column: 6 / span 6; max-width: 60ch; text-wrap: pretty; }
 .p-domains { margin-top: var(--sp-8); }
-.p-domains li { border-top: 1px solid var(--rule-strong); padding: 14px 0 36px; align-items: baseline; }
+.p-domains li { border-top: 1px solid var(--rule); padding: 14px 0 var(--sp-6); align-items: baseline; }
 /* a domain is a label of the same tier as the section labels */
 .p-dom { grid-column: 1 / span 5; font-size: var(--s2); line-height: 1.4; font-weight: 600; }
 .p-domains p { grid-column: 6 / span 6; max-width: 60ch; }
@@ -72,7 +73,7 @@
 .p-study { text-decoration-color: var(--ink-2); }
 .p-study:hover { text-decoration-color: var(--accent); }
 .p-orch { grid-column: 6 / span 6; margin-top: 4px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--ink-2); }
-.p-orch b { color: var(--ink); font-weight: 500; }
+.p-orch b { color: var(--ink); font-weight: 600; }
 
 /* off screen (only rendered when filled) */
 .p-off { grid-column: 6 / span 6; }
@@ -98,13 +99,13 @@
 .p-else a:hover .p-handle { color: var(--ink); }
 
 /* ---------------- footer: the name in Cyrillic, then the colophon line (shell.css) ---------------- */
-.p-end { margin-top: 168px; padding-bottom: 28px; }   /* the same gap as between sections */
+.p-end { margin-top: var(--sp-10); padding-bottom: var(--sp-6); }   /* the same gap as between sections */
 .p-cap { color: var(--ink-2); margin-bottom: var(--sp-3); }
 .p-sign {
   font-size: var(--s4); line-height: 1.1; letter-spacing: -.03em; font-weight: 600; color: var(--accent);
   margin-left: -.04em;
 }
-.p-end .colophon { margin-top: 28px; }
+.p-end .colophon { margin-top: var(--sp-6); }
 
 /* ---------------- tablet (721–1100): the photo takes six columns, text runs to the edge ---------------- */
 @media (min-width: 721px) and (max-width: 1100px) {
@@ -137,20 +138,20 @@
   .p-hero-grid { display: block; }
   .p-line { margin-top: 16px; }
   .p-photo { margin-top: 24px; }
-  .p-body { margin-top: 20px; }
+  .p-body { margin-top: var(--sp-5); }
 
-  .p-sec { margin-top: 104px; }
-  .p-row { row-gap: 20px; }
+  .p-sec { margin-top: var(--sp-9); }
+  .p-row { row-gap: var(--sp-4); }
   .p-label, .p-log-text, .p-now, .p-tools, .p-thought, .p-lede, .p-off, .p-else { grid-column: 1 / -1; }
-  .p-tools { margin-top: 28px; }
+  .p-tools { margin-top: var(--sp-6); }
 
   .p-thought blockquote { text-indent: 0; }
-  .p-thought figcaption { gap: 8px 16px; margin-top: 20px; }
+  .p-thought figcaption { gap: var(--sp-2) var(--sp-4); margin-top: var(--sp-5); }
 
-  .p-domains { margin-top: 36px; }
+  .p-domains { margin-top: var(--sp-6); }
   .p-domains li { display: block; padding-bottom: 32px; }
   .p-domains p { margin-top: 10px; }
   .p-orch { grid-column: 1 / -1; }
 
-  .p-end { margin-top: 104px; }   /* the phone's gap between sections */
+  .p-end { margin-top: var(--sp-9); }   /* the phone's gap between sections */
 }

@@ -1,13 +1,14 @@
 /* ------------------------------------------------------------------
    Figures drawn on the page grid: a pipeline (tradingAgent), a status
    axis to scale (dev-dashboard) and a signal line (BelgradeBuddy).
-   Prototype 227–271, 414–418, 458–482, 515–531; SPEC §6.1.2.
    Anything that carries information uses --rule-strong, --ink-2 or the accent. The accent marks,
-   it never sets type here (owner feedback 2026-09-25: quiet scale, nothing above 600).
+   it never sets type here (the quiet scale: nothing above 600).
+   The small offsets in this file (a marker's half width, 5.5px; a tick's length) are optical:
+   they place a mark on a line or a baseline, so they are not on the spacing scale.
 ------------------------------------------------------------------- */
 
-.fig { margin-top: 48px; }
-.fig-cap { display: flex; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
+.fig { margin-top: var(--sp-7); }
+.fig-cap { display: flex; justify-content: space-between; gap: var(--sp-5); margin-bottom: var(--sp-5); }
 
 /* the key to the pipeline's shape code: square = the system, circle = a person */
 .legend { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0 6px; }
@@ -40,7 +41,7 @@
 /* ---------------- dev-dashboard: the time axis, to scale ----------------
    Twelve equal steps across the measure, with no gutters inside the axis: the page's
    column gutters would make every step but the last one a gutter longer. */
-/* the numerals sit above the ticks, one numeral-height plus 24px of room (52px at the prototype's 28px) */
+/* the numerals sit above the ticks, one numeral-height plus 24px of room */
 .axis {
   position: relative; padding-top: calc(24px + var(--s3));
   display: grid; grid-template-columns: repeat(var(--axis-cols, 12), minmax(0, 1fr)); column-gap: 0;
@@ -86,7 +87,7 @@
 
 /* ---------------- tablet (721–1100) ---------------- */
 @media (min-width: 721px) and (max-width: 1100px) {
-  .pipe { row-gap: 36px; }
+  .pipe { row-gap: var(--sp-6); }
   .pipe li { grid-column: span 4; }
   .pipe::before { display: none; }
   .pipe li::after {
@@ -107,8 +108,8 @@
   .seg .bar { position: static; display: block; grid-row: 3; grid-column: var(--seg); width: auto; align-self: start; }
   .seg-paused .bar { margin-top: 2px; }
   .seg-aband .bar { margin-top: 3px; }
-  .seg .st { grid-column: 1 / span 3; margin-top: 18px; }
-  .seg .note { grid-column: 4 / -1; margin-top: 18px; align-self: baseline; }
+  .seg .st { grid-column: 1 / span 3; margin-top: var(--sp-4); }
+  .seg .note { grid-column: 4 / -1; margin-top: var(--sp-4); align-self: baseline; }
   .seg-paused .st,
   .seg-paused .note,
   .seg-aband .st,
@@ -123,13 +124,13 @@
 
 /* ---------------- phone ---------------- */
 @media (max-width: 720px) {
-  .fig { margin-top: 32px; }
-  .fig-cap { flex-direction: column; gap: 2px; margin-bottom: 18px; }
+  .fig { margin-top: var(--sp-6); }
+  .fig-cap { flex-direction: column; gap: 2px; margin-bottom: var(--sp-4); }
 
   /* the pipeline becomes a vertical stop-line */
   .pipe { row-gap: 0; }
   .pipe::before { display: none; }
-  .pipe li { grid-column: 1 / -1; padding: 0 0 20px 28px; }
+  .pipe li { grid-column: 1 / -1; padding: 0 0 var(--sp-5) 28px; }   /* 28px: the stop line's indent, as on a case study */
   .pipe li::before { top: 6px; }
   .pipe li[data-actor="person"]::before { top: 5.5px; }
   .pipe li::after { content: ''; position: absolute; left: 5px; top: 17px; bottom: -6px; width: 1px; background: var(--rule-strong); }

@@ -2,7 +2,7 @@
 // Usage: npm run og   (needs network for the Golos Text stylesheet; Node >= 22.18 for the .ts imports)
 //
 // Every word comes from src/data (profile.ts, experience.ts). src/lib/format.ts is NOT imported: it imports
-// a JSON file, which Node's type stripping does not load without an import attribute. The type follows the owner's quiet scale (DECISIONS A): the
+// a JSON file, which Node's type stripping does not load without an import attribute. The type follows the site's quiet scale: the
 // name is ordinary display text at 600, not fitted to the width of the card.
 import { writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
