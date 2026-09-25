@@ -1,0 +1,174 @@
+/* ------------------------------------------------------------------
+   CV (#resume). A sticky, no-print toolbar over one white A4 sheet.
+   The sheet is a document with its own scale (SPEC §6.3, the §1.3
+   exception): name 28, role 12, h3 12, h2 11, body 11/1.45, meta 10;
+   weight 600 at most (owner feedback, DECISIONS A).
+   At 96 dpi the sheet's content box (794 − 2 × 53 = 688px) is exactly
+   the printable width of A4 with 14mm margins, so the screen shows the
+   line breaks the PDF will have. Marks are drawn with borders, which
+   print even when "background graphics" is off.
+------------------------------------------------------------------- */
+
+.resume-page { background: var(--paper); min-height: 100vh; }
+
+/* ---------------- toolbar ---------------- */
+.resume-bar {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--s1);
+}
+.resume-bar-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); column-gap: var(--g);
+  align-items: center; height: 56px;
+}
+.resume-bar-link { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; white-space: nowrap; }
+.resume-bar-row > .resume-bar-link { justify-self: start; }
+.resume-bar-label { justify-self: center; }
+.resume-bar-actions { justify-self: end; display: flex; align-items: center; gap: 24px; }
+.resume-bar-actions .resume-bar-link { font-weight: 500; }
+.resume-print {
+  appearance: none; background: none; border: 0; padding: 0; margin: 0; cursor: pointer;
+  display: inline-flex; align-items: center; min-height: 44px;
+  font-size: var(--s1); font-weight: 500; white-space: nowrap;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .22em;
+  text-decoration-color: var(--rule); transition: text-decoration-color .15s;
+}
+.resume-print:hover { text-decoration-color: var(--accent); }
+
+/* ---------------- the sheet ---------------- */
+.resume-main { padding: 32px 0 64px; }
+.resume-sheet {
+  --rs-ink: #111110; --rs-ink-2: #53514C; --rs-accent: #D83218; --rs-rule: rgba(17, 17, 16, .16);
+  --rs-name: 28px; --rs-role: 12px; --rs-h2: 11px; --rs-h3: 12px; --rs-body: 11px; --rs-meta: 10px;
+  --rs-gap: 24px;
+  /* exactly A4 with the PDF's margins (12mm × 14mm), so the screen is a true preview */
+  width: calc(100% - 2 * var(--m)); max-width: 210mm; min-height: 297mm;
+  margin: 0 auto; padding: 12mm 14mm;
+  display: flex; flex-direction: column;
+  background: #FFFFFF; color: var(--rs-ink);
+  outline: 1px solid var(--rule);
+  font-size: var(--rs-body); line-height: 1.45;
+  --accent: #D83218;
+}
+.resume-sheet ::selection { background: var(--rs-accent); color: #FFFFFF; }
+
+/* header: name, role line and summary on the left; the contact block takes its own width on the right */
+.resume-head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--rs-gap); }
+.resume-id { flex: 1 1 auto; min-width: 0; }
+.resume-name { font-size: var(--rs-name); line-height: 1; letter-spacing: -.03em; font-weight: 600; }
+.resume-mark {
+  display: inline-block; width: 0; height: 0; margin-left: .16em;
+  border: 3px solid var(--rs-accent);         /* the one 6 × 6 vermilion mark, a full stop */
+}
+.resume-role { margin-top: 6px; font-size: var(--rs-role); line-height: 1.4; font-weight: 500; color: var(--rs-ink-2); }
+.resume-summary { margin-top: 10px; max-width: 72ch; text-wrap: pretty; }
+.resume-contact { flex: none; font-style: normal; text-align: right; padding-top: 2px; }
+.resume-contact li { white-space: nowrap; }
+
+.resume-link { color: inherit; text-decoration: none; }
+.resume-link:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; text-decoration-color: var(--rs-accent); }
+
+/* two columns: 8/12 experience and projects, 4/12 the reference column */
+.resume-cols {
+  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--rs-gap);
+  align-items: start; margin-top: 16px;
+}
+.resume-col-main { grid-column: 1 / span 8; }
+.resume-col-side { grid-column: 9 / -1; }
+
+.resume-sec + .resume-sec { margin-top: 14px; }
+.resume-h2 {
+  font-size: var(--rs-h2); line-height: 1.3; font-weight: 600;
+  border-top: 1px solid var(--rs-ink); padding-top: 6px;
+}
+.resume-h3 { font-size: var(--rs-h3); line-height: 1.25; font-weight: 600; }
+.resume-sub { font-weight: 400; }
+.resume-meta { font-size: var(--rs-meta); line-height: 1.45; color: var(--rs-ink-2); font-variant-numeric: tabular-nums; }
+.resume-text { text-wrap: pretty; }
+
+.resume-entry { padding-top: 5px; }
+.resume-entry-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; }
+.resume-when { flex: none; margin-left: auto; white-space: nowrap; }
+.resume-meta-row { display: flex; justify-content: space-between; align-items: baseline; gap: 0 16px; }
+.resume-meta-row .resume-link { flex: none; color: var(--rs-ink); }
+.resume-meta-row > span { text-wrap: pretty; }
+
+/* points: a 6px hairline dash (a border, so it prints without background graphics) */
+.resume-points { margin-top: 1px; }
+.resume-points li { position: relative; padding-left: 12px; text-wrap: pretty; }
+.resume-points li::before {
+  content: ''; position: absolute; left: 0; top: .78em; width: 6px; height: 0;
+  border-top: 1px solid var(--rs-ink-2);
+}
+
+.resume-dl > div { padding-top: 8px; }
+.resume-dl dt { font-weight: 600; }
+.resume-dl dd { text-wrap: pretty; }
+.resume-plain { padding-top: 8px; }
+.resume-col-side .resume-sec > .resume-text { padding-top: 8px; }
+
+.resume-foot {
+  margin-top: auto; padding-top: 10px;
+  display: flex; justify-content: space-between; gap: 16px;
+  font-size: var(--rs-meta); line-height: 1.45; color: var(--rs-ink-2);
+}
+
+/* ---------------- tablet: the sheet keeps its A4 proportions, just narrower ---------------- */
+@media screen and (min-width: 721px) and (max-width: 900px) {
+  .resume-sheet { padding: 40px 36px; }
+}
+
+/* ---------------- phone: a full-width document, the columns stack ---------------- */
+@media screen and (max-width: 720px) {
+  .resume-bar-row { column-gap: 12px; }
+  .resume-bar-actions { gap: 16px; }
+  .resume-main { padding: 0; }
+  .resume-sheet {
+    /* on a phone the sheet is read, not previewed: set it at reading sizes */
+    --rs-name: 28px; --rs-role: 13px; --rs-h2: 13px; --rs-h3: 16px; --rs-body: 15px; --rs-meta: 13px;
+    width: 100%; max-width: none; min-height: 0; margin: 0; padding: 24px 16px 28px;
+    outline: 0; border-bottom: 1px solid var(--rule);
+    line-height: 1.5;
+  }
+  .resume-head, .resume-cols { display: block; }
+  .resume-role { margin-top: 10px; }
+  .resume-summary { margin-top: 14px; }
+  /* contact: one 44px row per line, on hairlines, like a list of ways in */
+  .resume-contact { text-align: left; margin-top: 20px; }
+  .resume-contact li { white-space: normal; display: flex; align-items: center; min-height: 44px; border-top: 1px solid var(--rs-rule); }
+  .resume-contact li:last-child { border-bottom: 1px solid var(--rs-rule); }
+  .resume-contact a { display: flex; align-items: center; min-height: 44px; flex: 1 1 auto; }
+  .resume-cols { margin-top: 28px; }
+  .resume-col-side { margin-top: 32px; }
+  .resume-sec + .resume-sec { margin-top: 32px; }
+  .resume-h2 { padding-top: 8px; margin-bottom: 4px; }
+  .resume-entry { padding-top: 14px; }
+  .resume-entry-head { flex-wrap: wrap; gap: 0 12px; }
+  .resume-entry-head .resume-h3 { flex: 1 0 100%; }
+  .resume-meta-row { flex-direction: column; align-items: flex-start; gap: 0; }
+  .resume-meta-row .resume-link { display: inline-flex; align-items: center; min-height: 44px; }
+  .resume-points { margin-top: 6px; }
+  .resume-points li { padding-left: 14px; }
+  .resume-points li + li { margin-top: 6px; }
+  .resume-dl > div { padding-top: 12px; }
+  .resume-plain, .resume-col-side .resume-sec > .resume-text { padding-top: 12px; }
+  .resume-foot { margin-top: 32px; padding-top: 12px; border-top: 1px solid var(--rs-rule); flex-wrap: wrap; }
+}
+@media screen and (max-width: 359px) {
+  .resume-bar-label { display: none; }
+  .resume-bar-row { grid-template-columns: minmax(0, 1fr) auto; }
+}
+
+/* ---------------- print: one A4 page ---------------- */
+@page { size: A4; margin: 12mm 14mm; }
+@media print {
+  .resume-bar { display: none; }
+  .resume-page { background: #fff; min-height: 0; }
+  .resume-main { padding: 0; }
+  .resume-sheet {
+    width: auto; max-width: none; margin: 0; padding: 0; outline: 0;
+    min-height: 272mm;                        /* the footer sits at the foot of the page (273mm printable) */
+  }
+  .resume-link, .resume-link:hover { color: inherit; text-decoration: none; }
+}

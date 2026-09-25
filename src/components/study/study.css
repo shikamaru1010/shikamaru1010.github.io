@@ -1,0 +1,208 @@
+/* ------------------------------------------------------------------
+   Case studies (#project/<id>). The home page's language: paper, ink,
+   hairlines, the 12-column grid and the quiet type scale (owner feedback,
+   DECISIONS A: nothing above --s4 here, weight 600 at most). Column 4 is the
+   page's second axis: the kicker in the header, the intro, the flow's
+   stop line and the footer's date all start on it.
+   Always the Professional palette (tokens.css).
+------------------------------------------------------------------- */
+
+/* ---------------- header (shell's .site-head / .brand / .nav, read-only) ---------------- */
+.study-kicker { grid-column: 4 / span 4; justify-self: start; }
+
+/* ---------------- top ---------------- */
+.study-top { padding-top: 56px; }
+.study-title {
+  margin-top: 12px;
+  font-size: var(--s4); line-height: 1.05; letter-spacing: -.03em; font-weight: 600;
+}
+.study-sub {
+  margin-top: 18px; max-width: 28em;
+  font-size: var(--s3); line-height: 1.22; letter-spacing: -.02em; font-weight: 400; text-wrap: pretty;
+}
+.study-meta { margin-top: 40px; border-top: 1px solid var(--rule-strong); padding-top: 14px; row-gap: 20px; }
+.study-meta > div { grid-column: span 3; }
+.study-meta > .study-meta-stack.is-wide { grid-column: span 6; }
+.study-meta dd { margin-top: 4px; max-width: 34ch; text-wrap: pretty; }
+.study-meta dd a { display: inline-flex; align-items: center; min-height: 32px; margin-top: -5px; }
+.study-intro {
+  margin-top: 48px; margin-left: calc((100% + var(--g)) * 3 / 12);   /* from column 4, like the home lede */
+  max-width: min(31em, calc((100% + var(--g)) * 8 / 12 - var(--g)));
+  font-size: var(--s3); line-height: 1.22; letter-spacing: -.02em; text-wrap: pretty;
+}
+
+/* ---------------- at a glance ---------------- */
+.study-glance { padding-top: 72px; }
+.study-metrics { row-gap: 32px; }
+.study-metrics > div {
+  grid-column: span 3; display: flex; flex-direction: column;
+  border-top: 1px solid var(--rule-strong); padding-top: 14px;
+}
+.study-metrics dt { order: 2; margin-top: 10px; }
+.study-metric {
+  order: 1;
+  font-size: var(--s3); line-height: 1.1; letter-spacing: -.02em; font-weight: 600;
+}
+
+/* ---------------- the plate: the home plate's geometry at full width ----------------
+   4 equal columns with a 4.94% gap: 3 columns + 2 gaps at 16:10 is exactly as tall
+   as 1 column at 780:1688, so the phone sits flush with the desktop. */
+.study-plate { margin-top: 104px; }
+.study-plate-head {
+  font-size: var(--s1); line-height: 1.55; color: var(--ink-2); font-weight: 500;
+  padding-bottom: 10px; border-bottom: 1px solid var(--rule-strong);
+}
+.study-plate-head b { color: var(--ink); font-weight: 600; margin-right: 6px; }
+.study-plate-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 4.94%; margin-top: 20px; }
+.study-shot-desk { grid-column: 1 / span 3; }
+.study-shot-phone { grid-column: 4; }
+.study-shot img {
+  width: 100%; height: auto; background: var(--rule);
+  outline: 1px solid var(--rule-strong); outline-offset: -1px;
+}
+.study-shot-desk img { aspect-ratio: 1440 / 900; }
+.study-shot-phone img { aspect-ratio: 780 / 1688; }
+.study-shot .label { display: block; margin-top: 8px; }
+
+/* ---------------- sections ---------------- */
+.study-sec { padding-top: 104px; }
+.study-sec-head {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 8px 24px; flex-wrap: wrap;
+  border-top: 1px solid var(--rule-strong); padding-top: 14px; margin-bottom: 32px;
+}
+.study-h2 { font-size: var(--s3); line-height: 1.1; letter-spacing: -.02em; font-weight: 600; }
+.study-sec-aside { display: flex; align-items: baseline; gap: 8px 28px; flex-wrap: wrap; }
+
+/* architecture: modules on the grid, three to a row */
+.study-arch { align-items: stretch; }
+.study-arch li { grid-column: span 4; border-top: 1px solid var(--rule); padding: 14px 0 24px; }
+.study-arch-title { font-size: var(--s2); line-height: 1.35; font-weight: 600; }
+.study-arch-detail { margin-top: 4px; max-width: 40ch; text-wrap: pretty; }
+.study-arch-tech { margin-top: 10px; }
+
+/* how it works: one stop line; square = the system, filled circle = a person */
+.study-legend { display: flex; gap: 20px; }
+.study-legend li { display: inline-flex; align-items: center; }
+.study-key {
+  display: inline-block; width: 11px; height: 11px; margin-right: 8px;
+  background: var(--paper); border: 1px solid var(--rule-strong);
+}
+.study-key.is-person { border-radius: 50%; background: var(--ink); }
+
+.study-flow {
+  --x: calc((100% + var(--g)) * 3 / 12);        /* the stop line runs down the start of column 4 */
+  --c: calc(var(--s3) * .56);                   /* marker centre: the middle of the title's capitals */
+  --pad: 36px;
+}
+.study-step { position: relative; align-items: baseline; }
+.study-step::before {
+  content: ''; position: absolute; z-index: 1; left: var(--x); top: calc(var(--c) - 5.5px);
+  width: 11px; height: 11px; background: var(--paper); border: 1px solid var(--rule-strong);
+}
+.study-step.is-person::before { border-radius: 50%; background: var(--ink); }
+.study-step::after {
+  content: ''; position: absolute; left: calc(var(--x) + 5px); width: 1px;
+  top: var(--c); bottom: calc(-1 * var(--c)); background: var(--rule-strong);
+}
+.study-step:last-child::after { display: none; }
+.study-actor { grid-column: 1 / span 3; }
+.study-step-body { grid-column: 4 / span 7; padding: 0 0 40px var(--pad); }
+.study-step:last-child .study-step-body { padding-bottom: 0; }
+.study-step-title { font-size: var(--s3); line-height: 1.05; letter-spacing: -.02em; font-weight: 600; }
+.study-step-detail { margin-top: 8px; max-width: 46ch; text-wrap: pretty; }
+
+/* decisions | guardrails; what was hard; outcomes */
+.study-pair { align-items: start; }
+.study-half { grid-column: span 6; }
+.study-list li { border-top: 1px solid var(--rule); padding: 12px 0 14px; text-wrap: pretty; }
+.study-list li:last-child { border-bottom: 1px solid var(--rule); }
+.study-wide .study-list { max-width: calc((100% + var(--g)) * 8 / 12 - var(--g)); }   /* columns 1–8 */
+
+.study-private-wrap { padding-top: 72px; }
+.study-private { max-width: calc((100% + var(--g)) * 8 / 12 - var(--g)); border-top: 1px solid var(--rule); padding-top: 12px; }
+.study-private dd { margin-top: 4px; text-wrap: pretty; }
+
+/* ---------------- next ---------------- */
+.study-next { margin-top: 104px; }
+.study-next-row { border-top: 1px solid var(--rule-strong); padding-top: 14px; align-items: start; }
+.study-next-back {
+  grid-column: 1 / span 6; justify-self: start;
+  display: inline-flex; align-items: center; min-height: 44px; margin-top: -10px; font-weight: 600;
+}
+.study-next-link { grid-column: 7 / -1; justify-self: end; display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+.study-next-title {
+  margin-top: 4px;
+  font-size: var(--s3); line-height: 1.1; letter-spacing: -.025em; font-weight: 600;
+  text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .14em;
+  text-decoration-color: transparent; transition: text-decoration-color .15s;
+}
+.study-next-back:hover, .study-next-link:hover .study-next-title {
+  text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: .3em;
+}
+.study-next-back:hover { text-decoration-thickness: 1px; }
+.study-next-link:hover .study-next-title { text-underline-offset: .14em; text-decoration-thickness: 2px; }
+
+/* ---------------- footer ---------------- */
+.study-foot { margin-top: 104px; }
+.study-foot-row {
+  border-top: 1px solid var(--rule); padding: 14px 0 28px;
+  font-size: var(--s1); line-height: 1.4; color: var(--ink-2); align-items: baseline;
+}
+.study-foot-row p:first-child { grid-column: 1 / span 3; }
+.study-foot-row p:last-child { grid-column: 4 / -1; }
+
+/* ---------------- tablet (721–1100) ---------------- */
+@media (min-width: 721px) and (max-width: 1100px) {
+  .study-meta > div { grid-column: span 4; }
+  .study-meta > .study-meta-stack, .study-meta > .study-meta-stack.is-wide { grid-column: 1 / -1; grid-row: 2; }
+  .study-intro { margin-left: 0; max-width: 34em; }
+  .study-metrics > div { grid-column: span 6; }
+  .study-arch li { grid-column: span 6; }
+  .study-step-body { grid-column: 4 / -1; }
+  .study-wide .study-list, .study-private { max-width: calc((100% + var(--g)) * 10 / 12 - var(--g)); }
+}
+
+/* ---------------- phone ---------------- */
+@media (max-width: 720px) {
+  .study-kicker { display: none; }
+  .study-top { padding-top: 28px; }
+  .study-title { margin-top: 10px; }
+  .study-sub { margin-top: 14px; }
+  .study-meta { margin-top: 32px; row-gap: 18px; }
+  .study-meta > div { grid-column: span 2; }
+  .study-meta > .study-meta-stack, .study-meta > .study-meta-stack.is-wide { grid-column: 1 / -1; grid-row: 2; }
+  .study-meta dd a { min-height: 44px; margin-top: -10px; }
+  .study-intro { margin: 36px 0 0; max-width: none; line-height: 1.3; }
+
+  .study-glance { padding-top: 56px; }
+  .study-metrics { row-gap: 28px; }
+  .study-metrics > div { grid-column: span 2; }
+
+  .study-plate { margin-top: 72px; }
+  .study-plate-grid { margin-top: 16px; }
+  /* the phone column is narrow: its dims label sits flush right and runs back over the gap */
+  .study-shot-phone .label { display: flex; justify-content: flex-end; white-space: nowrap; }
+
+  .study-sec { padding-top: 72px; }
+  .study-sec-head { margin-bottom: 24px; }
+  .study-arch li { grid-column: 1 / -1; padding-bottom: 20px; }
+
+  .study-flow { --x: 0px; --c: calc(var(--s1) * 1.4 + 4px + var(--s3) * .56); --pad: 28px; }
+  .study-step { display: block; padding-left: var(--pad); }
+  .study-actor { margin-bottom: 4px; }
+  .study-step-body { padding: 0 0 28px; }
+
+  .study-pair { row-gap: 72px; }
+  .study-half { grid-column: 1 / -1; }
+  .study-wide .study-list, .study-private { max-width: none; }
+  .study-private-wrap { padding-top: 56px; }
+
+  .study-next { margin-top: 72px; }
+  .study-next-row { row-gap: 20px; }
+  .study-next-back { grid-column: 1 / -1; grid-row: 2; margin-top: 0; }
+  .study-next-link { grid-column: 1 / -1; grid-row: 1; justify-self: stretch; align-items: flex-start; text-align: left; min-height: 44px; }
+
+  .study-foot { margin-top: 72px; }
+  .study-foot-row { row-gap: 4px; }
+  .study-foot-row p:first-child, .study-foot-row p:last-child { grid-column: 1 / -1; }
+}
