@@ -1,0 +1,163 @@
+/* ------------------------------------------------------------------
+   Figures drawn on the page grid: a pipeline (tradingAgent), a status
+   axis to scale (dev-dashboard) and a signal line (BelgradeBuddy).
+   Prototype 227–271, 414–418, 458–482, 515–531; SPEC §6.1.2.
+   Anything that carries information uses --rule-strong, --ink-2 or the accent. The accent marks,
+   it never sets type here (owner feedback 2026-09-25: quiet scale, nothing above 600).
+------------------------------------------------------------------- */
+
+.fig { margin-top: 48px; }
+.fig-cap { display: flex; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
+.fig-cap .m-only { display: none; }
+
+/* the key to the pipeline's shape code: square = the system, circle = a person */
+.legend { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0 6px; }
+.legend i { display: block; flex: none; }
+.legend .sq { width: 9px; height: 9px; background: var(--paper); border: 1px solid var(--rule-strong); }
+.legend .ci { width: 10px; height: 10px; margin-left: 12px; border-radius: 50%; background: var(--accent); }
+
+/* ---------------- tradingAgent: six stops, two columns each ---------------- */
+.pipe { position: relative; }
+.pipe::before {
+  content: ''; position: absolute; left: 0; top: 5px; height: 1px; background: var(--rule-strong);
+  width: calc((100% + var(--g)) * 10 / 12);   /* from the first stop to the last one */
+}
+.pipe li { grid-column: span 2; position: relative; padding-top: 30px; }
+.pipe li::before {
+  content: ''; position: absolute; z-index: 1; left: 0; top: 0; width: 11px; height: 11px;
+  background: var(--paper); border: 1px solid var(--rule-strong);
+}
+.pipe .stop { display: block; font-size: var(--s3); line-height: 1.05; letter-spacing: -.03em; font-weight: 600; }
+.pipe .note { display: block; margin-top: 10px; max-width: 17ch; text-wrap: pretty; }
+/* a person steps in: a circle, not a square; the one accent in the figure */
+.pipe li[data-actor="person"]::before {
+  width: 12px; height: 12px; left: -.5px; top: -.5px;
+  border-radius: 50%; background: var(--accent); border-color: var(--accent);
+}
+/* the label stays ink: vermilion on paper is 4.2:1, and at the quiet scale (21/20/18px, 600) it would not
+   be large text. The accent is the mark; the ink note sets the gate apart from the grey system notes. */
+.pipe li[data-actor="person"] .note { color: var(--ink); }
+
+/* ---------------- dev-dashboard: the 12 columns are the time axis ---------------- */
+/* the numerals sit above the ticks, one numeral-height plus 24px of room (52px at the prototype's 28px) */
+.axis { position: relative; padding-top: calc(24px + var(--s3)); }
+.axis .ticks { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; height: 8px; margin: 12px 0 0; }
+.axis .ticks i { border-left: 1px solid var(--rule-strong); height: 8px; }
+.axis .ticks i:last-child { position: relative; }
+.axis .ticks i:last-child::after {
+  content: ''; position: absolute; right: 0; top: 0; height: 8px; border-right: 1px solid var(--rule-strong);
+}
+.axis .end { grid-row: 2; grid-column: -2 / -1; justify-self: end; padding-top: 20px; }
+
+.seg { grid-row: 2; grid-column: var(--seg); position: relative; padding-top: 20px; }
+.seg .num {
+  position: absolute; top: calc(-24px - var(--s3)); left: 0;
+  font-size: var(--s3); line-height: 1; letter-spacing: -.03em; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.seg .bar { position: absolute; left: 0; top: 0; width: calc(100% + var(--g)); }
+.seg-active .bar { height: 8px; background: var(--accent); }
+.seg-paused .bar { height: 3px; top: 2px; background: var(--rule-strong); }
+.seg-aband .bar { width: 100%; top: 3px; border-top: 1px dashed var(--ink-2); }
+.seg .st { display: block; font-weight: 600; }
+.seg .note { display: block; margin-top: 2px; }
+
+/* ---------------- BelgradeBuddy: solid while there is a signal, dashed when there isn't ---------------- */
+.signal .sg { position: relative; padding-top: 30px; }
+.signal .sg-on { grid-column: 1 / span 6; }
+.signal .sg-off { grid-column: 7 / -1; }
+.signal .sg::before {
+  content: ''; position: absolute; left: 0; top: 5px; width: calc(100% + var(--g));
+  border-top: 2px solid var(--rule-strong);
+}
+.signal .sg-off::before { width: 100%; border-top: 2px dashed var(--accent); }
+.signal .sg::after {
+  content: ''; position: absolute; left: 0; top: 0; width: 11px; height: 11px;
+  background: var(--paper); border: 1px solid var(--rule-strong);
+}
+.signal .sg-off::after { background: var(--accent); border-color: var(--accent); }
+.signal dt { font-size: var(--s3); line-height: 1.05; letter-spacing: -.03em; font-weight: 600; }
+.signal dd { margin-top: 10px; max-width: 36ch; text-wrap: pretty; }
+
+/* ---------------- tablet (721–1100) ---------------- */
+@media (min-width: 721px) and (max-width: 1100px) {
+  .pipe { row-gap: 36px; }
+  .pipe li { grid-column: span 4; }
+  .pipe::before { display: none; }
+  .pipe li::after {
+    content: ''; position: absolute; left: 0; right: calc(-1 * var(--g)); top: 5px;
+    border-top: 1px solid var(--rule-strong);
+  }
+  .pipe li:nth-child(3n)::after { display: none; }
+}
+
+/* ---------------- ≤1100: the axis keeps its numbers, ticks and bars on the grid;
+   the state labels become a legend under it ---------------- */
+@media (max-width: 1100px) {
+  .fig-cap .d-only { display: none; }
+  .fig-cap .m-only { display: inline; }
+
+  .axis { padding-top: 0; }
+  .seg { display: contents; }
+  .seg .num { position: static; grid-row: 1; grid-column: var(--seg); margin-bottom: 10px; }
+  .axis .ticks { grid-row: 2; margin: 0; }
+  .seg .bar { position: static; display: block; grid-row: 3; grid-column: var(--seg); width: auto; align-self: start; }
+  .seg-active .bar,
+  .seg-paused .bar { margin-right: calc(-1 * var(--g)); }
+  .seg-paused .bar { margin-top: 2px; }
+  .seg-aband .bar { margin-top: 3px; }
+  .seg .st { grid-column: 1 / span 3; margin-top: 18px; }
+  .seg .note { grid-column: 4 / -1; margin-top: 18px; align-self: baseline; }
+  .seg-paused .st,
+  .seg-paused .note,
+  .seg-aband .st,
+  .seg-aband .note { margin-top: 6px; }
+  .seg .st::before { content: ''; display: inline-block; width: 18px; margin-right: 10px; vertical-align: middle; }
+  .seg-active .st::before { height: 8px; background: var(--accent); }
+  .seg-paused .st::before { height: 3px; background: var(--rule-strong); }
+  .seg-aband .st::before { border-top: 1px dashed var(--ink-2); }
+  .axis .end { display: none; }
+}
+
+/* ---------------- phone ---------------- */
+@media (max-width: 720px) {
+  .fig { margin-top: 32px; }
+  .fig-cap { flex-direction: column; gap: 2px; margin-bottom: 18px; }
+
+  /* the pipeline becomes a vertical stop-line */
+  .pipe { row-gap: 0; }
+  .pipe::before { display: none; }
+  .pipe li { grid-column: 1 / -1; padding: 0 0 20px 28px; }
+  .pipe li::before { top: 6px; }
+  .pipe li[data-actor="person"]::before { top: 5.5px; }
+  .pipe li::after { content: ''; position: absolute; left: 5px; top: 17px; bottom: -6px; width: 1px; background: var(--rule-strong); }
+  .pipe li:last-child::after { display: none; }
+  .pipe .note { margin-top: 4px; max-width: none; }
+
+  /* still to scale: twelve twelfths of the phone's four columns */
+  .axis { grid-template-columns: repeat(var(--axis-cols, 12), minmax(0, 1fr)); column-gap: 0; }
+  .seg-active .bar,
+  .seg-paused .bar { margin-right: 0; }
+  .seg .st { grid-column: 1 / span 5; }
+  .seg .note { grid-column: 6 / -1; }
+
+  .signal .sg-on { grid-column: 1 / span 2; }
+  .signal .sg-off { grid-column: 3 / -1; }
+}
+
+/* ---------------- Windows high contrast: backgrounds would vanish, so the marks and bars
+   are drawn in system colours (square and paused bar = text colour, the person and the
+   active band = highlight) ---------------- */
+@media (forced-colors: active) {
+  .pipe li::before,
+  .signal .sg::after,
+  .legend .sq { forced-color-adjust: none; background: Canvas; border-color: CanvasText; }
+  .pipe li[data-actor="person"]::before,
+  .signal .sg-off::after,
+  .legend .ci,
+  .seg-active .bar,
+  .seg-active .st::before { forced-color-adjust: none; background: Highlight; border-color: Highlight; }
+  .pipe::before,
+  .pipe li::after,
+  .seg-paused .bar,
+  .seg-paused .st::before { forced-color-adjust: none; background: CanvasText; }
+}
