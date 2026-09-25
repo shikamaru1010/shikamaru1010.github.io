@@ -14,7 +14,7 @@ function ProjectName({ project }: { project: NonNullable<BrainDomain['project']>
   );
 }
 
-/** The Brain: one Obsidian vault, three domains, and the agents that write into it. */
+/** Side projects: one Obsidian vault, three domains, and the agents that write into it. */
 export default function Brain(): JSX.Element {
   const { brain } = personal;
   return (

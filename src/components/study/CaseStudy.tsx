@@ -10,9 +10,6 @@ import StudyFlow from './StudyFlow';
 // Professional palette (tokens.css gates Personal to data-route="home").
 // No in-page hash links here: the hash router would leave the page (SPEC R7).
 
-// UI copy
-const COPY = { headNav: 'Links', nextNav: 'Case studies' };
-
 function NewTab(): JSX.Element {
   return <span className="sr-only"> {site.newTab}</span>;
 }
@@ -93,7 +90,7 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
             {site.study.back}
           </a>
           <p className="study-kicker label">{site.study.label}</p>
-          <nav className="nav" aria-label={COPY.headNav}>
+          <nav className="nav" aria-label={site.study.headNav}>
             {live && <ExternalDomain className="study-head-domain" href={live.href} domain={live.domain} mark />}
             <a className="nav-cv" href="#resume">
               {site.nav.cv}
@@ -242,7 +239,7 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
           </div>
         ) : null}
 
-        <nav className="study-next wrap" aria-label={COPY.nextNav}>
+        <nav className="study-next wrap" aria-label={site.study.nextNav}>
           <div className="study-next-row grid">
             <a className="study-next-back" href={back}>
               <span aria-hidden="true">←&nbsp;</span>

@@ -36,7 +36,16 @@ export const site = {
     toProfessional: 'Switch to the professional side',
   },
   hero: {
-    record: { now: 'Now', studying: 'Studying', based: 'Based in', languages: 'Languages', email: 'Email', code: 'Code' },
+    record: {
+      now: 'Now',
+      studying: 'Studying',
+      based: 'Based in',
+      languages: 'Languages',
+      cv: 'CV',
+      email: 'Email',
+      code: 'Code',
+    },
+    viewCv: 'View CV',
     nowValue: '{role} at {org}, since {month}',
     studyingValue: '{field}, {school}, {ordinal} year ({start}–{end})',
   },
@@ -93,11 +102,11 @@ export const site = {
   colophon: {
     set: 'Built with React, TypeScript and Vite. Set in Golos Text.',
     updated: 'Updated',
-    showGrid: 'Show the grid',
-    hideGrid: 'Hide the grid',
   },
   cv: {
     label: 'CV',
+    /** The one-page PDF that `npm run pdf` writes into public/. */
+    pdf: '/Ratko_Sisovic_CV.pdf',
     back: 'Back to the site',
     download: 'Download PDF',
     print: 'Print',
@@ -112,6 +121,8 @@ export const site = {
   },
   study: {
     label: 'Case study',
+    headNav: 'Links',
+    nextNav: 'Case studies',
     back: 'Back to the work',
     next: 'Next case study',
     meta: { status: 'Status', years: 'Years', stack: 'Stack', live: 'Live site' },

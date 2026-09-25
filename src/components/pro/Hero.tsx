@@ -4,11 +4,6 @@ import { site } from '../../data/site';
 import { fill, monthYear, ordinal } from '../../lib/format';
 import './hero.css';
 
-// UI copy (DECISIONS, owner feedback B: the CV gets its own row in the record card).
-const COPY = { viewCv: 'View CV' };
-/** The PDF that `npm run pdf` writes (the CV page links the same file). */
-const CV_PDF = '/Ratko_Sisovic_CV.pdf';
-
 const R = site.hero.record;
 const current = experience[0];
 
@@ -31,13 +26,13 @@ const record: Array<{ term: string; value: JSX.Element | string }> = [
   { term: R.based, value: profile.location },
   { term: R.languages, value: languages.map((l) => `${l.name} (${l.level})`).join(', ') },
   {
-    term: site.cv.label,
+    term: R.cv,
     value: (
       <span className="record-acts">
         <a className="u" href="#resume">
-          {COPY.viewCv}
+          {site.hero.viewCv}
         </a>
-        <a className="u" href={CV_PDF} download>
+        <a className="u" href={site.cv.pdf} download>
           {site.cv.download}
         </a>
       </span>

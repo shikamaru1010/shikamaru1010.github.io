@@ -91,8 +91,10 @@ start with a date (`YYYY-MM-DD…txt|md`). It never opens a file and never write
 ## Design system
 
 - **One family:** Golos Text (variable 400–900, Latin and Cyrillic), with a metric-matched Arial fallback.
-- **Five sizes:** 13 / 17 / 28 / 64 px at ≥ 1280 px (26 / 52 at 721–1279, 22 / 40 on phones), plus fitted
-  display lines sized to the width of the page. Tokens `--t1`…`--t4` in `src/styles/tokens.css`.
+- **Five sizes, deliberately quiet:** 13 / 16 / 21 / 36 / 56 px at ≥ 1280 px (13 / 16 / 20 / 32 / 48 at
+  721–1279, 13 / 16 / 18 / 26 / 38 on phones): labels, body, names and ledes, section heads, and the name.
+  Weight 600 at most. Nothing is fitted to the width of the page. Tokens `--t1`…`--t5` in
+  `src/styles/tokens.css`.
 - **Grid:** 12 columns (4 on phones), 40 px margins and 24 px gutters on desktop.
 - **Colour:** Professional paper `#F2F1EC`, ink `#111110`, one vermilion `#D83218`; Personal `#15130F` /
   `#EEE6D8` / `#FF6A3D`. Hairline rules, no shadows, no rounded corners.

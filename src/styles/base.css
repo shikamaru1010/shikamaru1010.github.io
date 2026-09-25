@@ -84,6 +84,8 @@ main[tabindex="-1"]:focus { outline: none; }
 .notes li { position: relative; padding-left: 14px; font-size: var(--s1); line-height: 1.45; color: var(--ink); max-width: 44ch; }
 .notes li + li { margin-top: 6px; }
 .notes li::before { content: ''; position: absolute; left: 0; top: .72em; width: 7px; height: 1px; background: var(--ink-2); }
+/* Windows high contrast drops backgrounds: draw the dash in the text colour */
+@media (forced-colors: active) { .notes li::before { forced-color-adjust: none; background: CanvasText; } }
 
 /* ---------------- mode containers: both trees render, CSS shows one ---------------- */
 html[data-mode="personal"] .only-pro,
@@ -109,17 +111,5 @@ html:not([data-mode="personal"]) .only-personal { display: none !important; }
 
 @media print {
   html, body { background: #fff !important; }
-  .skip, .wipe-edge, .grid-overlay { display: none !important; }
-}
-
-/* OWNER FEEDBACK 2026-09-25 — TEMPORARY OVERRIDE (integrator: fold into the section CSS, then delete).
-   Display lines are no longer fitted to the width of the page: one quiet display size (--s5) at 600,
-   wrapping normally. See DECISIONS.md "Owner feedback". */
-[data-fit] {
-  font-size: var(--s5) !important;
-  line-height: 1.02 !important;
-  letter-spacing: -.03em !important;
-  font-weight: 600 !important;
-  white-space: normal !important;
-  margin-left: 0 !important;
+  .skip, .wipe-edge { display: none !important; }
 }

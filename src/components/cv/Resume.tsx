@@ -79,7 +79,7 @@ export default function Resume(): JSX.Element {
           </a>
           <p className="resume-bar-label label">{site.cv.label}</p>
           <div className="resume-bar-actions">
-            <a className="resume-bar-link u" href="/Ratko_Sisovic_CV.pdf" download>
+            <a className="resume-bar-link u" href={site.cv.pdf} download>
               {site.cv.download}
             </a>
             <button type="button" className="resume-print" onClick={() => window.print()}>

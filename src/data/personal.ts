@@ -26,6 +26,8 @@ export const personal = {
     note: 'I keep a daily engineering log, written in Serbian. Only the entry dates are shown here.',
     busiest: 'Busiest day: {count} entries on {date}',
     monthSummary: '{month}: {entries} entries on {days} days',
+    monthCount: '{entries} entries on {days} days',
+    oneEntry: 'One entry',
   },
   nowHeading: 'Now',
   nowUpdated: 'Updated {month}',

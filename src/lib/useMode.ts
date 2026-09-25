@@ -7,7 +7,6 @@ import { useSyncExternalStore } from 'react';
 import { flushSync } from 'react-dom';
 import { site } from '../data/site';
 import { applyDocumentMeta } from './documentMeta';
-import { fitDisplayLines } from './fit';
 import { DEFAULT_MODE, parseMode, withMode, type Mode } from './mode';
 
 type SetModeOptions = { focusToggle?: boolean };
@@ -76,9 +75,7 @@ function applyMode(next: Mode, opts?: SetModeOptions): void {
   }
   root.dataset.mode = next;
   listeners.forEach((cb) => cb());
-  root.classList.remove('show-grid'); // the grid button only exists in Professional
   applyDocumentMeta({ kind: 'home' }, next);
-  fitDisplayLines();
   window.scrollTo(0, 0);
   announce(next);
   if (opts?.focusToggle || needsFocusRescue()) focusRadio(next);

@@ -1,32 +1,34 @@
 /* ------------------------------------------------------------------
    Personal home (SPEC §6.2). Warm ink, bone, one vermilion-orange.
-   Column 6 is the second axis everywhere: the k of the fitted first
-   name, the photo, and every block of content start on it.
+   Column 6 is the second axis everywhere: the photo and every block of
+   content start on it; names and labels hold columns 1–5.
    Every selector starts with .p- (R4). The work-log figure is worklog.css.
 ------------------------------------------------------------------- */
 
-/* ---------------- hero ---------------- */
-/* The first name is sized so the k's stem lands on column 6 (the k starts
-   1.452em from the R's stem), and the photo starts on that column one gutter
-   below the baseline. cqi resolves against .p-hero, the size container. */
-.p-hero,
-.p-under { --pn: calc((100cqi + var(--g)) * 5 / 12 / 1.452); }
-.p-hero { padding-top: 28px; }
+/* ---------------- hero ----------------
+   The name, the line and the intro in columns 1–5; the photo from column 6,
+   square, five columns wide. The name has the Professional name's exact size,
+   metrics and position (hero.css), so a mode switch leaves it in place. */
+.p-hero { padding-top: 64px; }
+.p-hero-grid { grid-template-rows: auto auto 1fr; align-items: start; }
 .p-name {
-  font-size: var(--pn); line-height: .78; letter-spacing: -.065em; font-weight: 700;
-  margin-left: -.06em; padding-top: .06em; white-space: nowrap;
+  grid-column: 1 / span 5; grid-row: 1;
+  font-size: var(--s5); line-height: 1.05; letter-spacing: -.03em; font-weight: 600;
+  margin-left: -.05em;   /* optical: the R's stem on the margin */
 }
-/* the line box ends .01em below the baseline, so this puts the photo exactly one gutter under it */
-.p-under { margin-top: calc(var(--g) - var(--pn) * .01); align-items: start; }
-.p-photo { grid-column: 6 / span 5; grid-row: 1; }
+.p-line {
+  grid-column: 1 / span 5; grid-row: 2; margin-top: 24px;
+  font-size: var(--s3); line-height: 1.3; letter-spacing: -.015em; font-weight: 500;
+  max-width: 24em; text-wrap: balance;
+}
+.p-body { grid-column: 1 / span 5; grid-row: 3; margin-top: 16px; max-width: 38ch; text-wrap: pretty; }
+/* the photo's top edge on the name's cap height */
+.p-photo { grid-column: 6 / span 5; grid-row: 1 / -1; margin-top: calc(var(--s5) * .22); }
 .p-photo img {
   width: 100%; aspect-ratio: 1 / 1; object-fit: cover; object-position: 50% 35%;
   filter: url(#duotone-personal);
   background: var(--rule);                 /* the frame holds its place while the photo decodes */
 }
-.p-intro { grid-column: 1 / span 5; grid-row: 1; padding-top: 2px; }
-.p-line { font-size: var(--s3); line-height: 1.2; letter-spacing: -.022em; font-weight: 500; max-width: 16em; text-wrap: balance; }
-.p-body { margin-top: 24px; max-width: 36ch; }
 
 /* ---------------- sections: a label on columns 1–5, the content from column 6 ---------------- */
 .p-sec { margin-top: 168px; }
@@ -56,12 +58,12 @@
 .p-thought figcaption { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 4px 24px; align-items: baseline; }
 .p-author { font-weight: 500; }
 
-/* the Brain */
+/* side projects (the vault and its three domains) */
 .p-lede { grid-column: 6 / span 6; font-size: var(--s3); line-height: 1.22; letter-spacing: -.02em; max-width: 22em; }
 .p-domains { margin-top: 64px; }
 .p-domains li { grid-column: span 4; border-top: 1px solid var(--rule-strong); padding-top: 14px; }
-.p-dom { font-size: var(--s4); line-height: 1; letter-spacing: -.04em; font-weight: 600; }
-.p-domains p { margin-top: 18px; max-width: 32ch; }
+.p-dom { font-size: var(--s3); line-height: 1.1; letter-spacing: -.02em; font-weight: 600; }
+.p-domains p { margin-top: 12px; max-width: 32ch; }
 .p-domains strong { font-weight: 600; }
 .p-none { color: var(--ink-2); }
 .p-study { text-decoration-color: var(--ink-2); }
@@ -91,12 +93,12 @@
 .p-handle { color: var(--ink-2); font-size: var(--s1); margin-left: 12px; letter-spacing: 0; font-weight: 400; transition: color .15s; }
 .p-else a:hover .p-handle { color: var(--ink); }
 
-/* ---------------- footer: the name in Cyrillic, at the width of the page ---------------- */
+/* ---------------- footer: the name in Cyrillic ---------------- */
 .p-end { margin-top: 184px; }
-.p-cap { color: var(--ink-2); margin-bottom: 20px; }
+.p-cap { color: var(--ink-2); margin-bottom: 12px; }
 .p-sign {
-  font-size: 13.84cqi; line-height: .8; letter-spacing: -.06em; font-weight: 700; color: var(--accent);
-  margin-left: -.06em; padding-top: .04em; white-space: nowrap;
+  font-size: var(--s4); line-height: 1.1; letter-spacing: -.03em; font-weight: 600; color: var(--accent);
+  margin-left: -.04em;
 }
 .p-foot {
   margin-top: 28px; padding: 2px 0 16px; border-top: 1px solid var(--rule);
@@ -110,7 +112,7 @@
 @media (min-width: 721px) and (max-width: 1100px) {
   .p-photo { grid-column: 6 / span 6; }
   .p-log-text, .p-now, .p-tools, .p-lede, .p-off { grid-column: 6 / -1; }
-  /* four columns are too narrow for "Developer" at 52px: each domain becomes a row on the column-6 axis */
+  /* four columns of text are ~28 characters here: each domain becomes a row on the column-6 axis */
   .p-domains li {
     grid-column: 1 / -1; display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
     column-gap: var(--g); align-items: baseline; padding-bottom: 36px;
@@ -122,13 +124,13 @@
   .p-turn { grid-column: 8 / -1; }
 }
 
-/* ---------------- phone (≤720): one column; name, photo, words ---------------- */
+/* ---------------- phone (≤720): one column; name, line, photo, intro ---------------- */
 @media (max-width: 720px) {
-  .p-hero,
-  .p-under { --pn: calc(100cqi / 2.48); }
-  .p-hero { padding-top: 16px; }
-  .p-under { display: block; }
-  .p-intro { margin-top: 28px; padding-top: 0; }
+  .p-hero { padding-top: 32px; }
+  .p-hero-grid { display: block; }
+  .p-line { margin-top: 16px; }
+  .p-photo { margin-top: 24px; }
+  .p-body { margin-top: 20px; }
 
   .p-sec { margin-top: 104px; }
   .p-row { row-gap: 20px; }
@@ -142,6 +144,9 @@
   .p-domains { margin-top: 36px; row-gap: 32px; }
   .p-domains li { grid-column: 1 / -1; }
   .p-domains p { margin-top: 10px; }
+  /* a taller hit area on the case-study link inside the sentence, without moving the text */
+  .p-study { position: relative; }
+  .p-study::before { content: ''; position: absolute; left: 0; right: 0; top: -12px; bottom: -12px; }
 
   /* elsewhere: full-width rows between hairlines, handle on the right */
   .p-else { flex-direction: column; gap: 0; }
@@ -152,8 +157,6 @@
   .p-handle { margin-left: 0; text-align: right; min-width: 0; overflow-wrap: anywhere; }
 
   .p-end { margin-top: 120px; }
-  .p-sign { font-size: 21.9cqi; line-height: .9; white-space: normal; }
-  .p-sign span { display: block; }
   .p-foot { padding-top: 10px; row-gap: 2px; }
   .p-copy, .p-place, .p-turn { grid-column: 1 / -1; justify-self: start; }
   .p-turn { margin-top: 6px; }

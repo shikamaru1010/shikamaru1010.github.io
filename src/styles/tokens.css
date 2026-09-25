@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------
    Design tokens. One family (Golos Text), a 12-column grid (4 on phones),
-   hairlines, one accent. Five sizes: --t1..--t4 plus "the width of the page".
-   The colophon prints --t1..--t4 and --cols straight from these tokens,
-   so the claim on the page cannot drift from the code.
+   hairlines, one accent. Five sizes, --s1..--s5: labels, body, names of
+   things and ledes, section heads, and the one display size (the name).
+   Nothing is fitted to the width of the page.
 ------------------------------------------------------------------- */
 
 /* Golos fallback with matched metrics (measured in Chrome: ascent .98em, descent .22em,
@@ -36,8 +36,8 @@
   --ease: cubic-bezier(.76, 0, .24, 1);
 
   /* type scale: labels, body, names of things, section heads, display (the name).
-     Owner feedback 2026-09-25: the fitted, page-wide name and 64px heads were too loud — the scale
-     is deliberately quiet now; hierarchy comes from weight, space and the grid, not size. */
+     Deliberately quiet (owner feedback, 2026-09-25): hierarchy comes from weight, space,
+     rules and the grid, not from size. Weight 600 at most. */
   --t1: 13; --t2: 16; --t3: 21; --t4: 36; --t5: 56;
   --s1: calc(var(--t1) * 1px);
   --s2: calc(var(--t2) * 1px);

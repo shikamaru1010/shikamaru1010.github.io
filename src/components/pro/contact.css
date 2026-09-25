@@ -33,6 +33,9 @@
   transition: text-decoration-color .15s;
 }
 .mail:hover { text-decoration-color: var(--accent); }
+/* a 44px hit area around the one-line address, without moving it */
+.mail { position: relative; }
+.mail::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%); }
 .mail .at { color: var(--accent); }
 
 .copy-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 24px; }

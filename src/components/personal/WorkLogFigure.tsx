@@ -3,12 +3,6 @@ import { personal } from '../../data/personal';
 import { fill, formatDate, monthYear } from '../../lib/format';
 import './worklog.css';
 
-// UI copy (no facts: every number comes from worklog.json)
-const COPY = {
-  monthCount: '{entries} entries on {days} days',
-  oneEntry: 'One entry',
-};
-
 export type WorklogData = { asOf: string; total: number; days: Record<string, number> };
 
 export type WorklogMonth = {
@@ -37,7 +31,7 @@ const daysIn = (y: number, m: number) => new Date(Date.UTC(y, m, 0)).getUTCDate(
 
 /** A date never breaks across lines ('9 June 2026'). */
 export function keepTogether(s: string): string {
-  return s.replace(/ /g, ' ');
+  return s.replace(/ /g, '\u00a0');
 }
 
 /** The templates say "entries" and "days"; a month with one of either reads right too. */
@@ -97,12 +91,12 @@ export default function WorkLogFigure({ summary }: { summary: WorklogSummary }):
   const { months, busiest, first } = summary;
   if (!summary.total || !busiest || !first) return null;
 
-  const headline = fill(personal.log.headline, {
+  const headline = plural(fill(personal.log.headline, {
     total: summary.total,
     days: summary.dayCount,
     first: formatDate(first),
-  });
-  const busiestText = fill(personal.log.busiest, { count: busiest.count, date: keepTogether(formatDate(busiest.day)) });
+  }));
+  const busiestText = plural(fill(personal.log.busiest, { count: busiest.count, date: keepTogether(formatDate(busiest.day)) }));
 
   return (
     <figure className="wl">
@@ -135,7 +129,7 @@ export default function WorkLogFigure({ summary }: { summary: WorklogSummary }):
             </ol>
             <p className="wl-axis">
               <span className="wl-mname">{axisName(mo.key, i)}</span>{' '}
-              <span className="wl-mcount tnum">{plural(fill(COPY.monthCount, { entries: mo.entries, days: mo.days }))}</span>
+              <span className="wl-mcount tnum">{plural(fill(personal.log.monthCount, { entries: mo.entries, days: mo.days }))}</span>
             </p>
           </li>
         ))}
@@ -144,7 +138,7 @@ export default function WorkLogFigure({ summary }: { summary: WorklogSummary }):
       <p className="wl-legend label">
         <span className="wl-key" aria-hidden="true">
           <i className="wl-swatch" />
-          {COPY.oneEntry}
+          {personal.log.oneEntry}
         </span>
         <span className="wl-key">
           <i className="wl-swatch wl-swatch-top" aria-hidden="true" />

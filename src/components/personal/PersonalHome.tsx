@@ -9,7 +9,7 @@ import Now from './Now';
 import OffScreen from './OffScreen';
 import PersonalHero from './PersonalHero';
 import Thought from './Thought';
-import WorkLogFigure, { keepTogether, summarizeWorklog, type WorklogData } from './WorkLogFigure';
+import WorkLogFigure, { keepTogether, plural, summarizeWorklog, type WorklogData } from './WorkLogFigure';
 import './personal.css';
 
 // Pure data, computed once (no DOM).
@@ -42,11 +42,13 @@ function WorkLog(): JSX.Element {
         <div className="p-log-text">
           {log.first && (
             <p className="p-log-t">
-              {fill(copy.headline, {
-                total: log.total,
-                days: log.dayCount,
-                first: keepTogether(formatDate(log.first)),
-              })}
+              {plural(
+                fill(copy.headline, {
+                  total: log.total,
+                  days: log.dayCount,
+                  first: keepTogether(formatDate(log.first)),
+                }),
+              )}
             </p>
           )}
           <p className="p-log-note">{copy.note}</p>
@@ -57,7 +59,7 @@ function WorkLog(): JSX.Element {
   );
 }
 
-/** Personal mode: first name, photo, the log, now, a thought, the Brain and where else to find me. */
+/** Personal mode: first name, photo, the log, now, a thought, side projects and where else to find me. */
 export default function PersonalHome(): JSX.Element {
   return (
     <>

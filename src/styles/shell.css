@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------
    Shell: the sticky header (brand · mode switch · nav · CV), the
-   "turn the page" link, the grid overlay and the one transition.
+   link to the other side at the end of each mode, and the one transition.
 ------------------------------------------------------------------- */
 
 /* ---------------- header ---------------- */
@@ -29,7 +29,9 @@
 .switch {
   grid-column: 4 / span 4; justify-self: start;
   position: relative; display: inline-grid; grid-template-columns: 1fr 1fr;
-  border: 1px solid var(--rule-strong); height: 36px;
+  height: 36px;
+  /* the hairline box is an inset outline, not a border, so each cell gets the full height (44px on phones) */
+  outline: 1px solid var(--rule-strong); outline-offset: -1px;
 }
 .switch::before {
   content: ''; position: absolute; top: 0; bottom: 0; left: 0;
@@ -53,7 +55,7 @@ html[data-mode="personal"] .switch-cell[data-mode-radio="professional"]:hover { 
 html:not([data-mode="personal"]) .switch-cell[data-mode-radio="professional"]:focus-visible,
 html[data-mode="personal"] .switch-cell[data-mode-radio="personal"]:focus-visible { outline-color: var(--paper); }
 
-/* ---------------- turn the page (the end of each mode) ---------------- */
+/* ---------------- the switch to the other side (the end of each mode) ---------------- */
 .turn { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
 
 /* ---------------- tablet (721–1100) ---------------- */
@@ -73,17 +75,6 @@ html[data-mode="personal"] .switch-cell[data-mode-radio="personal"]:focus-visibl
   .nav-cv { padding-left: 4px; }
 }
 @media (max-width: 380px) { .brand .sur { display: none; } }
-
-/* ---------------- grid overlay (the button lives in the colophon) ---------------- */
-.grid-overlay { position: fixed; inset: 0; z-index: 40; pointer-events: none; display: none; }
-.grid-overlay .grid { height: 100%; }
-.grid-overlay .grid span {
-  background: color-mix(in srgb, var(--accent) 9%, transparent);
-  border-inline: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-}
-.grid-overlay .grid span:nth-child(n+5) { display: var(--more, block); }
-@media (max-width: 720px) { .grid-overlay { --more: none; } }
-html.show-grid .grid-overlay { display: block; }
 
 /* ---------------- the one transition: a hard-edged wipe ---------------- */
 .wipe-edge {

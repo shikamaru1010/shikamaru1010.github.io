@@ -5,12 +5,10 @@ import PersonalFooter from './components/personal/PersonalFooter';
 import PersonalHome from './components/personal/PersonalHome';
 import Colophon from './components/pro/Colophon';
 import ProfessionalHome from './components/ProfessionalHome';
-import GridOverlay from './components/shell/GridOverlay';
 import SiteHeader from './components/shell/SiteHeader';
 import SkipLink from './components/shell/SkipLink';
 import { studyProjects } from './data/projects';
 import { applyDocumentMeta } from './lib/documentMeta';
-import { useFitDisplay } from './lib/fit';
 import { parseRoute, type Route } from './lib/route';
 import { useMode } from './lib/useMode';
 
@@ -75,8 +73,6 @@ export default function App(): JSX.Element {
     else window.scrollTo(0, homeScrollY ?? 0); // browser Back from the CV or a case study
   }, [route]);
 
-  useFitDisplay([route.kind, mode]);
-
   if (route.kind === 'cv') return <Resume />;
   if (study) return <CaseStudy project={study} />;
 
@@ -99,7 +95,6 @@ export default function App(): JSX.Element {
       <footer className="only-personal">
         <PersonalFooter />
       </footer>
-      <GridOverlay />
       <div className="wipe-edge" aria-hidden="true" />
     </>
   );
