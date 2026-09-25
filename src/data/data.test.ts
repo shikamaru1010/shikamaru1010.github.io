@@ -118,9 +118,7 @@ describe('personal.ts', () => {
       personal.thought.heading,
       personal.thought.provenance,
       personal.brain.heading,
-      personal.brain.sub,
       personal.brain.lede,
-      personal.brain.emptyText,
       personal.brain.plannedLead,
       personal.brain.planned,
       personal.offlineHeading,
@@ -139,13 +137,20 @@ describe('personal.ts', () => {
     expect(personal.thought.provenance).toContain('{poolSize}');
   });
 
-  it('the photo exists under public/', () => {
+  it('the photo and every srcset candidate exist under public/', () => {
     expect(existsSync(publicFile(personal.photo.src))).toBe(true);
+    const candidates = personal.photo.srcset.split(',').map((c) => c.trim().split(/\s+/));
+    expect(candidates.map(([src]) => src)).toContain(personal.photo.src);
+    for (const [src, w] of candidates) {
+      expect(existsSync(publicFile(src)), src).toBe(true);
+      expect(w).toMatch(/^\d+w$/);
+    }
   });
 
-  it('brain domains link real projects', () => {
+  it('brain domains link real projects, and the lede names every domain', () => {
     for (const d of personal.brain.domains) {
       if (d.project) expect(projectById(d.project.id), d.project.id).toBeDefined();
+      expect(personal.brain.lede.toLowerCase()).toContain(d.name.toLowerCase());
     }
   });
 
@@ -176,6 +181,15 @@ describe('experience.ts', () => {
     for (const l of languages) {
       expect(l.name.trim()).not.toBe('');
       expect(l.level.trim()).not.toBe('');
+    }
+  });
+
+  it('the CV shows at least one point of every role', () => {
+    for (const x of experience) {
+      if (x.cvPoints !== undefined) {
+        expect(x.cvPoints, x.role).toBeGreaterThanOrEqual(1);
+        expect(x.cvPoints, x.role).toBeLessThanOrEqual(x.points.length);
+      }
     }
   });
 

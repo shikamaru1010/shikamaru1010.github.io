@@ -12,8 +12,9 @@
 .xp-row .what { grid-column: 7 / span 5; max-width: 52ch; }
 .xp-row .what p + p { margin-top: 12px; }
 
-/* education: a strong rule and a little air set it apart from the roles */
-.xp-row.edu { border-top-color: var(--rule-strong); margin-top: 32px; }
+/* education: a strong rule and a little air set it apart from the roles; it ends the section,
+   so no padding under it (the next section's own padding sets the gap to its rule) */
+.xp-row.edu { border-top-color: var(--rule-strong); margin-top: 32px; padding-bottom: 0; }
 .xp-row .what .label { margin-top: 22px; }
 .xp-courses { margin-top: 8px; }
 .xp-courses li { line-height: 1.45; }
@@ -35,5 +36,5 @@
   .xp-row .when, .xp-row .who, .xp-row .what { grid-column: 1 / -1; }
   .xp-row .when { color: var(--ink-2); }
   .xp-row .what { margin-top: 8px; }
-  .xp-row.edu { margin-top: 24px; }
+  .xp-row.edu { margin-top: 24px; padding-bottom: 0; }
 }

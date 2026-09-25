@@ -1,14 +1,9 @@
 import { smallerProjects } from '../../data/projects';
 import { site } from '../../data/site';
-import { yearRange } from '../../lib/format';
+import { stackLine, yearRange } from '../../lib/format';
 
 /** How many technologies each smaller project shows. */
 const STACK_SHOWN = 3;
-
-/** The stack as comma-separated text; a version number never wraps away from its name ('Tailwind 4'). */
-function stackLine(tech: readonly string[]): string {
-  return tech.map((t) => t.replace(/ (?=\d)/g, '\u00a0')).join(', ');
-}
 
 /** Smaller projects (SPEC §6.1.2): one line each on the grid. Styles live in work.css. */
 export default function SmallerProjects(): JSX.Element {

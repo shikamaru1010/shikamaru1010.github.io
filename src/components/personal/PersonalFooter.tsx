@@ -1,6 +1,6 @@
 import { personal } from '../../data/personal';
 import { profile } from '../../data/profile';
-import { buildYear } from '../../lib/format';
+import { updatedYear } from '../../lib/format';
 import TurnThePage from '../shell/TurnThePage';
 import './personal.css';
 
@@ -23,7 +23,7 @@ export default function PersonalFooter(): JSX.Element {
       </p>
       <div className="p-foot grid">
         <p className="p-copy">
-          © <span className="tnum">{buildYear}</span> {profile.name}
+          © <span className="tnum">{updatedYear}</span> {profile.name}
         </p>
         <p className="p-place">{personal.footPlace}</p>
         <p className="p-turn">

@@ -12,7 +12,8 @@
     "pdf": "node scripts/generate-pdf.mjs",
     "daily-message": "node scripts/generate-daily-message.mjs",
     "worklog": "node scripts/export-worklog.mjs",
-    "og": "node scripts/generate-og.mjs"
+    "og": "node scripts/generate-og.mjs",
+    "images": "node scripts/image-variants.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

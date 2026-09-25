@@ -14,29 +14,33 @@ function ProjectName({ project }: { project: NonNullable<BrainDomain['project']>
   );
 }
 
-/** Side projects: one Obsidian vault, three domains, and the agents that write into it. */
+/**
+ * Side projects: one Obsidian vault, three domains, and the agents that write into it.
+ * A domain is drawn only when something writes into it; the lede names all three.
+ */
 export default function Brain(): JSX.Element {
   const { brain } = personal;
+  const shown = brain.domains.filter((d) => d.project || d.text);
   return (
     <section className="wrap p-sec" id="brain" aria-labelledby="brain-h">
       <div className="grid p-row">
         <div className="p-label">
           <h2 id="brain-h">{brain.heading}</h2>
-          <p className="label">{brain.sub}</p>
         </div>
         <p className="p-lede">{brain.lede}</p>
       </div>
-      <ul className="p-domains grid">
-        {brain.domains.map((d) => (
-          <li key={d.name}>
+      <ul className="p-domains">
+        {shown.map((d) => (
+          <li key={d.name} className="grid">
             <h3 className="p-dom">{d.name}</h3>
-            {d.project ? (
-              <p>
-                <ProjectName project={d.project} /> {d.text}
-              </p>
-            ) : (
-              <p className="p-none">{brain.emptyText}</p>
-            )}
+            <p>
+              {d.project ? (
+                <>
+                  <ProjectName project={d.project} />{' '}
+                </>
+              ) : null}
+              {d.text}
+            </p>
           </li>
         ))}
       </ul>

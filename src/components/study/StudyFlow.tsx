@@ -4,12 +4,8 @@ import { fill } from '../../lib/format';
 
 // "How it works": the steps on a vertical stop line (the home pipeline's phone
 // form, at every width). Shape code (DECISIONS 10): a square is the system, a
-// filled circle is a person stepping in (site.study.personActors). The actor is
-// also written out next to every step, so the shape is never the only signal.
-
-function isPersonActor(actor: string): boolean {
-  return (site.study.personActors as readonly string[]).includes(actor);
-}
+// filled circle is a person stepping in (the step's `kind`). The actor is also
+// written out next to every step, so the shape is never the only signal.
 
 export default function StudyFlow({ steps }: { steps: WorkflowStep[] }): JSX.Element {
   return (
@@ -34,7 +30,7 @@ export default function StudyFlow({ steps }: { steps: WorkflowStep[] }): JSX.Ele
       </div>
       <ol className="study-flow">
         {steps.map((step) => (
-          <li key={step.title} className={`study-step grid${isPersonActor(step.actor) ? ' is-person' : ''}`}>
+          <li key={step.title} className={`study-step grid${step.kind === 'person' ? ' is-person' : ''}`}>
             <p className="study-actor label">{step.actor}</p>
             <div className="study-step-body">
               <h3 className="study-step-title">{step.title}</h3>

@@ -14,9 +14,9 @@ export const profile = {
   linkedinHandle: 'ratkošišović',
   siteUrl: 'https://shikamaru1010.github.io',
   availability: 'Open to future opportunities.',
-  lede: 'I’m a software engineering intern at Podyx and a 4th-year Information Systems & Technologies student at FON, University of Belgrade. Since 2023 I have delivered websites and internal tools for local businesses, and I build automation systems in Python and TypeScript with monitoring, guardrails and human approval steps.',
+  lede: 'I’m a software engineering intern at Podyx and a 4th-year Information Systems & Technologies student at FON, University of Belgrade. Since 2023 I have delivered websites and internal tools for local businesses, and I build my own automation in Python and TypeScript, including a trading pipeline that asks me on Telegram before it trades.',
   cvSummary:
-    'Software engineering intern at Podyx and 4th-year Information Systems & Technologies student at FON, University of Belgrade. Since 2023 I have built websites and internal tools for local businesses. Since 2025 I have also built my own agent pipelines, data pipelines and monitoring, with guardrails, retries and decision logs so a failure can be traced.',
+    'Software engineering intern at Podyx and 4th-year Information Systems & Technologies student at FON, University of Belgrade. Since 2023 I have built websites and internal tools for local businesses.',
   metaDescription:
     'Ratko Šišović, software developer in Belgrade. Software engineering intern at Podyx and 4th-year Information Systems student at FON, University of Belgrade.',
 };

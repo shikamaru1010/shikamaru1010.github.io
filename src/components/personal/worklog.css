@@ -39,6 +39,14 @@
 .wl-swatch { flex: none; width: 8px; height: 8px; background: var(--ink); }
 .wl-swatch-top { background: var(--accent); }
 
+/* Windows high contrast drops backgrounds: draw the marks and the key in system colours */
+@media (forced-colors: active) {
+  .wl-days i,
+  .wl-swatch { forced-color-adjust: none; background: CanvasText; }
+  .wl-days .wl-top i,
+  .wl-swatch-top { background: Highlight; }
+}
+
 /* tablet: the same axis in less width, so a hairline gap keeps the squares legible */
 @media (min-width: 721px) and (max-width: 1100px) {
   .wl { --wl-gap: 1px; }

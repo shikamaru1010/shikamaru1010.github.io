@@ -1,8 +1,8 @@
 // Renders public/og-image.png (2400 × 1260): the share card, in the site's Professional language.
 // Usage: npm run og   (needs network for the Golos Text stylesheet; Node >= 22.18 for the .ts imports)
 //
-// Every word comes from src/data (profile.ts, experience.ts). src/lib/format.ts is NOT imported: it reads
-// the Vite-only __BUILD_DATE__ at load time. The type follows the owner's quiet scale (DECISIONS A): the
+// Every word comes from src/data (profile.ts, experience.ts). src/lib/format.ts is NOT imported: it imports
+// a JSON file, which Node's type stripping does not load without an import attribute. The type follows the owner's quiet scale (DECISIONS A): the
 // name is ordinary display text at 600, not fitted to the width of the card.
 import { writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';

@@ -1,4 +1,4 @@
-// Picks the day's quote from the verified pool (quote-pool.mjs) and overwrites
+// Picks the day's quote from the pool (quote-pool.mjs) and overwrites
 // src/data/daily-message.json. Run by .github/workflows/daily-message.yml on a
 // 24h schedule, deterministic by calendar day (UTC), so re-running on the same
 // day always yields the same pick. It also records the pool size and the index

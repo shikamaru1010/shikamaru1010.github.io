@@ -7,6 +7,8 @@ export type Experience = {
   start: string;
   end?: string;
   points: string[];
+  /** How many of `points` the CV sheet shows (the rest are covered by its Selected projects). All when absent. */
+  cvPoints?: number;
   tech?: string[];
 };
 
@@ -22,32 +24,44 @@ export const experience: Experience[] = [
     ],
   },
   {
-    role: 'Web & internal tools developer',
+    role: 'Web and Internal Tools Developer',
     org: 'Freelance',
     location: 'Belgrade',
     start: '2023',
     points: [
       'Websites and internal tools for local businesses, from the first conversation with the owner to deployment and ongoing support.',
-      'One of them is a Django and AI internal system for a butcher and grill business. On a schedule, it produces daily P&L reports and the PDF declarations Serbian regulations require.',
-      'I also shipped the Pilatiq Reformeri catalog and several client websites, working directly with the owners on requirements and iterations.',
+      'For Mesara Šisko I built the internal system that produces daily P&L reports and the PDF declarations Serbian regulations require, on a schedule.',
+      'I also delivered several client websites, working directly with the owners on requirements and iterations.',
     ],
     tech: ['Python/Django', 'JavaScript', 'Node.js', 'Docker', 'Tailwind', 'AI integrations'],
   },
   {
-    role: 'Independent systems',
+    role: 'Independent Systems',
     org: 'Personal projects',
-    location: 'Remote',
+    location: '',
     start: '2025',
     points: [
       'Agent pipelines, data pipelines and monitoring of my own, built with guardrails and logs so a failure can be traced.',
       'tradingAgent runs a daily AI trading pipeline with FastAPI dashboards, circuit breakers and my approval on Telegram before anything executes.',
-      'dev-dashboard monitors dozens of my repositories and syncs them into my Obsidian vault, with no third-party runtime dependencies.',
+      'dev-dashboard monitors dozens of my repositories and syncs them into my Obsidian vault through git, GitHub and Obsidian integrations I wrote myself.',
     ],
+    cvPoints: 1,
     tech: ['Python', 'TypeScript', 'Next.js', 'React Native', 'FastAPI', 'REST APIs'],
   },
 ];
 
 export type Course = { name: string; detail?: string; featured?: boolean };
+
+const courses: Course[] = [
+  { name: 'Computer networks and internet technologies', detail: 'TCP/IP, HTTP, Wireshark, Python sockets', featured: true },
+  { name: 'Software design', detail: 'GoF patterns, 3-tier architecture, Java and JDBC, a client-server project', featured: true },
+  { name: 'Information systems design', detail: 'UML, requirements analysis, system modeling', featured: true },
+  { name: 'Operations research 1 and 2', detail: 'linear programming, optimization, Markov chains', featured: true },
+  { name: 'Mathematics', detail: 'calculus, discrete mathematics, probability and statistics, numerical analysis' },
+  { name: 'Management and organization', detail: 'management, economics, systems theory' },
+  { name: 'Databases', featured: true },
+  { name: 'Data structures and algorithms', featured: true },
+];
 
 export const education = {
   school: 'Faculty of Organizational Sciences (FON), University of Belgrade',
@@ -55,22 +69,14 @@ export const education = {
   university: 'University of Belgrade',
   field: 'Information Systems & Technologies',
   degree: 'B.Sc. Information Systems & Technologies',
+  /** Not shown: it needs its English name first. */
   module: 'TEP module',
   start: 2023,
   expectedEnd: 2027,
   year: 4,
   detail:
     'FON pairs the technical core with management, economics and a lot of mathematics. Outside the curriculum I work hands-on with Wireshark, GNS3, Cisco Packet Tracer, Docker and Linux tooling.',
-  courses: [
-    { name: 'Computer networks and internet technologies', detail: 'TCP/IP, HTTP, Wireshark, Python sockets', featured: true },
-    { name: 'Software design', detail: 'GoF patterns, 3-tier architecture, Java and JDBC, a client-server project', featured: true },
-    { name: 'Information systems design', detail: 'UML, requirements analysis, system modelling', featured: true },
-    { name: 'Operations research 1 and 2', detail: 'linear programming, optimization, Markov chains', featured: true },
-    { name: 'Mathematics', detail: 'calculus, discrete mathematics, probability and statistics, numerical analysis' },
-    { name: 'Management and organization', detail: 'management, economics, systems theory' },
-    { name: 'Databases', featured: true },
-    { name: 'Data structures and algorithms', featured: true },
-  ] as Course[],
+  courses,
 };
 
 export type Education = typeof education;

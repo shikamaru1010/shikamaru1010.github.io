@@ -15,7 +15,8 @@
           m = new URLSearchParams(location.search).get('mode') === 'personal' ? 'personal' : 'professional';
           h = location.hash;
         } catch (e) {}
-        var r = h === '#resume' ? 'cv' : h.indexOf('#project/') === 0 ? 'study' : 'home';
+        var S = ['mesara', 'dev-dashboard']; /* the ids with a case study (mode.test.ts checks) */
+        var r = h === '#resume' ? 'cv' : h.indexOf('#project/') === 0 && S.indexOf(h.slice(9)) >= 0 ? 'study' : 'home';
         d.setAttribute('data-mode', m);
         d.setAttribute('data-route', r);
         if (m === 'personal' && r === 'home') {
@@ -23,7 +24,9 @@
           var t = document.querySelector('meta[name="theme-color"]');
           if (t) t.setAttribute('content', '#15130F');
           var l = document.createElement('link');
-          l.rel = 'preload'; l.as = 'image'; l.href = '/ratko/ratko-square.webp';
+          l.rel = 'preload'; l.as = 'image'; l.href = '/ratko/ratko-square-l.webp';
+          l.setAttribute('imagesrcset', '/ratko/ratko-square-l-480.webp 480w, /ratko/ratko-square-l.webp 800w');
+          l.setAttribute('imagesizes', '(max-width: 720px) calc(100vw - 32px), (max-width: 1100px) 50vw, 40vw');
           l.setAttribute('fetchpriority', 'high');
           document.head.appendChild(l);
         }
@@ -58,6 +61,7 @@
       content="Ratko Šišović, software developer in Belgrade. Software engineering intern at Podyx and 4th-year Information Systems student at FON, University of Belgrade."
     />
     <meta name="twitter:image" content="https://shikamaru1010.github.io/og-image.png" />
+    <meta name="twitter:image:alt" content="Ratko Šišović, software developer" />
 
     <!-- Fonts: Golos Text only (latin, latin-ext, cyrillic, cyrillic-ext), plus the arrows and ≤ as one more face -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -74,6 +78,7 @@
         "alternateName": "Ratko Sisovic",
         "jobTitle": "Software developer",
         "url": "https://shikamaru1010.github.io/",
+        "image": "https://shikamaru1010.github.io/ratko/ratko-square.webp",
         "email": "mailto:ralesisko@gmail.com",
         "address": {
           "@type": "PostalAddress",

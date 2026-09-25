@@ -1,11 +1,12 @@
-// Verified pool for the footer's daily message — real, well-documented quotes
-// with correct attribution only. No AI-invented text or authors here on
+// The pool for Personal's daily thought. No AI-invented text or authors here on
 // purpose: misattributing a quote on a professional portfolio is the kind of
-// small error a visitor might actually notice. Add to this list freely, but
-// only with quotes you can verify.
+// small error a visitor might actually notice. Several popular entries below are
+// often traced to someone else (the Aristotle "patience", Buddha, Leonardo,
+// Twain, Mandela "glory" and Rumi lines, among others): keep only quotes with a
+// primary source you can point to. No em dashes (the page's typography rule).
 export const quotePool = [
   { text: 'We suffer more often in imagination than in reality.', author: 'Seneca' },
-  { text: 'You have power over your mind — not outside events. Realize this, and you will find strength.', author: 'Marcus Aurelius' },
+  { text: 'You have power over your mind, not outside events. Realize this, and you will find strength.', author: 'Marcus Aurelius' },
   { text: 'The happiness of your life depends upon the quality of your thoughts.', author: 'Marcus Aurelius' },
   { text: 'Waste no more time arguing about what a good man should be. Be one.', author: 'Marcus Aurelius' },
   { text: 'The unexamined life is not worth living.', author: 'Socrates' },
@@ -36,7 +37,7 @@ export const quotePool = [
   { text: 'The greatest glory in living lies not in never falling, but in rising every time we fall.', author: 'Nelson Mandela' },
   { text: 'Do what you can, with what you have, where you are.', author: 'Theodore Roosevelt' },
   { text: 'The secret of getting ahead is getting started.', author: 'Mark Twain' },
-  { text: 'Whether you think you can, or you think you can’t — you’re right.', author: 'Henry Ford' },
+  { text: 'Whether you think you can, or you think you can’t, you’re right.', author: 'Henry Ford' },
   { text: 'I have not failed. I’ve just found 10,000 ways that won’t work.', author: 'Thomas Edison' },
   { text: 'Genius is one percent inspiration and ninety-nine percent perspiration.', author: 'Thomas Edison' },
   { text: 'The best way to predict the future is to invent it.', author: 'Alan Kay' },

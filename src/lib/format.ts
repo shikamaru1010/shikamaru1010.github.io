@@ -1,5 +1,6 @@
 // Small, pure text helpers shared by every section. Month names are constants
 // (no Intl), so Node (tests, scripts) and browsers print the same thing.
+import updated from '../data/updated.json';
 
 const MONTHS = [
   'January',
@@ -40,12 +41,15 @@ const NUMBER_WORDS = [
   'twenty',
 ] as const;
 
-/** The ISO date of the build (Vite `define`). Falls back to today under plain Node. */
-export const BUILD_DATE: string =
-  typeof __BUILD_DATE__ === 'string' ? __BUILD_DATE__ : new Date().toISOString().slice(0, 10);
+/**
+ * The ISO date the content was last stamped: "Updated <date>" in the colophon, the case
+ * studies, the CV page and the PDF. `npm run pdf` writes it (src/data/updated.json) when it
+ * regenerates the CV, so it moves with the content, not with the daily rebuild.
+ */
+export const UPDATED: string = updated.date;
 
-/** Year of the build: "years of freelance work" and the © line. */
-export const buildYear = Number(BUILD_DATE.slice(0, 4));
+/** The year of that date: the © line. */
+export const updatedYear = Number(UPDATED.slice(0, 4));
 
 /** Replaces `{key}` in a template with `vars[key]`. Unknown keys are left as they are. */
 export function fill(template: string, vars: Record<string, string | number>): string {
@@ -128,6 +132,11 @@ export function yearRange(items: ReadonlyArray<{ year: string }>): string {
 export function listJoin(items: readonly string[]): string {
   if (items.length <= 1) return items.join('');
   return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
+}
+
+/** A stack as comma-separated text; a version number never wraps away from its name ('Tailwind 4'). */
+export function stackLine(tech: readonly string[]): string {
+  return tech.map((t) => t.replace(/ (?=\d)/g, '\u00a0')).join(', ');
 }
 
 /** 'https://www.rostiljsisko.rs/sr' → 'rostiljsisko.rs'. */

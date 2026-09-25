@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { personal } from '../data/personal';
+import { studyProjects } from '../data/projects';
 import { site } from '../data/site';
 import { DEFAULT_MODE, MODES, isPlainClick, metaFor, parseMode, withMode } from './mode';
 import { parseRoute } from './route';
@@ -167,39 +168,52 @@ describe('pre-paint script parity', () => {
     expect(src).not.toMatch(/=>|\blet\b|\bconst\b|`/);
   });
 
-  // [url, route the pre-paint script sets, same as parseRoute?]
-  const cases: Array<[string, 'home' | 'cv' | 'study', boolean]> = [
-    ['/', 'home', true],
-    ['/?mode=professional', 'home', true],
-    ['/?mode=personal', 'home', true],
-    ['/?mode=Personal', 'home', true],
-    ['/?x=1&mode=personal#work', 'home', true],
-    ['/?mode=personal#now', 'home', true],
-    ['/#resume', 'cv', true],
-    ['/?mode=personal#resume', 'cv', true],
-    ['/#project/mesara', 'study', true],
-    ['/?mode=personal#project/mesara', 'study', true],
-    ['/?mode=personal#project/dev-dashboard', 'study', true],
-    // Documented, accepted difference: a #project/<id> without a case study pre-paints as `study`,
-    // and App corrects it to `home` in its first layout effect.
-    ['/#project/pilatiq', 'study', false],
-    ['/?mode=personal#project/nope', 'study', false],
+  it('knows exactly the ids that have a case study', () => {
+    const m = src.match(/var S = \[([^\]]*)\]/);
+    expect(m, 'var S = [...] in the pre-paint script').not.toBeNull();
+    const ids = m![1].split(',').map((s) => s.trim().replace(/^'|'$/g, ''));
+    expect(ids).toEqual(studyProjects.map((p) => p.id));
+  });
+
+  // [url, route the pre-paint script sets]; it always equals parseRoute's kind
+  const cases: Array<[string, 'home' | 'cv' | 'study']> = [
+    ['/', 'home'],
+    ['/?mode=professional', 'home'],
+    ['/?mode=personal', 'home'],
+    ['/?mode=Personal', 'home'],
+    ['/?x=1&mode=personal#work', 'home'],
+    ['/?mode=personal#now', 'home'],
+    ['/#resume', 'cv'],
+    ['/?mode=personal#resume', 'cv'],
+    ['/#project/mesara', 'study'],
+    ['/?mode=personal#project/mesara', 'study'],
+    ['/?mode=personal#project/dev-dashboard', 'study'],
+    // a #project/<id> without a case study, or an unknown id, is home (App rewrites the hash)
+    ['/#project/pilatiq', 'home'],
+    ['/?mode=personal#project/pilatiq', 'home'],
+    ['/?mode=personal#project/nope', 'home'],
   ];
 
-  it.each(cases)('%s', (url, route, parity) => {
+  it.each(cases)('%s', (url, route) => {
     const u = new URL(url, 'https://shikamaru1010.github.io');
     const rec = runPrepaint(src, url);
     const mode = parseMode(u.search);
     expect(rec.attrs['data-mode']).toBe(mode);
     expect(rec.attrs['data-route']).toBe(route);
-    if (parity) expect(rec.attrs['data-route']).toBe(parseRoute(u.hash).kind);
-    else expect(parseRoute(u.hash).kind).toBe('home');
+    expect(rec.attrs['data-route']).toBe(parseRoute(u.hash).kind);
 
     if (mode === 'personal' && route === 'home') {
       expect(rec.title).toBe(site.titles.personal);
       expect(rec.themeColor).toBe(site.themeColor.personal);
       expect(rec.links).toHaveLength(1);
-      expect(rec.links[0]).toMatchObject({ rel: 'preload', as: 'image', href: personal.photo.src, fetchpriority: 'high' });
+      expect(rec.links[0]).toMatchObject({
+        rel: 'preload',
+        as: 'image',
+        href: personal.photo.src,
+        imagesrcset: personal.photo.srcset,
+        imagesizes: personal.photo.sizes,
+        fetchpriority: 'high',
+      });
     } else {
       expect(rec.title).toBe(site.titles.professional);
       expect(rec.themeColor).toBe(site.themeColor.professional);

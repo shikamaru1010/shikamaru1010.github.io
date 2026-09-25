@@ -2,6 +2,7 @@ import { education, experience, languages } from '../../data/experience';
 import { profile } from '../../data/profile';
 import { site } from '../../data/site';
 import { fill, monthYear, ordinal } from '../../lib/format';
+import NewTab from '../shell/NewTab';
 import './hero.css';
 
 const R = site.hero.record;
@@ -51,7 +52,7 @@ const record: Array<{ term: string; value: JSX.Element | string }> = [
     value: (
       <a className="u" href={profile.github} target="_blank" rel="noreferrer">
         {profile.github.replace(/^https?:\/\//, '')}
-        <span className="sr-only"> {site.newTab}</span>
+        <NewTab />
       </a>
     ),
   },

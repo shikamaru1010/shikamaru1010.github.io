@@ -2,27 +2,40 @@ import { Fragment } from 'react';
 import { projectAnchor, projectById } from '../../data/projects';
 import { alsoUsed, skillGroups, type Evidence } from '../../data/skills';
 import { site } from '../../data/site';
-import { fill, listJoin } from '../../lib/format';
+import { capitalize, fill, listJoin } from '../../lib/format';
 import './skills.css';
 
 const S = site.skills;
 
+/**
+ * Keyboard users meet each project's link once: its first mention in the table is a tab stop,
+ * later mentions are the same link but out of the tab order (the destination is already reachable),
+ * so reaching Contact from Skills takes a dozen Tabs, not forty-five.
+ */
+const firstMention = new Map<string, string>(); // project id → "skill|index" of its first mention
+for (const g of skillGroups) {
+  for (const s of g.skills) {
+    s.evidence.forEach((e, j) => {
+      if ('project' in e && !firstMention.has(e.project)) firstMention.set(e.project, `${s.name}|${j}`);
+    });
+  }
+}
+
 /** One piece of evidence: a link to the project's row (plus the part of it), a FON course, or plain text. */
-function EvidenceItem({ e }: { e: Evidence }): JSX.Element | null {
+function EvidenceItem({ e, at }: { e: Evidence; at: string }): JSX.Element | null {
   if ('project' in e) {
     const p = projectById(e.project);
     if (!p) return null; // data.test.ts guarantees every id resolves
     return (
-      <span className="skills-ev">
-        <a className="u" href={`#${projectAnchor(p)}`}>
+      <span className="skills-ev is-project">
+        <a className="u" href={`#${projectAnchor(p)}`} tabIndex={firstMention.get(e.project) === at ? undefined : -1}>
           {p.title}
         </a>
         {e.part ? ` (${e.part})` : null}
       </span>
     );
   }
-  if ('course' in e) return <>{fill(S.course, { course: e.course })}</>;
-  return <>{e.text}</>;
+  return <span className="skills-ev">{'course' in e ? fill(S.course, { course: e.course }) : e.text}</span>;
 }
 
 /**
@@ -71,15 +84,17 @@ export default function Skills(): JSX.Element {
                     </th>
                   ) : null}
                   <th scope="row" className="skills-name" role="rowheader">
-                    {s.name}
+                    {capitalize(s.name)}
                   </th>
                   <td className="skills-used" role="cell">
-                    {s.evidence.map((e, j) => (
-                      <Fragment key={j}>
-                        {j > 0 ? ', ' : null}
-                        <EvidenceItem e={e} />
-                      </Fragment>
-                    ))}
+                    <span className="skills-evs">
+                      {s.evidence.map((e, j) => (
+                        <Fragment key={j}>
+                          {j > 0 ? <span className="skills-sep">, </span> : null}
+                          <EvidenceItem e={e} at={`${s.name}|${j}`} />
+                        </Fragment>
+                      ))}
+                    </span>
                   </td>
                 </tr>
               ))}

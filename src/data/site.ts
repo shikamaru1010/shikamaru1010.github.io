@@ -53,14 +53,19 @@ export const site = {
     heading: 'Work',
     note: '{clients} client websites in production, {systems} systems I designed and built, and {smaller} smaller projects.',
     clients: 'Client work',
-    systems: 'Systems & automation',
+    systems: 'Systems and automation',
     smaller: 'Other projects',
     tableCaption: 'Client websites, with the stack, engineering notes and years of each',
-    columns: { client: 'Client', stack: 'Stack and engineering notes', year: 'Year' },
+    columns: {
+      client: 'Client',
+      about: 'About',
+      stack: 'Stack and engineering notes',
+      year: 'Year',
+      shot: 'Phone screenshot',
+    },
     caseStudy: 'Case study',
-    readCaseStudy: 'Read the case study',
     plateLabel: 'Screenshots of the selected client site',
-    dims: { desktop: 'Desktop, 1440 × 900', phone: 'Phone, 390 × 844' },
+    dims: { desktop: 'Desktop', phone: 'Phone' },
     legend: { system: 'Automated step', person: 'Human approval' },
     axis: {
       active: 'Active',
@@ -68,13 +73,11 @@ export const site = {
       abandoned: 'Abandoned',
       pausedNote: '{from} to {to} days',
       abandonedNote: 'More than {days} days',
-      end: '{days} →',
     },
   },
   experience: {
     heading: 'Experience',
-    note: '{internships}, {freelanceYears} years of freelance development, B.Sc. expected in {graduation}.',
-    internship: ['internship', 'internships'], // singular, plural
+    note: 'Intern at {org} since {month}, freelance since {freelance}, B.Sc. expected in {graduation}.',
     coursework: 'Relevant coursework',
     eduMeta: '{short}, {university} · {ordinal} year',
     now: 'now',
@@ -85,7 +88,7 @@ export const site = {
     caption: 'Skills by area, each with the projects or courses where I used it',
     columns: { area: 'Area', skill: 'Skill', used: 'Where I used it' },
     course: '{course} (FON)',
-    also: 'Also used, with no project here to point to: {list}.',
+    also: 'Also: {list}.',
   },
   contact: {
     heading: 'Contact',
@@ -100,7 +103,7 @@ export const site = {
     codeNote: 'Client repositories and the trading strategy are private. I am happy to walk through the code and architecture on request.',
   },
   colophon: {
-    set: 'Built with React, TypeScript and Vite. Set in Golos Text.',
+    set: 'Built with React, TypeScript and Vite, set in Golos Text',
     updated: 'Updated',
   },
   cv: {
@@ -118,12 +121,16 @@ export const site = {
     coursework: 'Coursework',
     also: 'Also',
     updated: 'Updated {date}',
+    /** The line under the name: the current role and the year of study. */
+    roleLine: '{role} at {org} · {ordinal}-year student at {school}',
+    /** The degree's period and year of study. */
+    eduYears: '{period}, {ordinal} year',
   },
   study: {
     label: 'Case study',
     headNav: 'Links',
     nextNav: 'Case studies',
-    back: 'Back to the work',
+    back: 'Back to the site',
     next: 'Next case study',
     meta: { status: 'Status', years: 'Years', stack: 'Stack', live: 'Live site' },
     sections: {
@@ -139,7 +146,6 @@ export const site = {
     },
     counts: { architecture: '{n} modules', flow: '{n} steps' },
     legend: { system: 'Automated step', person: 'Human step' },
-    personActors: ['Human', 'Customer', 'Staff'],
   },
 };
 

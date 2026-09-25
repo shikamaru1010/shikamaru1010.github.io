@@ -5,8 +5,14 @@
    weight 600 at most (owner feedback, DECISIONS A).
    At 96 dpi the sheet's content box (794 − 2 × 53 = 688px) is exactly
    the printable width of A4 with 14mm margins, so the screen shows the
-   line breaks the PDF will have. Marks are drawn with borders, which
-   print even when "background graphics" is off.
+   line breaks the PDF will have; on wide screens the whole sheet is
+   zoomed, so it reads at screen sizes and still breaks like the PDF.
+   Below 850px the sheet cannot be A4 wide, and a touch screen needs
+   44px rows the A4 density has no room for, so both get the sheet set
+   as a document at reading sizes instead (Download PDF is the preview). Marks are drawn with borders, which print
+   even when "background graphics" is off. Nothing in the sheet is
+   positioned: Chrome writes a positioned box's text after the rest of
+   the page, which would scramble the PDF's text layer (ATS parsers).
 ------------------------------------------------------------------- */
 
 .resume-page { background: var(--paper); min-height: 100vh; }
@@ -29,7 +35,7 @@
 .resume-bar-actions .resume-bar-link { font-weight: 500; }
 .resume-print {
   appearance: none; background: none; border: 0; padding: 0; margin: 0; cursor: pointer;
-  display: inline-flex; align-items: center; min-height: 44px;
+  display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px;
   font-size: var(--s1); font-weight: 500; white-space: nowrap;
   text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .22em;
   text-decoration-color: var(--rule); transition: text-decoration-color .15s;
@@ -39,24 +45,25 @@
 /* ---------------- the sheet ---------------- */
 .resume-main { padding: 32px 0 64px; }
 .resume-sheet {
-  --rs-ink: #111110; --rs-ink-2: #53514C; --rs-accent: #D83218; --rs-rule: rgba(17, 17, 16, .16);
+  --rs-ink: var(--sheet-ink); --rs-ink-2: var(--sheet-ink-2); --rs-accent: var(--sheet-accent); --rs-rule: var(--sheet-rule);
   --rs-name: 28px; --rs-role: 12px; --rs-h2: 11px; --rs-h3: 12px; --rs-body: 11px; --rs-meta: 10px;
   --rs-gap: 24px;
   /* exactly A4 with the PDF's margins (12mm × 14mm), so the screen is a true preview */
   width: calc(100% - 2 * var(--m)); max-width: 210mm; min-height: 297mm;
   margin: 0 auto; padding: 12mm 14mm;
   display: flex; flex-direction: column;
-  background: #FFFFFF; color: var(--rs-ink);
+  background: var(--sheet); color: var(--rs-ink);
   outline: 1px solid var(--rule);
   font-size: var(--rs-body); line-height: 1.45;
-  --accent: #D83218;
+  --accent: var(--sheet-accent);
 }
-.resume-sheet ::selection { background: var(--rs-accent); color: #FFFFFF; }
+.resume-sheet ::selection { background: var(--rs-accent); color: var(--sheet); }
 
 /* header: name, role line and summary on the left; the contact block takes its own width on the right */
 .resume-head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--rs-gap); }
 .resume-id { flex: 1 1 auto; min-width: 0; }
 .resume-name { font-size: var(--rs-name); line-height: 1; letter-spacing: -.03em; font-weight: 600; }
+.resume-name:focus { outline: none; }
 .resume-mark {
   display: inline-block; width: 0; height: 0; margin-left: .16em;
   border: 3px solid var(--rs-accent);         /* the one 6 × 6 vermilion mark, a full stop */
@@ -66,8 +73,12 @@
 .resume-contact { flex: none; font-style: normal; text-align: right; padding-top: 2px; }
 .resume-contact li { white-space: nowrap; }
 
-.resume-link { color: inherit; text-decoration: none; }
-.resume-link:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; text-decoration-color: var(--rs-accent); }
+/* on screen a link is marked by a hairline underline; print drops it */
+.resume-link {
+  color: inherit;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; text-decoration-color: var(--rs-rule);
+}
+.resume-link:hover { text-decoration-color: var(--rs-accent); }
 
 /* two columns: 8/12 experience and projects, 4/12 the reference column */
 .resume-cols {
@@ -94,12 +105,13 @@
 .resume-meta-row .resume-link { flex: none; color: var(--rs-ink); }
 .resume-meta-row > span { text-wrap: pretty; }
 
-/* points: a 6px hairline dash (a border, so it prints without background graphics) */
+/* points: a 6px hairline dash (a border, so it prints without background graphics), hung in the
+   indent in normal flow (not positioned, see the note at the top) */
 .resume-points { margin-top: 1px; }
-.resume-points li { position: relative; padding-left: 12px; text-wrap: pretty; }
+.resume-points li { padding-left: 12px; text-indent: -12px; text-wrap: pretty; }
 .resume-points li::before {
-  content: ''; position: absolute; left: 0; top: .78em; width: 6px; height: 0;
-  border-top: 1px solid var(--rs-ink-2);
+  content: ''; display: inline-block; width: 6px; height: 0; margin-right: 6px;
+  vertical-align: .3em; border-top: 1px solid var(--rs-ink-2);
 }
 
 .resume-dl > div { padding-top: 8px; }
@@ -114,20 +126,22 @@
   font-size: var(--rs-meta); line-height: 1.45; color: var(--rs-ink-2);
 }
 
-/* ---------------- tablet: the sheet keeps its A4 proportions, just narrower ---------------- */
-@media screen and (min-width: 721px) and (max-width: 900px) {
-  .resume-sheet { padding: 40px 36px; }
-}
+/* ---------------- wide screens: the A4 sheet, zoomed to screen reading sizes ----------------
+   Zoom scales the whole sheet, so the line breaks stay the PDF's (11px body → 12.1 / 13.75px). */
+@media screen and (min-width: 960px) and (pointer: fine) { .resume-sheet { zoom: 1.1; } }
+@media screen and (min-width: 1100px) and (pointer: fine) { .resume-sheet { zoom: 1.25; } }
 
-/* ---------------- phone: a full-width document, the columns stack ---------------- */
-@media screen and (max-width: 720px) {
+/* ---------------- phones, narrow tablets (< 850px, where A4 does not fit) and touch screens:
+   a full-width document at reading sizes, the columns stack ---------------- */
+@media screen and (max-width: 849px), screen and (pointer: coarse) {
   .resume-bar-row { column-gap: 12px; }
   .resume-bar-actions { gap: 16px; }
   .resume-main { padding: 0; }
   .resume-sheet {
     /* on a phone the sheet is read, not previewed: set it at reading sizes */
     --rs-name: 28px; --rs-role: 13px; --rs-h2: 13px; --rs-h3: 16px; --rs-body: 15px; --rs-meta: 13px;
-    width: 100%; max-width: none; min-height: 0; margin: 0; padding: 24px 16px 28px;
+    width: 100%; max-width: none; min-height: 0; margin: 0;
+    padding: 24px max(var(--m), calc((100% - 660px) / 2)) 28px;   /* a 660px column on narrow tablets */
     outline: 0; border-bottom: 1px solid var(--rule);
     line-height: 1.5;
   }
@@ -149,7 +163,8 @@
   .resume-meta-row { flex-direction: column; align-items: flex-start; gap: 0; }
   .resume-meta-row .resume-link { display: inline-flex; align-items: center; min-height: 44px; }
   .resume-points { margin-top: 6px; }
-  .resume-points li { padding-left: 14px; }
+  .resume-points li { padding-left: 14px; text-indent: -14px; }
+  .resume-points li::before { margin-right: 8px; }
   .resume-points li + li { margin-top: 6px; }
   .resume-dl > div { padding-top: 12px; }
   .resume-plain, .resume-col-side .resume-sec > .resume-text { padding-top: 12px; }

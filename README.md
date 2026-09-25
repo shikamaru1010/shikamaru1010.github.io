@@ -21,6 +21,8 @@ The site has two personas, and the URL decides which one you see:
   with `history.replaceState` and keeps any `#hash`. It is a radiogroup (Arrow keys, Home, End) built on
   two real `?mode=` links, so Ctrl/Cmd-click opens a mode in a new tab.
 - The switch plays one wipe (View Transitions). With `prefers-reduced-motion` it switches instantly.
+- Back and Forward follow the URL: an entry of the other mode switches back to it (no wipe), and
+  returning from the CV or a case study restores the place you left, in either mode.
 - An inline script in `index.html` sets `<html data-mode>` before first paint, so there is no flash of the
   other palette. `src/lib/mode.test.ts` runs that script against the app’s own parsers.
 - `#resume` (the CV) and `#project/<id>` (case studies) always use the Professional palette.
@@ -42,7 +44,8 @@ Scripts that import `.ts` data files use Node’s type stripping: **Node ≥ 22.
 | Script | What it does |
 | --- | --- |
 | `npm run dev` / `build` / `preview` / `test` | as above |
-| `npm run pdf` | renders `/#resume` from `dist/` to `public/Ratko_Sisovic_CV.pdf` and fails unless it is exactly one A4 page. Run **after** `npm run build`. |
+| `npm run pdf` | stamps today’s date into `src/data/updated.json`, builds, and renders `/#resume` to `public/Ratko_Sisovic_CV.pdf`; fails unless it is exactly one A4 page. `-- --keep-date` re-renders without moving the date. |
+| `npm run images` | writes the smaller copies of the screenshots and the photo that `srcset` uses (`scripts/image-variants.mjs`). Run after replacing a screenshot or the photo. |
 | `npm run daily-message` | picks today’s quote from `scripts/quote-pool.mjs` into `src/data/daily-message.json` (also run every morning by a GitHub Action). |
 | `npm run worklog` | counts my work-log entries per day into `src/data/worklog.json` (see below). |
 | `npm run og` | renders `public/og-image.png` (2400 × 1260). |
@@ -84,13 +87,16 @@ start with a date (`YYYY-MM-DD…txt|md`). It never opens a file and never write
 
 - The CV is the same data rendered as a print-ready A4 sheet at **`/#resume`** (the “CV” link in the header).
 - `public/Ratko_Sisovic_CV.pdf` is committed and served at `/Ratko_Sisovic_CV.pdf`. Regenerate it after
-  changing data: `npm run build && npm run pdf`, then commit the PDF.
+  changing data: `npm run pdf`, then commit the PDF **and** `src/data/updated.json`.
+- `src/data/updated.json` is the site’s one “Updated” date: the colophon, the case studies, the CV page and
+  the PDF all print it, so they always agree. It moves when you regenerate the CV, not with the daily
+  rebuild that refreshes the quote.
 
 ---
 
 ## Design system
 
-- **One family:** Golos Text (variable 400–900, Latin and Cyrillic), with a metric-matched Arial fallback.
+- **One family:** Golos Text (variable 400–900, Latin and Cyrillic), with a metric-matched Arial (Roboto on Android) fallback.
 - **Five sizes, deliberately quiet:** 13 / 16 / 21 / 36 / 56 px at ≥ 1280 px (13 / 16 / 20 / 32 / 48 at
   721–1279, 13 / 16 / 18 / 26 / 38 on phones): labels, body, names and ledes, section heads, and the name.
   Weight 600 at most. Nothing is fitted to the width of the page. Tokens `--t1`…`--t5` in
@@ -109,4 +115,4 @@ start with a date (`YYYY-MM-DD…txt|md`). It never opens a file and never write
 `master` deploys to GitHub Pages through `.github/workflows/deploy.yml`. Routing uses hashes
 (`/#resume`, `/#project/mesara`), so no SPA rewrite rules are needed.
 
-Update workflow: `edit src/data/*.ts → npm run dev → npm test → npm run build && npm run pdf → commit → push`.
+Update workflow: `edit src/data/*.ts → npm run dev → npm test → npm run pdf → commit → push`.

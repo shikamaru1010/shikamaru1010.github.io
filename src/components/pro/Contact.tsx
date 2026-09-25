@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { profile } from '../../data/profile';
 import { site } from '../../data/site';
 import { fill } from '../../lib/format';
+import NewTab from '../shell/NewTab';
 import './contact.css';
 
 const C = site.contact;
@@ -28,7 +29,7 @@ function External({ href, children }: { href: string; children: string }): JSX.E
   return (
     <a className="u" href={href} target="_blank" rel="noreferrer">
       {children}
-      <span className="sr-only"> {site.newTab}</span>
+      <NewTab />
     </a>
   );
 }

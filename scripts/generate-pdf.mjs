@@ -1,7 +1,14 @@
-// Renders the CV page (#resume) from the production build to a one-page A4 PDF.
-// Usage: npm run build && npm run pdf
+// Regenerates the CV: stamps today's date into src/data/updated.json, builds, and renders the
+// CV page (#resume) from the production build to a one-page A4 PDF.
+// Usage: npm run pdf              (stamp, build, render)
+//        npm run pdf -- --keep-date (build and render with the date already in updated.json)
 // Writes public/Ratko_Sisovic_CV.pdf (committed) and dist/Ratko_Sisovic_CV.pdf,
 // and fails if the sheet does not fit on exactly one page.
+//
+// updated.json is the site's one "Updated" date (the CV page and this PDF, the colophon and the
+// case studies all print it). It moves when the CV is regenerated, not with the daily rebuild
+// that refreshes the quote, so commit it with the PDF.
+import { execSync } from 'node:child_process';
 import { createServer } from 'node:http';
 import { readFile, writeFile, copyFile, access } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -34,8 +41,21 @@ async function exists(p) {
   }
 }
 
+/** Today in local time (Belgrade on the machine this runs on), as YYYY-MM-DD. */
+function localIsoDate(d = new Date()) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+if (!process.argv.includes('--keep-date')) {
+  const date = localIsoDate();
+  await writeFile(join(root, 'src', 'data', 'updated.json'), JSON.stringify({ date }, null, 2) + '\n');
+  console.log('Stamped src/data/updated.json:', date);
+}
+execSync('npm run build', { cwd: root, stdio: 'inherit' });
+
 if (!(await exists(join(dist, 'index.html')))) {
-  console.error('dist/ not found. Run "npm run build" first.');
+  console.error('dist/ not found after the build.');
   process.exit(1);
 }
 

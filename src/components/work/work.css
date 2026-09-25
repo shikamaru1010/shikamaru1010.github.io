@@ -4,6 +4,8 @@
    The index, the systems and the figures have their own files.
 ------------------------------------------------------------------- */
 
+/* 120, not a section's 144: Work follows the hero directly, and at 1440 × 900 this keeps its
+   head on the first screen, so the work is visible without scrolling */
 .work.sec { padding-top: 120px; }
 
 /* ---------------- smaller projects: one line each on the grid ---------------- */

@@ -41,6 +41,11 @@
 .record a { position: relative; }
 .record a::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%); }
 
+/* touch screens of any width: rows tall enough that the 44px link targets never overlap */
+@media (pointer: coarse) {
+  .record > div { padding: 10px 0 11px; }
+}
+
 /* ---------------- tablet (721–1100): the lede keeps column 4, the card goes under it ---------------- */
 @media (min-width: 721px) and (max-width: 1100px) {
   .lead { grid-column: 4 / -1; }
@@ -63,6 +68,7 @@
     display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--g);
     align-items: baseline; padding: 10px 0 11px;
   }
-  .record dt { grid-column: 1; }
+  /* a term never breaks inside a word ("Languag / es" at 344px); a long one runs into the gutter */
+  .record dt { grid-column: 1; white-space: nowrap; }
   .record dd { grid-column: 2 / -1; }
 }

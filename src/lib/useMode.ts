@@ -1,21 +1,28 @@
 // The live mode: a tiny external store over <html data-mode>, plus setMode(),
 // which owns every side effect of a switch (URL, title, theme-color, scroll,
-// announcement, focus and the one wipe transition).
+// announcement, focus and the one wipe transition), and syncModeFromUrl(),
+// which follows ?mode when the visitor moves through history.
 //
 // No DOM access at module level or during render (node tests import this).
-import { useSyncExternalStore } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { flushSync } from 'react-dom';
 import { site } from '../data/site';
 import { applyDocumentMeta } from './documentMeta';
 import { DEFAULT_MODE, parseMode, withMode, type Mode } from './mode';
 
-type SetModeOptions = { focusToggle?: boolean };
+type SetModeOptions = {
+  focusToggle?: boolean;
+  /** Back / Forward landed on an entry of the other mode: no wipe, no scroll (the browser restores it). */
+  fromHistory?: boolean;
+};
 
 const listeners = new Set<() => void>();
 /** The running wipe, if any. */
 let active: ViewTransition | null = null;
 /** The last mode asked for; the transition callback applies this, so no press is lost. */
 let latest: Mode | null = null;
+/** The popstate listener is added once, on the first subscription (never at module level). */
+let historyBound = false;
 
 export function getMode(): Mode {
   if (typeof document === 'undefined') return DEFAULT_MODE;
@@ -25,6 +32,11 @@ export function getMode(): Mode {
 }
 
 export function subscribeMode(cb: () => void): () => void {
+  if (!historyBound && typeof window !== 'undefined') {
+    historyBound = true;
+    // popstate fires for every same-document traversal, hash-only ones included
+    window.addEventListener('popstate', syncModeFromUrl);
+  }
   listeners.add(cb);
   return () => {
     listeners.delete(cb);
@@ -33,6 +45,25 @@ export function subscribeMode(cb: () => void): () => void {
 
 export function useMode(): Mode {
   return useSyncExternalStore(subscribeMode, getMode, () => DEFAULT_MODE);
+}
+
+/**
+ * The href of a link to `mode`: the current URL with ?mode set, kept current as the hash
+ * changes. Starts as the bare `?mode=` (no location during render).
+ */
+export function useModeHref(mode: Mode): string {
+  const [href, setHref] = useState(`?mode=${mode}`);
+  useEffect(() => {
+    const update = () => setHref(withMode(location.href, mode));
+    update();
+    window.addEventListener('hashchange', update);
+    window.addEventListener('popstate', update);
+    return () => {
+      window.removeEventListener('hashchange', update);
+      window.removeEventListener('popstate', update);
+    };
+  }, [mode]);
+  return href;
 }
 
 function replaceUrl(next: Mode): void {
@@ -75,8 +106,9 @@ function applyMode(next: Mode, opts?: SetModeOptions): void {
   }
   root.dataset.mode = next;
   listeners.forEach((cb) => cb());
-  applyDocumentMeta({ kind: 'home' }, next);
-  window.scrollTo(0, 0);
+  // Only home follows the mode; on the CV and case studies App keeps the Professional meta.
+  if (root.dataset.route === 'home') applyDocumentMeta({ kind: 'home' }, next);
+  if (!opts?.fromHistory) window.scrollTo(0, 0);
   announce(next);
   if (opts?.focusToggle || needsFocusRescue()) focusRadio(next);
 }
@@ -96,12 +128,26 @@ export function warmPortrait(): void {
   if (img && img.loading !== 'eager') img.loading = 'eager';
 }
 
-/** Warm the photo and wait for it to decode, capped at `ms`, so the wipe never reveals an empty frame. */
+/**
+ * Warm the photo and, if it is already downloaded, wait for it to decode (capped at `ms`), so the
+ * wipe reveals a finished photo. A photo still downloading is not waited for beyond 150ms: the
+ * browser shows a frozen frame meanwhile, and the photo's own placeholder holds its place.
+ */
 export async function warmAndDecode(ms: number): Promise<void> {
   const img = portrait();
   if (!img) return;
   if (img.loading !== 'eager') img.loading = 'eager';
-  await Promise.race([img.decode().catch(() => {}), sleep(ms)]);
+  await Promise.race([img.decode().catch(() => {}), sleep(img.complete ? ms : Math.min(ms, 150))]);
+}
+
+/** Brings <html data-mode> in line with ?mode after Back / Forward (the URL carries the mode). */
+export function syncModeFromUrl(): void {
+  if (typeof document === 'undefined') return;
+  const m = parseMode(location.search);
+  if (m === getMode()) return;
+  latest = m;
+  active?.skipTransition();
+  applyMode(m, { fromHistory: true });
 }
 
 export function setMode(next: Mode, opts?: SetModeOptions): void {
@@ -143,7 +189,7 @@ export function setMode(next: Mode, opts?: SetModeOptions): void {
     root.classList.add('is-wiping');
     const m = latest ?? next;
     flushSync(() => applyMode(m, opts));
-    if (m === 'personal') await warmAndDecode(900);
+    if (m === 'personal') await warmAndDecode(300);
   });
   active = transition;
   const done = () => {

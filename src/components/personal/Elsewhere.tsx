@@ -1,5 +1,5 @@
 import { personal } from '../../data/personal';
-import { site } from '../../data/site';
+import NewTab from '../shell/NewTab';
 
 /** Where else to find me: each link with its handle; external ones open in a new tab (R7). */
 export default function Elsewhere(): JSX.Element {
@@ -17,7 +17,7 @@ export default function Elsewhere(): JSX.Element {
                 <a href={l.href} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
                   <span className="p-link">{l.label}</span>{' '}
                   <span className="p-handle">{l.text}</span>
-                  {external && <span className="sr-only"> {site.newTab}</span>}
+                  {external && <NewTab />}
                 </a>
               </li>
             );

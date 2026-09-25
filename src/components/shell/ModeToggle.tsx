@@ -1,34 +1,21 @@
 import { useEffect, useState, type KeyboardEvent, type MouseEvent } from 'react';
 import { site } from '../../data/site';
-import { MODES, isPlainClick, withMode, type Mode } from '../../lib/mode';
-import { setMode, useMode, warmPortrait } from '../../lib/useMode';
-
-type Hrefs = Record<Mode, string>;
-const INITIAL_HREFS: Hrefs = { professional: '?mode=professional', personal: '?mode=personal' };
-
-function currentHrefs(): Hrefs {
-  return {
-    professional: withMode(location.href, 'professional'),
-    personal: withMode(location.href, 'personal'),
-  };
-}
+import { MODES, isPlainClick, type Mode } from '../../lib/mode';
+import { setMode, useMode, useModeHref, warmPortrait } from '../../lib/useMode';
 
 /**
- * The Professional | Personal switch. Two real links (`?mode=…`), so it works
- * before React and with modifier-clicks; after mount it upgrades to a
- * radiogroup with roving tabindex and Arrow / Home / End.
+ * The Professional | Personal switch. Two real links (`?mode=…`), so modifier-clicks open
+ * a mode in a new tab; after mount the same wrapper becomes a radiogroup with roving
+ * tabindex and Arrow / Home / End (DECISIONS 9). The wrapper keeps its element type, so
+ * the upgrade only changes attributes and nothing remounts.
  */
 export default function ModeToggle(): JSX.Element {
   const mode = useMode();
   const [enhanced, setEnhanced] = useState(false);
-  const [hrefs, setHrefs] = useState<Hrefs>(INITIAL_HREFS);
+  const hrefs: Record<Mode, string> = { professional: useModeHref('professional'), personal: useModeHref('personal') };
 
   useEffect(() => {
     setEnhanced(true);
-    const update = () => setHrefs(currentHrefs());
-    update();
-    window.addEventListener('hashchange', update);
-
     // During the wipe the page is a snapshot and every click lands on <html>. Map a click that
     // falls on a switch cell back to that cell, so a second press settles at once (DECISIONS 9).
     const onWipeClick = (e: globalThis.MouseEvent) => {
@@ -44,10 +31,7 @@ export default function ModeToggle(): JSX.Element {
       }
     };
     document.addEventListener('click', onWipeClick);
-    return () => {
-      window.removeEventListener('hashchange', update);
-      document.removeEventListener('click', onWipeClick);
-    };
+    return () => document.removeEventListener('click', onWipeClick);
   }, []);
 
   const onClick = (target: Mode) => (e: MouseEvent<HTMLAnchorElement>) => {
@@ -73,26 +57,20 @@ export default function ModeToggle(): JSX.Element {
     }
   };
 
-  const cells = MODES.map((m, i) => {
-    const checked = m === mode;
-    const warm = m === 'personal' ? { onPointerEnter: warmPortrait, onFocus: warmPortrait } : { onFocus: warmPortrait };
-    const state = enhanced
-      ? { role: 'radio', 'aria-checked': checked, tabIndex: checked ? 0 : -1, onKeyDown: onKeyDown(i) }
-      : { 'aria-current': checked ? ('page' as const) : undefined };
-    return (
-      <a key={m} className="switch-cell" data-mode-radio={m} href={hrefs[m]} onClick={onClick(m)} {...warm} {...state}>
-        {site.mode.labels[m]}
-      </a>
-    );
-  });
-
-  return enhanced ? (
-    <div className="switch" role="radiogroup" aria-label={site.mode.groupLabel}>
-      {cells}
+  return (
+    <div className="switch" role={enhanced ? 'radiogroup' : 'navigation'} aria-label={site.mode.groupLabel}>
+      {MODES.map((m, i) => {
+        const checked = m === mode;
+        const warm = m === 'personal' ? { onPointerEnter: warmPortrait, onFocus: warmPortrait } : { onFocus: warmPortrait };
+        const state = enhanced
+          ? { role: 'radio', 'aria-checked': checked, tabIndex: checked ? 0 : -1, onKeyDown: onKeyDown(i) }
+          : { 'aria-current': checked ? ('page' as const) : undefined };
+        return (
+          <a key={m} className="switch-cell" data-mode-radio={m} href={hrefs[m]} onClick={onClick(m)} {...warm} {...state}>
+            {site.mode.labels[m]}
+          </a>
+        );
+      })}
     </div>
-  ) : (
-    <nav className="switch" aria-label={site.mode.groupLabel}>
-      {cells}
-    </nav>
   );
 }

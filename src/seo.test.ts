@@ -31,6 +31,12 @@ describe('JSON-LD structured data', () => {
     expect(ld.sameAs).toContain(profile.github);
     expect(ld.sameAs).toContain(profile.linkedin);
   });
+
+  it('its image is a real file on the site', () => {
+    const ld = JSON.parse(match![1]);
+    expect(ld.image.startsWith(`${profile.siteUrl}/`)).toBe(true);
+    expect(read(`../public${ld.image.slice(profile.siteUrl.length)}`).length).toBeGreaterThan(0);
+  });
 });
 
 describe('document head', () => {
@@ -47,6 +53,11 @@ describe('document head', () => {
     expect(meta('property', 'og:image')).toBe(`${profile.siteUrl}/og-image.png`);
     expect(meta('property', 'og:image:width')).toBe('2400');
     expect(meta('property', 'og:image:height')).toBe('1260');
+  });
+
+  it('the Twitter card has the same image alt text as Open Graph', () => {
+    expect(meta('property', 'og:image:alt')).toBeTruthy();
+    expect(meta('name', 'twitter:image:alt')).toBe(meta('property', 'og:image:alt'));
   });
 
   it('loads Golos Text only, plus the arrows face', () => {

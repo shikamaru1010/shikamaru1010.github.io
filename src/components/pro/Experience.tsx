@@ -1,22 +1,21 @@
 import { education, experience, type Experience as Role } from '../../data/experience';
 import { site } from '../../data/site';
-import { buildYear, capitalize, fill, formatPeriod, numberWord, ordinal } from '../../lib/format';
+import { fill, formatPeriod, monthYear, ordinal } from '../../lib/format';
 import './experience.css';
 
 const X = site.experience;
 
-/** "One internship, three years of freelance work, and a degree I expect to finish in 2027." */
+/** "Intern at Podyx since July 2026, freelance since 2023, B.Sc. expected in 2027." */
 function sectionNote(): string {
-  // \b…\b: "internal tools developer" must not count as an internship.
-  const internships = experience.filter((x) => /\bintern(ship)?\b/i.test(x.role)).length;
+  // \b…\b: "Internal Tools Developer" must not count as an internship.
+  const intern = experience.find((x) => /\bintern\b/i.test(x.role)) ?? experience[0];
   const freelance = experience.find((x) => /freelance/i.test(x.org)) ?? experience[1];
-  return capitalize(
-    fill(X.note, {
-      internships: `${numberWord(internships)} ${X.internship[internships === 1 ? 0 : 1]}`,
-      freelanceYears: numberWord(buildYear - Number(String(freelance.start).slice(0, 4))),
-      graduation: education.expectedEnd,
-    }),
-  );
+  return fill(X.note, {
+    org: intern.org,
+    month: monthYear(intern.start),
+    freelance: String(freelance.start).slice(0, 4),
+    graduation: education.expectedEnd,
+  });
 }
 
 /** A period as two <time> elements: "Jul 2026–now", "2023–2027". */
@@ -35,9 +34,7 @@ function RoleRow({ x }: { x: Role }): JSX.Element {
       <Period start={x.start} end={x.end} />
       <div className="who">
         <h3>{x.role}</h3>
-        <p>
-          {x.org} · {x.location}
-        </p>
+        <p>{x.location ? `${x.org} · ${x.location}` : x.org}</p>
       </div>
       <div className="what">
         {x.points.map((point) => (

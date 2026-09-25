@@ -8,7 +8,6 @@
 
 .fig { margin-top: 48px; }
 .fig-cap { display: flex; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
-.fig-cap .m-only { display: none; }
 
 /* the key to the pipeline's shape code: square = the system, circle = a person */
 .legend { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0 6px; }
@@ -38,26 +37,33 @@
    be large text. The accent is the mark; the ink note sets the gate apart from the grey system notes. */
 .pipe li[data-actor="person"] .note { color: var(--ink); }
 
-/* ---------------- dev-dashboard: the 12 columns are the time axis ---------------- */
+/* ---------------- dev-dashboard: the time axis, to scale ----------------
+   Twelve equal steps across the measure, with no gutters inside the axis: the page's
+   column gutters would make every step but the last one a gutter longer. */
 /* the numerals sit above the ticks, one numeral-height plus 24px of room (52px at the prototype's 28px) */
-.axis { position: relative; padding-top: calc(24px + var(--s3)); }
+.axis {
+  position: relative; padding-top: calc(24px + var(--s3));
+  display: grid; grid-template-columns: repeat(var(--axis-cols, 12), minmax(0, 1fr)); column-gap: 0;
+}
 .axis .ticks { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; height: 8px; margin: 12px 0 0; }
 .axis .ticks i { border-left: 1px solid var(--rule-strong); height: 8px; }
 .axis .ticks i:last-child { position: relative; }
 .axis .ticks i:last-child::after {
   content: ''; position: absolute; right: 0; top: 0; height: 8px; border-right: 1px solid var(--rule-strong);
 }
-.axis .end { grid-row: 2; grid-column: -2 / -1; justify-self: end; padding-top: 20px; }
 
 .seg { grid-row: 2; grid-column: var(--seg); position: relative; padding-top: 20px; }
 .seg .num {
   position: absolute; top: calc(-24px - var(--s3)); left: 0;
   font-size: var(--s3); line-height: 1; letter-spacing: -.03em; font-weight: 600; font-variant-numeric: tabular-nums;
 }
-.seg .bar { position: absolute; left: 0; top: 0; width: calc(100% + var(--g)); }
+/* the scale's end (360), set like 0 / 30 / 180, on the last tick */
+.seg .num-end { left: auto; right: 0; }
+.seg .bar { position: absolute; left: 0; top: 0; width: 100%; }
+.seg .st, .seg .note { padding-right: 12px; }
 .seg-active .bar { height: 8px; background: var(--accent); }
 .seg-paused .bar { height: 3px; top: 2px; background: var(--rule-strong); }
-.seg-aband .bar { width: 100%; top: 3px; border-top: 1px dashed var(--ink-2); }
+.seg-aband .bar { top: 3px; border-top: 1px dashed var(--ink-2); }
 .seg .st { display: block; font-weight: 600; }
 .seg .note { display: block; margin-top: 2px; }
 
@@ -93,16 +99,12 @@
 /* ---------------- ≤1100: the axis keeps its numbers, ticks and bars on the grid;
    the state labels become a legend under it ---------------- */
 @media (max-width: 1100px) {
-  .fig-cap .d-only { display: none; }
-  .fig-cap .m-only { display: inline; }
-
   .axis { padding-top: 0; }
   .seg { display: contents; }
   .seg .num { position: static; grid-row: 1; grid-column: var(--seg); margin-bottom: 10px; }
+  .seg .num-end { grid-column: 1 / -1; justify-self: end; }
   .axis .ticks { grid-row: 2; margin: 0; }
   .seg .bar { position: static; display: block; grid-row: 3; grid-column: var(--seg); width: auto; align-self: start; }
-  .seg-active .bar,
-  .seg-paused .bar { margin-right: calc(-1 * var(--g)); }
   .seg-paused .bar { margin-top: 2px; }
   .seg-aband .bar { margin-top: 3px; }
   .seg .st { grid-column: 1 / span 3; margin-top: 18px; }
@@ -115,7 +117,8 @@
   .seg-active .st::before { height: 8px; background: var(--accent); }
   .seg-paused .st::before { height: 3px; background: var(--rule-strong); }
   .seg-aband .st::before { border-top: 1px dashed var(--ink-2); }
-  .axis .end { display: none; }
+  .seg .st, .seg .note { padding-right: 0; }
+  .seg .note { padding-left: 8px; }   /* the axis has no gutters: keep the legend's two columns apart */
 }
 
 /* ---------------- phone ---------------- */
@@ -133,10 +136,6 @@
   .pipe li:last-child::after { display: none; }
   .pipe .note { margin-top: 4px; max-width: none; }
 
-  /* still to scale: twelve twelfths of the phone's four columns */
-  .axis { grid-template-columns: repeat(var(--axis-cols, 12), minmax(0, 1fr)); column-gap: 0; }
-  .seg-active .bar,
-  .seg-paused .bar { margin-right: 0; }
   .seg .st { grid-column: 1 / span 5; }
   .seg .note { grid-column: 6 / -1; }
 

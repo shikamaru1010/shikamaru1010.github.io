@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  BUILD_DATE,
-  buildYear,
+  UPDATED,
   capitalize,
   domainOf,
   fill,
@@ -12,6 +11,8 @@ import {
   numberWord,
   ordinal,
   parseYears,
+  stackLine,
+  updatedYear,
   yearRange,
 } from './format';
 
@@ -104,10 +105,25 @@ describe('domainOf', () => {
   });
 });
 
-describe('build date', () => {
-  it('is an ISO date from the Vite define', () => {
-    expect(BUILD_DATE).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    expect(buildYear).toBe(Number(BUILD_DATE.slice(0, 4)));
-    expect(buildYear).toBeGreaterThanOrEqual(2026);
+describe('the content date (src/data/updated.json, written by npm run pdf)', () => {
+  it('is an ISO calendar date, not in the future', () => {
+    expect(UPDATED).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(Number.isNaN(Date.parse(UPDATED))).toBe(false);
+    expect(UPDATED <= new Date().toISOString().slice(0, 10) || UPDATED <= localToday()).toBe(true);
+    expect(updatedYear).toBe(Number(UPDATED.slice(0, 4)));
+    expect(updatedYear).toBeGreaterThanOrEqual(2026);
+  });
+});
+
+function localToday(): string {
+  const d = new Date();
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+describe('stackLine', () => {
+  it('joins with commas and keeps a version number on its name', () => {
+    expect(stackLine(['Next.js 16', 'Supabase'])).toBe('Next.js\u00a016, Supabase');
+    expect(stackLine([])).toBe('');
   });
 });

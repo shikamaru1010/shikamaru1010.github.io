@@ -1,18 +1,18 @@
 import './study.css';
+import { personal } from '../../data/personal';
 import { profile } from '../../data/profile';
 import { projectAnchor, projectDomain, studyProjects, type StudyProject } from '../../data/projects';
 import { site } from '../../data/site';
-import { BUILD_DATE, buildYear, fill } from '../../lib/format';
+import { UPDATED, fill, updatedYear } from '../../lib/format';
+import { returnHome } from '../../lib/history';
+import { useMode } from '../../lib/useMode';
+import NewTab from '../shell/NewTab';
 import SkipLink from '../shell/SkipLink';
 import StudyFlow from './StudyFlow';
 
 // A case study (#project/<id>), in the Swiss language and always in the
 // Professional palette (tokens.css gates Personal to data-route="home").
 // No in-page hash links here: the hash router would leave the page (SPEC R7).
-
-function NewTab(): JSX.Element {
-  return <span className="sr-only"> {site.newTab}</span>;
-}
 
 /** An external domain link. Only the header's shows the visible ↗ (SPEC R7). */
 function ExternalDomain({
@@ -69,9 +69,19 @@ function ListSection({
   );
 }
 
+/**
+ * Where "Back to the site" goes when there is no history to go back through (a direct
+ * load, a new tab): the project's row in Professional; in Personal, Side projects if the
+ * project is one of them, else the top (the rows only exist in the Professional tree).
+ */
+function backHref(project: StudyProject, personalMode: boolean): string {
+  if (!personalMode) return `#${projectAnchor(project)}`;
+  return personal.brain.domains.some((d) => d.project?.id === project.id) ? '#brain' : '#top';
+}
+
 export default function CaseStudy({ project }: { project: StudyProject }): JSX.Element {
   const cs = project.caseStudy;
-  const back = `#${projectAnchor(project)}`;
+  const back = backHref(project, useMode() === 'personal');
   const domain = projectDomain(project);
   const live = domain && project.liveUrl ? { href: project.liveUrl, domain } : undefined;
   const desktop = project.media?.find((m) => m.device === 'desktop');
@@ -85,7 +95,7 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
       <SkipLink />
       <header className="site-head study-head">
         <div className="wrap grid">
-          <a className="brand" href={back}>
+          <a className="brand" href={back} onClick={returnHome}>
             <span aria-hidden="true">←&nbsp;</span>
             {site.study.back}
           </a>
@@ -101,16 +111,16 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
 
       <main id="main" tabIndex={-1} className="study">
         <div className="study-top wrap">
-          <p className="label tnum">
-            {project.year} · {project.statusNote ?? project.status}
-          </p>
-          <h1 className="study-title">{project.title}</h1>
+          {/* the page's focus target after a route change (App); no ring, it marks a place */}
+          <h1 className="study-title" tabIndex={-1} data-focus-target="">
+            {project.title}
+          </h1>
           <p className="study-sub">{project.subtitle}</p>
 
           <dl className="study-meta grid">
             <div>
               <dt className="label">{site.study.meta.status}</dt>
-              <dd>{project.status}</dd>
+              <dd>{project.statusNote ?? project.status}</dd>
             </div>
             <div>
               <dt className="label">{site.study.meta.years}</dt>
@@ -157,12 +167,30 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
             </figcaption>
             <div className="study-plate-grid">
               <div className="study-shot study-shot-desk">
-                <img src={desktop.src} alt={desktop.alt} width={desktop.width} height={desktop.height} loading="lazy" decoding="async" />
-                <span className="label tnum">{site.work.dims.desktop}</span>
+                <img
+                  src={desktop.src}
+                  srcSet={desktop.variants?.map((v) => `${v.src} ${v.width}w`).join(', ')}
+                  sizes="(max-width: 720px) 70vw, min(74vw, 1070px)"
+                  alt={desktop.alt}
+                  width={desktop.width}
+                  height={desktop.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span className="label">{site.work.dims.desktop}</span>
               </div>
               <div className="study-shot study-shot-phone">
-                <img src={phone.src} alt={phone.alt} width={phone.width} height={phone.height} loading="lazy" decoding="async" />
-                <span className="label tnum">{site.work.dims.phone}</span>
+                <img
+                  src={phone.src}
+                  srcSet={phone.variants?.map((v) => `${v.src} ${v.width}w`).join(', ')}
+                  sizes="(max-width: 720px) 22vw, min(24vw, 340px)"
+                  alt={phone.alt}
+                  width={phone.width}
+                  height={phone.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span className="label">{site.work.dims.phone}</span>
               </div>
             </div>
           </figure>
@@ -239,9 +267,10 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
           </div>
         ) : null}
 
+        {/* DOM order = reading order at every width: back first, then the next case study */}
         <nav className="study-next wrap" aria-label={site.study.nextNav}>
           <div className="study-next-row grid">
-            <a className="study-next-back" href={back}>
+            <a className="study-next-back" href={back} onClick={returnHome}>
               <span aria-hidden="true">←&nbsp;</span>
               {site.study.back}
             </a>
@@ -262,10 +291,10 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
       <footer className="study-foot wrap">
         <div className="study-foot-row grid">
           <p>
-            © <span className="tnum">{buildYear}</span> {profile.name}
+            © <span className="tnum">{updatedYear}</span> {profile.name}
           </p>
           <p>
-            {site.colophon.updated} <time dateTime={BUILD_DATE}>{BUILD_DATE}</time>
+            {site.colophon.updated} <time dateTime={UPDATED}>{UPDATED}</time>
           </p>
         </div>
       </footer>

@@ -3,7 +3,8 @@
    hairlines, the 12-column grid and the quiet type scale (owner feedback,
    DECISIONS A: nothing above --s4 here, weight 600 at most). Column 4 is the
    page's second axis: the kicker in the header, the intro, the flow's
-   stop line and the footer's date all start on it.
+   titles and the footer's date all start on it (the flow's stop line runs
+   in the gutter just before it).
    Always the Professional palette (tokens.css).
 ------------------------------------------------------------------- */
 
@@ -13,9 +14,9 @@
 /* ---------------- top ---------------- */
 .study-top { padding-top: 56px; }
 .study-title {
-  margin-top: 12px;
   font-size: var(--s4); line-height: 1.05; letter-spacing: -.03em; font-weight: 600;
 }
+.study-title:focus { outline: none; }
 .study-sub {
   margin-top: 18px; max-width: 28em;
   font-size: var(--s3); line-height: 1.22; letter-spacing: -.02em; font-weight: 400; text-wrap: pretty;
@@ -44,24 +45,30 @@
   font-size: var(--s3); line-height: 1.1; letter-spacing: -.02em; font-weight: 600;
 }
 
-/* ---------------- the plate: the home plate's geometry at full width ----------------
-   4 equal columns with a 4.94% gap: 3 columns + 2 gaps at 16:10 is exactly as tall
-   as 1 column at 780:1688, so the phone sits flush with the desktop. */
+/* ---------------- the plate, on the page grid ----------------
+   The desktop capture takes columns 1–9, the phone 10–12 (3 and 1 of the phone's 4).
+   The phone is cropped from the top to the desktop's height, so the two end on one
+   line: --desk-h is the desktop's height from the grid (the figure is a .wrap, so
+   100cqi is its measure). */
 .study-plate { margin-top: 104px; }
 .study-plate-head {
   font-size: var(--s1); line-height: 1.55; color: var(--ink-2); font-weight: 500;
   padding-bottom: 10px; border-bottom: 1px solid var(--rule-strong);
 }
 .study-plate-head b { color: var(--ink); font-weight: 600; margin-right: 6px; }
-.study-plate-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 4.94%; margin-top: 20px; }
-.study-shot-desk { grid-column: 1 / span 3; }
-.study-shot-phone { grid-column: 4; }
+.study-plate-grid {
+  --desk-span: 9;
+  --desk-h: calc(((100cqi + var(--g)) * var(--desk-span) / var(--cols) - var(--g)) * 10 / 16);
+  display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--g); margin-top: 20px;
+}
+.study-shot-desk { grid-column: 1 / span var(--desk-span); }
+.study-shot-phone { grid-column: calc(var(--desk-span) + 1) / -1; }
 .study-shot img {
   width: 100%; height: auto; background: var(--rule);
   outline: 1px solid var(--rule-strong); outline-offset: -1px;
 }
 .study-shot-desk img { aspect-ratio: 1440 / 900; }
-.study-shot-phone img { aspect-ratio: 780 / 1688; }
+.study-shot-phone img { height: var(--desk-h); object-fit: cover; object-position: top; }
 .study-shot .label { display: block; margin-top: 8px; }
 
 /* ---------------- sections ---------------- */
@@ -90,9 +97,9 @@
 .study-key.is-person { border-radius: 50%; background: var(--ink); }
 
 .study-flow {
-  --x: calc((100% + var(--g)) * 3 / 12);        /* the stop line runs down the start of column 4 */
+  --x: calc((100% + var(--g)) * 3 / 12 - var(--g) / 2 - 5.5px);   /* the stop line runs down the gutter before column 4 */
   --c: calc(var(--s3) * .56);                   /* marker centre: the middle of the title's capitals */
-  --pad: 36px;
+  --pad: 0px;                                   /* so the titles start on column 4, with the intro above */
 }
 .study-step { position: relative; align-items: baseline; }
 .study-step::before {
@@ -151,6 +158,11 @@
 .study-foot-row p:first-child { grid-column: 1 / span 3; }
 .study-foot-row p:last-child { grid-column: 4 / -1; }
 
+/* touch screens of any width: 44px targets */
+@media (pointer: coarse) {
+  .study-meta dd a { min-height: 44px; margin-top: -10px; }
+}
+
 /* ---------------- tablet (721–1100) ---------------- */
 @media (min-width: 721px) and (max-width: 1100px) {
   .study-meta > div { grid-column: span 4; }
@@ -179,7 +191,7 @@
   .study-metrics > div { grid-column: span 2; }
 
   .study-plate { margin-top: 72px; }
-  .study-plate-grid { margin-top: 16px; }
+  .study-plate-grid { --desk-span: 3; margin-top: 16px; }
   /* the phone column is narrow: its dims label sits flush right and runs back over the gap */
   .study-shot-phone .label { display: flex; justify-content: flex-end; white-space: nowrap; }
 
@@ -199,8 +211,9 @@
 
   .study-next { margin-top: 72px; }
   .study-next-row { row-gap: 20px; }
-  .study-next-back { grid-column: 1 / -1; grid-row: 2; margin-top: 0; }
-  .study-next-link { grid-column: 1 / -1; grid-row: 1; justify-self: stretch; align-items: flex-start; text-align: left; min-height: 44px; }
+  /* the DOM order (back, then next) is the reading and tab order here too */
+  .study-next-back { grid-column: 1 / -1; margin-top: -10px; }
+  .study-next-link { grid-column: 1 / -1; justify-self: stretch; align-items: flex-start; text-align: left; min-height: 44px; }
 
   .study-foot { margin-top: 72px; }
   .study-foot-row { row-gap: 4px; }

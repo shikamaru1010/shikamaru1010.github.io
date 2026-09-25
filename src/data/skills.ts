@@ -2,6 +2,11 @@
 // (src/data/projects.ts) or FON courses (education.courses in experience.ts);
 // data.test.ts checks that every reference resolves.
 export type Evidence = { project: string; part?: string } | { course: string } | { text: string };
+/**
+ * `name` is written as it reads mid-sentence: proper names capitalized ('Python'), common
+ * nouns in lower case ('agent pipelines'). The Skills table capitalizes the first letter;
+ * the CV joins them into one line and capitalizes only the first.
+ */
 export type Skill = { name: string; evidence: Evidence[] };
 export type SkillGroup = { label: string; skills: Skill[] };
 
@@ -10,7 +15,7 @@ const menu = 'QR menu';
 
 export const skillGroups: SkillGroup[] = [
   {
-    label: 'Languages',
+    label: 'Programming languages',
     skills: [
       { name: 'Python', evidence: [{ project: 'trading-agent' }, { project: 'crypto-agent' }, { project: 'mesara', part: internal }] },
       { name: 'TypeScript', evidence: [{ project: 'dev-dashboard' }, { project: 'mesara', part: menu }, { project: 'brand-app' }] },
@@ -43,16 +48,16 @@ export const skillGroups: SkillGroup[] = [
     label: 'AI and automation',
     skills: [
       { name: 'Claude and OpenRouter tool use', evidence: [{ project: 'trading-agent' }, { project: 'mesara' }, { project: 'belgrade-buddy' }] },
-      { name: 'Agent pipelines', evidence: [{ project: 'trading-agent' }, { project: 'mesara', part: internal }, { project: 'student-brain-agent' }] },
+      { name: 'agent pipelines', evidence: [{ project: 'trading-agent' }, { project: 'mesara', part: internal }, { project: 'student-brain-agent' }] },
       { name: 'APScheduler', evidence: [{ project: 'mesara', part: internal }] },
-      { name: 'Data pipelines', evidence: [{ project: 'trading-agent' }] },
+      { name: 'data pipelines', evidence: [{ project: 'trading-agent' }] },
     ],
   },
   {
     label: 'Tools and workflow',
     skills: [
       { name: 'Git and GitHub', evidence: [{ project: 'dev-dashboard' }] },
-      { name: 'The terminal (PowerShell, bash)', evidence: [{ project: 'dev-dashboard', part: 'nightly git log' }] },
+      { name: 'the terminal (PowerShell, bash)', evidence: [{ project: 'dev-dashboard', part: 'nightly git log' }] },
       { name: 'Docker', evidence: [{ project: 'mesara' }] },
       { name: 'Obsidian', evidence: [{ project: 'dev-dashboard' }, { project: 'student-brain-agent' }] },
     ],
@@ -62,16 +67,16 @@ export const skillGroups: SkillGroup[] = [
     skills: [
       { name: 'TCP/IP, HTTP, Wireshark, sockets', evidence: [{ course: 'Computer networks and internet technologies' }] },
       { name: 'GNS3, Cisco Packet Tracer', evidence: [{ text: 'Hands-on, alongside the FON curriculum' }] },
-      { name: 'Optimization and operations research', evidence: [{ course: 'Operations research 1 and 2' }] },
+      { name: 'optimization and operations research', evidence: [{ course: 'Operations research 1 and 2' }] },
     ],
   },
   {
     label: 'Practice',
     skills: [
       { name: 'REST APIs', evidence: [{ project: 'crypto-agent' }, { project: 'mesara', part: 'ordering API' }] },
-      { name: 'Internationalization', evidence: [{ project: 'mesara' }, { project: 'belgrade-buddy' }] },
-      { name: 'Testing with Vitest', evidence: [{ project: 'brand-app' }] },
-      { name: 'Observability and logging', evidence: [{ project: 'dev-dashboard' }, { project: 'trading-agent' }] },
+      { name: 'internationalization', evidence: [{ project: 'mesara' }, { project: 'belgrade-buddy' }] },
+      { name: 'testing with Vitest', evidence: [{ project: 'brand-app' }] },
+      { name: 'observability and logging', evidence: [{ project: 'dev-dashboard' }, { project: 'trading-agent' }] },
     ],
   },
 ];

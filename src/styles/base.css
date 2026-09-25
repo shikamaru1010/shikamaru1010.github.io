@@ -38,8 +38,10 @@ table { border-collapse: collapse; }
 
 ::selection { background: var(--sel-bg); color: var(--sel-fg); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-/* the skip link focuses <main>; a ring around the whole page is noise */
-main[tabindex="-1"]:focus { outline: none; }
+/* the skip link focuses <main>, and a page change focuses the place it opened at (App):
+   a ring around a whole page or section is noise, the focus marks a place */
+main[tabindex="-1"]:focus,
+[data-focus-target]:focus { outline: none; }
 
 .sr-only {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
@@ -67,12 +69,13 @@ main[tabindex="-1"]:focus { outline: none; }
 
 /* ---------------- section scaffolding ---------------- */
 .sec { padding-top: 144px; }
+/* the head and its note share the first baseline */
 .sec-head {
   display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--g);
-  border-top: 1px solid var(--rule-strong); padding-top: 14px; margin-bottom: 64px; align-items: start;
+  border-top: 1px solid var(--rule-strong); padding-top: 14px; margin-bottom: 64px; align-items: baseline;
 }
 .h2 { grid-column: 1 / span 6; font-size: var(--s4); line-height: .95; letter-spacing: -.04em; font-weight: 600; }
-.sec-note { grid-column: 9 / -1; color: var(--ink-2); max-width: 30ch; padding-top: 6px; }
+.sec-note { grid-column: 9 / -1; color: var(--ink-2); max-width: 30ch; }
 .sub-head {
   display: flex; justify-content: space-between; align-items: baseline;
   border-top: 1px solid var(--rule); padding-top: 12px; margin-bottom: 28px;
@@ -99,7 +102,7 @@ html:not([data-mode="personal"]) .only-personal { display: none !important; }
 /* ---------------- phone ---------------- */
 @media (max-width: 720px) {
   .sec { padding-top: 104px; }
-  .sec-head { margin-bottom: 36px; }
+  .sec-head { margin-bottom: 36px; align-items: start; }
   .h2 { grid-column: 1 / -1; }
   .sec-note { grid-column: 1 / -1; padding-top: 14px; }
   .sub-head { flex-wrap: wrap; gap: 4px 16px; }

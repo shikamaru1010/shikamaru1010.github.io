@@ -8,15 +8,15 @@
    .label, .u, the focus ring, selection) reads right on ink. Contrast on #111110:
    ink 17.4:1, ink-2 6.9:1, accent 3.95:1 (the @ at ≥ 26px, and the focus ring). */
 .ink-plate {
-  --paper: #111110;
-  --ink: #F2F1EC;
-  --ink-2: #9D9C98;
-  --rule: #3E3E3C;
-  --rule-strong: #F2F1EC;
-  --sel-bg: #D83218;
-  --sel-fg: #FFFFFF;
-  background: #111110;
-  color: #F2F1EC;
+  --paper: var(--plate-paper);
+  --ink: var(--plate-ink);
+  --ink-2: var(--plate-ink-2);
+  --rule: var(--plate-rule);
+  --rule-strong: var(--plate-ink);
+  --sel-bg: var(--sheet-accent);
+  --sel-fg: var(--sheet);
+  background: var(--plate-paper);
+  color: var(--plate-ink);
 }
 
 /* ---------------- contact ---------------- */
@@ -24,8 +24,12 @@
 /* on the plate the address belongs to its heading: a shorter gap than a section's rows get */
 .contact .sec-head { margin-bottom: 40px; }
 
-/* the address: a --s4 line with the one accent mark of the plate, the @ */
+/* the address: a --s4 line with the one accent mark of the plate, the @. It and the copy button
+   start on column 4 (the lede's and the stacks' axis), so the address is the plate's content
+   and "Contact" stays its label, not a second heading at the same size on the same edge. */
 .contact-mail { font-size: var(--s4); line-height: 1.1; letter-spacing: -.03em; font-weight: 600; }
+.contact-mail,
+.copy-row { margin-left: calc((100% + var(--g)) * 3 / 12); }
 .mail {
   margin-left: -.03em;   /* optical: the r on the margin */
   text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .16em;
@@ -67,6 +71,11 @@
 .colophon-line { text-wrap: pretty; }
 .colophon-turn { color: var(--ink); }
 
+/* touch screens of any width: 44px targets */
+@media (pointer: coarse) {
+  .reach dd a { min-height: 44px; }
+}
+
 /* ---------------- tablet (721–1100) ---------------- */
 @media (min-width: 721px) and (max-width: 1100px) {
   .reach > div,
@@ -78,6 +87,8 @@
 @media (max-width: 720px) {
   .contact { margin-top: 112px; padding-top: 48px; }
   .contact .sec-head { margin-bottom: 28px; }
+  .contact-mail,
+  .copy-row { margin-left: 0; }
   .copy-row { margin-top: 20px; }
   .reach { margin-top: 40px; row-gap: 18px; }
   .reach > div { grid-column: span 2; }

@@ -34,9 +34,12 @@ export function keepTogether(s: string): string {
   return s.replace(/ /g, '\u00a0');
 }
 
-/** The templates say "entries" and "days"; a month with one of either reads right too. */
+/** The templates say "entries" and "days"; a count of 1 takes the singular from personal.log.singular. */
 export function plural(s: string): string {
-  return s.replace(/\b1 entries\b/g, '1 entry').replace(/\b1 days\b/g, '1 day');
+  return Object.entries(personal.log.singular).reduce(
+    (out, [many, one]) => out.replace(new RegExp(`\\b1 ${many}\\b`, 'g'), `1 ${one}`),
+    s,
+  );
 }
 
 /** Everything the log section shows, derived from worklog.json alone (pure; no Intl, no time zone). */
@@ -85,23 +88,18 @@ function axisName(key: string, index: number): string {
  * The work log drawn on the grid (DECISIONS 2): one continuous day axis from
  * the 1st of the first month to the "as of" date, one square per entry, stacked
  * bottom-up on its day; the busiest day in the accent. The marks are hidden
- * from assistive tech, which gets the same numbers as text in the caption.
+ * from assistive tech, which gets the month-by-month numbers in the caption
+ * (the headline above the figure already says the totals).
  */
 export default function WorkLogFigure({ summary }: { summary: WorklogSummary }): JSX.Element | null {
   const { months, busiest, first } = summary;
   if (!summary.total || !busiest || !first) return null;
 
-  const headline = plural(fill(personal.log.headline, {
-    total: summary.total,
-    days: summary.dayCount,
-    first: formatDate(first),
-  }));
   const busiestText = plural(fill(personal.log.busiest, { count: busiest.count, date: keepTogether(formatDate(busiest.day)) }));
 
   return (
     <figure className="wl">
       <figcaption className="sr-only">
-        <span>{headline}</span>
         <ul>
           {months.map((mo) => (
             <li key={mo.key}>

@@ -55,7 +55,6 @@ describe('projects data integrity', () => {
       expect(p.year.trim()).not.toBe('');
       expect(p.year).toMatch(/^\d{4}(–(\d{4}|now))?$/);
       expect(p.tech.length).toBeGreaterThan(0);
-      expect(p.highlights.length).toBeGreaterThan(0);
     }
   });
 
@@ -66,16 +65,30 @@ describe('projects data integrity', () => {
     }
   });
 
-  it('links and liveUrl are absolute http(s) urls', () => {
+  it('liveUrl is an absolute http(s) url', () => {
     for (const p of projects) {
       if (p.liveUrl) expect(p.liveUrl).toMatch(/^https?:\/\//);
-      for (const l of p.links ?? []) expect(l.href).toMatch(/^https?:\/\//);
     }
   });
 
   it('case studies, when present, have a non-empty intro', () => {
     for (const p of projects) {
       if (p.caseStudy) expect(p.caseStudy.intro.trim()).not.toBe('');
+    }
+  });
+
+  it('"At a glance" shows numbers only, never a word dressed as a figure', () => {
+    for (const p of studyProjects) {
+      for (const m of p.caseStudy.metrics ?? []) expect(m.value, `${p.id}: ${m.label}`).toMatch(/^\d[\d.,]*\+?$/);
+    }
+  });
+
+  it('every workflow step says whether a person or the system acts', () => {
+    for (const p of studyProjects) {
+      for (const s of p.caseStudy.workflow ?? []) {
+        expect(['person', 'system'], `${p.id}: ${s.title}`).toContain(s.kind);
+        expect(s.actor.trim(), `${p.id}: ${s.title}`).not.toBe('');
+      }
     }
   });
 
@@ -137,6 +150,26 @@ describe('media', () => {
         const file = publicFile(m.src);
         expect(existsSync(file), m.src).toBe(true);
         expect(webpSize(readFileSync(file)), m.src).toEqual({ width: m.width, height: m.height });
+      }
+    }
+  });
+
+  it('the smaller copies (npm run images) exist, keep the aspect ratio and are smaller', () => {
+    for (const p of clientProjects) {
+      for (const m of p.media!) {
+        expect(m.variants?.length, m.src).toBeGreaterThan(0);
+        for (const v of m.variants!) {
+          const size = webpSize(readFileSync(publicFile(v.src)));
+          expect(size.width, v.src).toBe(v.width);
+          expect(v.width).toBeLessThan(m.width);
+          expect(Math.abs(size.height - (m.height * v.width) / m.width), v.src).toBeLessThanOrEqual(1);
+        }
+        if (m.device === 'desktop') {
+          expect(m.thumb, p.id).toBeDefined();
+          expect(webpSize(readFileSync(publicFile(m.thumb!))), m.thumb).toEqual({ width: 320, height: 200 });
+        } else {
+          expect(m.thumb, p.id).toBeUndefined();
+        }
       }
     }
   });

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { clientProjects, projectAnchor, projects, smallerProjects, systemProjects } from '../data/projects';
-import { parseRoute } from './route';
+import { parseRoute, routeKey, scrollStep } from './route';
 
 describe('parseRoute', () => {
   it('empty hash is home', () => {
@@ -40,6 +40,57 @@ describe('parseRoute', () => {
     expect(parseRoute('#work')).toEqual({ kind: 'home', anchor: 'work' });
     expect(parseRoute('#top')).toEqual({ kind: 'home', anchor: 'top' });
     expect(parseRoute('#client-mesara')).toEqual({ kind: 'home', anchor: 'client-mesara' });
+  });
+});
+
+describe('routeKey', () => {
+  it('a different case study is a different page', () => {
+    expect(routeKey({ kind: 'study', id: 'mesara' })).not.toBe(routeKey({ kind: 'study', id: 'dev-dashboard' }));
+    expect(routeKey({ kind: 'home', anchor: 'work' })).toBe(routeKey({ kind: 'home' }));
+    expect(routeKey({ kind: 'cv' })).toBe('cv');
+  });
+});
+
+describe('scrollStep', () => {
+  const home = parseRoute('');
+  const study = (id: string) => parseRoute(`#project/${id}`);
+
+  it('first mount: only a real anchor is scrolled to; focus stays', () => {
+    expect(scrollStep(null, parseRoute('#skills'))).toEqual({ scroll: { kind: 'anchor', id: 'skills' }, focus: false });
+    expect(scrollStep(null, home)).toEqual({ scroll: { kind: 'native' }, focus: false });
+    expect(scrollStep(null, study('mesara'))).toEqual({ scroll: { kind: 'native' }, focus: false });
+  });
+
+  it('study → the next study opens at its top and moves focus (the "Next case study" link)', () => {
+    expect(scrollStep(routeKey(study('mesara')), study('dev-dashboard'))).toEqual({ scroll: { kind: 'top' }, focus: true });
+  });
+
+  it('home → CV or a study opens at the top and moves focus', () => {
+    expect(scrollStep('home', parseRoute('#resume'))).toEqual({ scroll: { kind: 'top' }, focus: true });
+    expect(scrollStep('home', study('mesara'))).toEqual({ scroll: { kind: 'top' }, focus: true });
+  });
+
+  it('back to home: the saved position first, then the anchor, then the top', () => {
+    expect(scrollStep('cv', home, 900)).toEqual({ scroll: { kind: 'restore', y: 900 }, focus: true });
+    expect(scrollStep('cv', parseRoute('#top'), 900)).toEqual({ scroll: { kind: 'restore', y: 900 }, focus: true });
+    expect(scrollStep('study:mesara', parseRoute('#client-mesara'))).toEqual({
+      scroll: { kind: 'anchor', id: 'client-mesara' },
+      focus: true,
+    });
+    expect(scrollStep('cv', home)).toEqual({ scroll: { kind: 'top' }, focus: true });
+  });
+
+  it('home → home: the browser jumps to a plain anchor; a rewritten hash is scrolled to (or the top)', () => {
+    expect(scrollStep('home', parseRoute('#work'))).toEqual({ scroll: { kind: 'native' }, focus: false });
+    expect(scrollStep('home', parseRoute('#project/pilatiq'))).toEqual({
+      scroll: { kind: 'anchor', id: 'client-pilatiq' },
+      focus: false,
+    });
+    expect(scrollStep('home', parseRoute('#project/nope'))).toEqual({ scroll: { kind: 'top' }, focus: false });
+  });
+
+  it('the same study again does nothing', () => {
+    expect(scrollStep('study:mesara', study('mesara'))).toEqual({ scroll: { kind: 'native' }, focus: false });
   });
 });
 

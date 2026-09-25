@@ -1,6 +1,6 @@
 import { profile } from '../../data/profile';
 import { site } from '../../data/site';
-import { BUILD_DATE, buildYear } from '../../lib/format';
+import { UPDATED, updatedYear } from '../../lib/format';
 import TurnThePage from '../shell/TurnThePage';
 import './contact.css';
 
@@ -15,7 +15,7 @@ function Sep(): JSX.Element {
   );
 }
 
-/** The Professional footer: one quiet line (©, how it is built, the build date) and the way to the other side. */
+/** The Professional footer: one quiet line (©, how it is built, the content date) and the way to the other side. */
 export default function Colophon(): JSX.Element {
   return (
     <div className="foot ink-plate">
@@ -23,13 +23,13 @@ export default function Colophon(): JSX.Element {
         <div className="colophon">
           <p className="colophon-line">
             <span>
-              © <span className="tnum">{buildYear}</span> {profile.name}
+              © <span className="tnum">{updatedYear}</span> {profile.name}
             </span>
             <Sep />
             <span>{K.set}</span>
             <Sep />
             <span>
-              {K.updated} <time dateTime={BUILD_DATE}>{BUILD_DATE}</time>
+              {K.updated} <time dateTime={UPDATED}>{UPDATED}</time>
             </span>
           </p>
           <p className="colophon-turn">

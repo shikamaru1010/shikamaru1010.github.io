@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react';
 import { personal } from '../../data/personal';
 import worklog from '../../data/worklog.json';
+import { around } from '../../lib/around';
 import { fill, formatDate } from '../../lib/format';
 import Brain from './Brain';
 import DuotoneFilter from './DuotoneFilter';
@@ -15,18 +15,6 @@ import './personal.css';
 // Pure data, computed once (no DOM).
 const log = summarizeWorklog(worklog as WorklogData);
 
-/** Puts `node` where `{key}` sits in `template` (so a date can be a real <time>). */
-function around(template: string, key: string, node: ReactNode): ReactNode {
-  const [before, after = ''] = template.split(`{${key}}`);
-  return (
-    <>
-      {before}
-      {node}
-      {after}
-    </>
-  );
-}
-
 /** The work log: the habit in one sentence, then drawn on the grid (replaces the giant 99). */
 function WorkLog(): JSX.Element {
   const copy = personal.log;
@@ -36,7 +24,7 @@ function WorkLog(): JSX.Element {
         <div className="p-label">
           <h2 id="log-h">{copy.heading}</h2>
           <p className="label">
-            {around(copy.asOf, 'date', <time dateTime={log.asOf}>{keepTogether(formatDate(log.asOf))}</time>)}
+            {around(copy.asOf, 'date', <time dateTime={log.asOf}>{log.asOf}</time>)}
           </p>
         </div>
         <div className="p-log-text">

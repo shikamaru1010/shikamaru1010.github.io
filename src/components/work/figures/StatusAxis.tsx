@@ -40,8 +40,9 @@ function axisSegments(figure: AxisFigure): { columns: number; segments: Segment[
 }
 
 /**
- * dev-dashboard's status rule drawn to scale: the page's twelve columns are the time axis, one
- * column per `daysPerColumn` days, with the real thresholds from the data (SPEC §6.1.2).
+ * dev-dashboard's status rule drawn to scale: twelve equal steps of `daysPerColumn` days across
+ * the full measure (no gutters in the axis, so every 30 days is the same length), with the real
+ * thresholds from the data (SPEC §6.1.2).
  */
 export default function StatusAxis({ figure }: { figure: AxisFigure }): JSX.Element {
   const { columns, segments } = axisSegments(figure);
@@ -49,12 +50,9 @@ export default function StatusAxis({ figure }: { figure: AxisFigure }): JSX.Elem
     <figure className="fig">
       <figcaption className="fig-cap label">
         <span>{figure.caption}</span>
-        <span>
-          <span className="d-only">{figure.scaleNote}</span>
-          <span className="m-only">{figure.scaleNoteNarrow}</span>
-        </span>
+        <span>{figure.scaleNote}</span>
       </figcaption>
-      <div className="axis grid" style={{ '--axis-cols': columns } as CSSProperties}>
+      <div className="axis" style={{ '--axis-cols': columns } as CSSProperties}>
         <div className="ticks" aria-hidden="true">
           {Array.from({ length: columns }, (_, i) => (
             <i key={i} />
@@ -63,14 +61,16 @@ export default function StatusAxis({ figure }: { figure: AxisFigure }): JSX.Elem
         {segments.map((s) => (
           <div key={s.key} className={`seg seg-${s.key}`} style={{ '--seg': `${s.start} / span ${s.span}` } as CSSProperties}>
             <b className="num">{s.from}</b>
+            {s.key === 'aband' && (
+              <b className="num num-end" aria-hidden="true">
+                {figure.maxDays}
+              </b>
+            )}
             <i className="bar" aria-hidden="true" />
             <span className="st">{s.label}</span>
             <span className="note label">{s.note}</span>
           </div>
         ))}
-        <span className="end label tnum" aria-hidden="true">
-          {fill(site.work.axis.end, { days: figure.maxDays })}
-        </span>
       </div>
     </figure>
   );

@@ -1,15 +1,10 @@
 import { systemProjects, type Project, type SystemFigure } from '../../data/projects';
 import { site } from '../../data/site';
-import { yearRange } from '../../lib/format';
+import { stackLine, yearRange } from '../../lib/format';
 import Pipeline from './figures/Pipeline';
 import SignalLine from './figures/SignalLine';
 import StatusAxis from './figures/StatusAxis';
 import './systems.css';
-
-/** The stack as comma-separated text; a version number never wraps away from its name ('Tailwind 4'). */
-function stackLine(tech: readonly string[]): string {
-  return tech.map((t) => t.replace(/ (?=\d)/g, '\u00a0')).join(', ');
-}
 
 /** Each system gets a figure drawn on the page grid, chosen by `figure.kind`. */
 function SystemFigureView({ figure }: { figure: SystemFigure }): JSX.Element {
@@ -32,7 +27,7 @@ function System({ p }: { p: Project }): JSX.Element {
           <p className="label tnum">{`${p.year} · ${p.statusNote ?? p.status}`}</p>
           {p.caseStudy && (
             <a className="case-link" href={`#project/${p.id}`}>
-              {site.work.readCaseStudy}
+              {site.work.caseStudy}
               <span aria-hidden="true">→</span>
             </a>
           )}
