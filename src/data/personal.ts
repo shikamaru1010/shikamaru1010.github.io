@@ -9,10 +9,10 @@ export type ElsewhereLink = { label: string; href: string; text: string };
 export const personal = {
   firstName: profile.firstName,
   nameCyrillic: ['Ратко', 'Шишовић'],
-  signCaption: 'Same name, in Serbian Cyrillic.',
-  line: 'I write down what I build.',
+  signCaption: 'My name in Serbian Cyrillic.',
+  line: 'I build tools for my own work and study.',
   intro:
-    'Fourth-year student at FON, intern at Podyx, based in Belgrade. Outside work and study I build tools for myself, and two of them write into the same Obsidian vault.',
+    'Fourth-year student at FON and software engineering intern at Podyx, based in Belgrade. Outside work and study I build tools for myself; two of them write into the same Obsidian vault.',
   photo: {
     src: '/ratko/ratko-square.webp',
     width: 800,
@@ -23,7 +23,7 @@ export const personal = {
     heading: 'Work log',
     asOf: 'As of {date}',
     headline: '{total} entries on {days} days since {first}.',
-    note: 'The log is called dnevnik and it is written in Serbian. Only the dates are public, never the entries.',
+    note: 'I keep a daily engineering log, written in Serbian. Only the entry dates are shown here.',
     busiest: 'Busiest day: {count} entries on {date}',
     monthSummary: '{month}: {entries} entries on {days} days',
   },
@@ -31,30 +31,30 @@ export const personal = {
   nowUpdated: 'Updated {month}',
   nowUpdatedAt: '2026-09-25',
   now: [
-    { lead: 'Interning', text: 'at Podyx since July, on a product more than 200 studios use.' },
+    { lead: 'Interning', text: 'at Podyx since July 2026, on a SaaS platform used by more than 200 studios.' },
     {
       lead: 'Building',
-      text: 'BelgradeBuddy, an app for people who have just arrived in my city. The phrasebook has to work when the signal doesn’t.',
+      text: 'BelgradeBuddy, a mobile app for visitors to Belgrade, with an offline phrasebook and FAQ.',
     },
     {
       lead: 'Running',
-      text: 'tradingAgent, a daily S&P 500 rotation with a human in the loop: me. Its sibling, cryptoAgent, applies the same patterns to a crypto portfolio.',
+      text: 'tradingAgent, a daily S&P 500 rotation pipeline that waits for my approval before any trade. cryptoAgent applies the same approach to a crypto portfolio.',
     },
     {
       lead: 'Studying',
       text: 'Information Systems and Technologies at FON, fourth year. Graduation is planned for 2027.',
     },
   ] as NowItem[],
-  toolsLead: 'Tools I live in:',
+  toolsLead: 'Daily tools:',
   tools: ['Obsidian', 'the terminal', 'Git', 'Claude Code', 'Grok'],
   thought: {
     heading: 'Today’s thought',
-    provenance: 'Today’s thought. Picked each morning by a GitHub Action from {poolSize} quotes I’ve checked.',
+    provenance: 'Selected each morning by a GitHub Action from {poolSize} verified quotes.',
   },
   brain: {
-    heading: 'The Brain',
-    sub: 'Side projects, mostly built for myself',
-    lede: 'One Obsidian vault, three domains, and links and queries that reach across all of them.',
+    heading: 'Side projects',
+    sub: 'Tools built for my own use',
+    lede: 'One Obsidian vault, organised into three domains, with notes and queries that link across them.',
     domains: [
       {
         name: 'Student',

@@ -35,12 +35,15 @@
   --head-h: 64px;
   --ease: cubic-bezier(.76, 0, .24, 1);
 
-  /* type scale: labels, body, names of things, section heads (+ the fitted "width of the page") */
-  --t1: 13; --t2: 17; --t3: 28; --t4: 64;
+  /* type scale: labels, body, names of things, section heads, display (the name).
+     Owner feedback 2026-09-25: the fitted, page-wide name and 64px heads were too loud — the scale
+     is deliberately quiet now; hierarchy comes from weight, space and the grid, not size. */
+  --t1: 13; --t2: 16; --t3: 21; --t4: 36; --t5: 56;
   --s1: calc(var(--t1) * 1px);
   --s2: calc(var(--t2) * 1px);
   --s3: calc(var(--t3) * 1px);
   --s4: calc(var(--t4) * 1px);
+  --s5: calc(var(--t5) * 1px);
 
   --font: 'Golos Text', 'Golos Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
   color-scheme: light;
@@ -59,6 +62,6 @@ html[data-mode="personal"][data-route="home"] {
   color-scheme: dark;
 }
 
-@media (max-width: 1279px) { :root { --t3: 26; --t4: 52; } }
+@media (max-width: 1279px) { :root { --t3: 20; --t4: 32; --t5: 48; } }
 @media (max-width: 1100px) { :root { --m: 28px; --g: 20px; } }
-@media (max-width: 720px)  { :root { --m: 16px; --g: 16px; --cols: 4; --head-h: 56px; --t3: 22; --t4: 40; } }
+@media (max-width: 720px)  { :root { --m: 16px; --g: 16px; --cols: 4; --head-h: 56px; --t3: 18; --t4: 26; --t5: 38; } }
