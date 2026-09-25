@@ -1,0 +1,64 @@
+/* ------------------------------------------------------------------
+   Design tokens. One family (Golos Text), a 12-column grid (4 on phones),
+   hairlines, one accent. Five sizes: --t1..--t4 plus "the width of the page".
+   The colophon prints --t1..--t4 and --cols straight from these tokens,
+   so the claim on the page cannot drift from the code.
+------------------------------------------------------------------- */
+
+/* Golos fallback with matched metrics (measured in Chrome: ascent .98em, descent .22em,
+   Golos/Arial width ratio 1.078 at 400 and 1.027 at 700; 1.06 splits the difference). */
+@font-face {
+  font-family: 'Golos Fallback';
+  src: local('Arial'), local('ArialMT');
+  size-adjust: 106%;
+  ascent-override: 92.5%;
+  descent-override: 20.8%;
+  line-gap-override: 0%;
+}
+
+:root {
+  /* Professional: paper, ink, one vermilion */
+  --paper: #F2F1EC;
+  --ink: #111110;
+  --ink-2: #53514C;            /* 7.0:1 on paper */
+  --rule: rgba(17, 17, 16, .16);
+  --rule-strong: #111110;
+  --accent: #D83218;           /* 4.2:1: marks, focus ring, and type >= 24px (or >= 19px at 600) only */
+  --sel-bg: #D83218;
+  --sel-fg: #FFFFFF;           /* 4.8:1 */
+
+  /* grid */
+  --m: 40px;                   /* page margin */
+  --g: 24px;                   /* gutter */
+  --cols: 12;
+  --max: 1520px;               /* .wrap max width incl. margins */
+  --head-h: 64px;
+  --ease: cubic-bezier(.76, 0, .24, 1);
+
+  /* type scale: labels, body, names of things, section heads (+ the fitted "width of the page") */
+  --t1: 13; --t2: 17; --t3: 28; --t4: 64;
+  --s1: calc(var(--t1) * 1px);
+  --s2: calc(var(--t2) * 1px);
+  --s3: calc(var(--t3) * 1px);
+  --s4: calc(var(--t4) * 1px);
+
+  --font: 'Golos Text', 'Golos Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: light;
+}
+
+/* Personal palette applies only on the home route. CV and case studies are always Professional. */
+html[data-mode="personal"][data-route="home"] {
+  --paper: #15130F;
+  --ink: #EEE6D8;
+  --ink-2: #A39B8E;            /* 6.75:1 */
+  --rule: rgba(238, 230, 216, .17);
+  --rule-strong: #EEE6D8;
+  --accent: #FF6A3D;           /* 6.5:1, so it may be used for small text in Personal */
+  --sel-bg: #FF6A3D;
+  --sel-fg: #15130F;           /* 6.5:1 */
+  color-scheme: dark;
+}
+
+@media (max-width: 1279px) { :root { --t3: 26; --t4: 52; } }
+@media (max-width: 1100px) { :root { --m: 28px; --g: 20px; } }
+@media (max-width: 720px)  { :root { --m: 16px; --g: 16px; --cols: 4; --head-h: 56px; --t3: 22; --t4: 40; } }

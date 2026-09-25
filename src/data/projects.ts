@@ -14,49 +14,71 @@ export type ProjectLink = {
 };
 
 /**
- * A screenshot or short GIF of a project. Files live in
- * `public/screenshots/<project-id>/` and are referenced root-relative
- * (e.g. `/screenshots/trading-agent/dashboard.png`); GIFs are plain `<img>`s.
- * The FIRST item is also used as the card thumbnail.
+ * A real screenshot of a live site. Files live in `public/screenshots/<id>/`
+ * and are referenced root-relative. Clients carry exactly two: the desktop
+ * capture first, then the phone. projects.test.ts checks the files exist and
+ * that `width`/`height` match the webp headers.
  */
 export type ProjectMedia = {
+  /** Root-relative, e.g. '/screenshots/mesara/desktop.webp'. */
   src: string;
-  /** Describe what the screenshot shows — required for accessibility. */
+  /** Starts with the site’s domain, then says what the capture shows. */
   alt: string;
-  /** Short line shown under the image in the case study gallery. */
+  width: number;
+  height: number;
+  device: 'desktop' | 'phone';
+  /** Desktop item only: the caption shown on the plate. */
   caption?: string;
 };
 
-/** One box in the "Architecture & structure" grid of a case study. */
+/** One stop of a pipeline figure. `person` stops are drawn as circles, `system` stops as squares. */
+export type PipelineStep = { label: string; note: string; actor: 'system' | 'person' };
+
+/** The figure drawn on the page grid for a system project. */
+export type SystemFigure =
+  | { kind: 'pipeline'; caption: string; steps: PipelineStep[] }
+  | {
+      kind: 'status-axis';
+      caption: string;
+      scaleNote: string;
+      scaleNoteNarrow: string;
+      daysPerColumn: number;
+      maxDays: number;
+      thresholds: { active: number; paused: number };
+      activeNote: string;
+    }
+  | {
+      kind: 'signal';
+      caption: string;
+      aside: string;
+      online: { label: string; note: string };
+      offline: { label: string; note: string };
+    };
+
+/** One box in the architecture grid of a case study. */
 export type ArchNode = {
   title: string;
   detail: string;
   tech?: string[];
 };
 
-/** One step in the "How it works" pipeline/agent timeline. `actor` is rendered as a pill. */
+/** One step in the "How it works" flow of a case study. */
 export type WorkflowStep = {
-  /** e.g. 'Claude', 'Human', 'System', 'GitHub' — free text, shown as a pill. */
+  /** e.g. 'Customer', 'Human', 'System', 'GitHub'. People are drawn as circles (site.study.personActors). */
   actor: string;
   title: string;
   detail: string;
 };
 
-/** A big headline number in the dossier metric strip (e.g. value "0", label "Runtime deps"). */
+/** A headline value in the case study "At a glance" strip. */
 export type CaseStudyMetric = {
   value: string;
   label: string;
 };
 
-/**
- * Rich, on-site case study for a project. Entirely optional and owner-written —
- * every section is optional, so a project can have a lot or a little. Reached at
- * `#project/<id>` and surfaced via a button in the project modal.
- */
+/** Rich on-site case study, reached at `#project/<id>`. Every section is optional. */
 export type ProjectCaseStudy = {
-  /** 1–2 short paragraphs shown under the title. */
   intro: string;
-  /** Big headline numbers shown right under the header. */
   metrics?: CaseStudyMetric[];
   architecture?: ArchNode[];
   workflow?: WorkflowStep[];
@@ -72,55 +94,87 @@ export type Project = {
   id: string;
   title: string;
   subtitle: string;
-  /** One-line summary shown on the card. */
   blurb: string;
   year: string;
   status: 'In production' | 'Active development' | 'Maintained' | 'Completed';
+  /** Shown instead of `status` where a plainer word fits better ('Used daily'). */
+  statusNote?: string;
   featured: boolean;
   categories: Category[];
   tech: string[];
-  /** Bullet points shown in the detail modal. */
   highlights: string[];
-  /** Live, public site — shows a "Visit site" link in the card corner + modal. */
+  /** Live, public site. */
   liveUrl?: string;
-  /** Screenshots/GIFs — first one becomes the card thumbnail; all show in the case study gallery. */
+  /** Screenshots: desktop first, then phone. */
   media?: ProjectMedia[];
-  /**
-   * Reserves the card's image slot with a short label instead of a real screenshot —
-   * for a featured project that doesn't have one yet. Ignored once `media` is set.
-   */
-  mediaPlaceholder?: string;
   links?: ProjectLink[];
   note?: string;
-  /** Optional rich on-site case study (renders a button in the modal + a `#project/<id>` page). */
+  /** 1–2 short, checkable engineering facts, reworded from highlights / caseStudy. */
+  notes?: string[];
+  /** Systems only: the figure drawn on the page grid. */
+  figure?: SystemFigure;
   caseStudy?: ProjectCaseStudy;
 };
 
+export type StudyProject = Project & { caseStudy: ProjectCaseStudy };
+
+const desktop = (id: string, alt: string, caption: string): ProjectMedia => ({
+  src: `/screenshots/${id}/desktop.webp`,
+  alt,
+  width: 1440,
+  height: 900,
+  device: 'desktop',
+  caption,
+});
+
+const phone = (id: string, alt: string): ProjectMedia => ({
+  src: `/screenshots/${id}/mobile.webp`,
+  alt,
+  width: 780,
+  height: 1688,
+  device: 'phone',
+});
+
 export const projects: Project[] = [
+  // ---------- Client sites, live ----------
   {
     id: 'mesara',
     title: 'Mesara Šisko',
-    subtitle: 'Internal business system + digital QR menu (client)',
+    subtitle: 'QR menu and ordering app, plus an internal operations system',
     blurb:
-      'Production work for a Serbian butcher/grill business: a Django + AI internal operations system, plus a Next.js QR menu & ordering app — real requirements, real users.',
-    year: '2024 — present',
+      'Production software for a Serbian butcher and grill business: a Next.js QR menu and ordering app, and a Django and AI system for internal operations.',
+    year: '2024–now',
     status: 'In production',
     featured: true,
     categories: ['Client Delivery', 'AI & Automation', 'Web & Apps'],
-    tech: ['Django', 'SQLite', 'Claude agents', 'APScheduler', 'Next.js 16', 'React 19', 'Supabase', 'Docker'],
+    tech: ['Next.js 16', 'Supabase', 'Django', 'Claude agents', 'React 19', 'APScheduler', 'SQLite', 'Docker'],
     highlights: [
       'Internal ops system: daily sales/costs, P&L reports, and Serbian-regulation PDF declarations, on scheduled cycles (APScheduler).',
-      'Multi-agent AI setup — an AI "manager" plus section workers, with a learning loop that improves from user corrections.',
+      'Multi-agent AI setup: an AI “manager” plus section workers, with a learning loop that improves from user corrections.',
       'Digital QR menu & ordering app (Next.js 16 / React 19, Supabase, Zustand, Resend email, Framer Motion): bilingual SR/EN, real-time order notifications, Dockerized, deployed on Vercel + Supabase.',
-      'Direct work with the business owner — turning real operational pain into software, with compliance and reporting that have to be precise.',
+      'Direct work with the business owner, turning real operational pain into software, with compliance and reporting that have to be precise.',
     ],
     liveUrl: 'https://www.rostiljsisko.rs/sr',
     note: 'Private client repos. Live site deployed; in active use and maintained.',
-    // High-level case study — scanned the live QR/ordering web-app (case-study-scan skill);
-    // Tier: STRICT (client). No secrets, no customer data, no business logic / pricing.
+    notes: [
+      'Order totals are re-checked on the server at checkout. The cart total sent by the client is never trusted.',
+      'Kitchen and customer stay in sync through Supabase real-time subscriptions, with no polling.',
+    ],
+    media: [
+      desktop(
+        'mesara',
+        'rostiljsisko.rs on a desktop: the red Šisko logo and a Cyrillic welcome over a dark photo of grilled meat',
+        'Bilingual SR/EN menu, orders tracked in real time.',
+      ),
+      phone(
+        'mesara',
+        'rostiljsisko.rs on a phone: the red Cyrillic Šisko logo and the welcome, with buttons for the menu and online ordering',
+      ),
+    ],
+    // High-level case study (client work): no secrets, customer data, business logic or pricing.
     caseStudy: {
       intro:
-        'Mesara Šisko is production software for a Serbian butcher and grill business, delivered as two connected parts: a customer-facing QR menu and ordering app, and an internal operations system. Diners scan a QR code to browse a bilingual menu, order with help from an AI chatbot, and track their order in real time, while the kitchen receives and updates orders live — and behind the scenes, scheduled AI agents handle daily reporting and compliance paperwork. Real requirements, real users, in active use.',
+        'Mesara Šisko is production software for a Serbian butcher and grill business, delivered as two connected parts: a customer-facing QR menu and ordering app, and an internal operations system. Diners scan a QR code to browse a bilingual menu, order with help from an AI chatbot and track their order in real time, while the kitchen receives and updates orders live. Behind the scenes, scheduled AI agents handle daily reporting and compliance paperwork. It is in active use.',
       metrics: [
         { value: '2', label: 'Languages (SR / EN)' },
         { value: 'Real-time', label: 'Order tracking' },
@@ -142,8 +196,7 @@ export const projects: Project[] = [
         },
         {
           title: 'Ordering API',
-          detail:
-            'Validates each order against the live menu, records it, and notifies the restaurant.',
+          detail: 'Validates each order against the live menu, records it, and notifies the restaurant.',
           tech: ['Supabase', 'Resend'],
         },
         {
@@ -169,7 +222,7 @@ export const projects: Project[] = [
         {
           actor: 'Customer',
           title: 'Scan & browse',
-          detail: "A QR code opens the bilingual menu on the customer's phone.",
+          detail: 'A QR code opens the bilingual menu on the customer’s phone.',
         },
         {
           actor: 'Customer',
@@ -179,14 +232,12 @@ export const projects: Project[] = [
         {
           actor: 'System',
           title: 'Validate & record',
-          detail:
-            'The order is checked against the live menu, recorded, and the restaurant is notified.',
+          detail: 'The order is checked against the live menu, recorded, and the restaurant is notified.',
         },
         {
           actor: 'Staff',
           title: 'Prepare',
-          detail:
-            'The kitchen dashboard shows the order in real time; staff move it new → preparing → done.',
+          detail: 'The kitchen dashboard shows the order in real time; staff move it new → preparing → done.',
         },
         {
           actor: 'Customer',
@@ -196,15 +247,14 @@ export const projects: Project[] = [
         {
           actor: 'System',
           title: 'Back office',
-          detail:
-            'On a schedule, the internal system compiles daily reports and compliance PDFs for the owner.',
+          detail: 'On a schedule, the internal system compiles daily reports and compliance PDFs for the owner.',
         },
       ],
       decisions: [
         'Bilingual (Serbian + English) from day one, with localized URLs, to serve both locals and Zlatibor-area tourists.',
         'Mobile-first, since scanning a QR code on a phone is the main way in.',
         'Real-time via Supabase subscriptions so the kitchen and the customer stay in sync without polling.',
-        'Server-side price validation — the client cart total is never trusted at checkout.',
+        'Server-side price validation: the client cart total is never trusted at checkout.',
         'An AI chatbot to cut friction: answer menu questions and help assemble an order in plain language.',
         'A simple, owner-friendly internal system that turns daily operational pain (reports, declarations) into scheduled automation.',
       ],
@@ -216,8 +266,8 @@ export const projects: Project[] = [
         'Security headers are set at the framework level (HSTS, frame and content-type protections).',
       ],
       challenges: [
-        'Making the chatbot reliably understand colloquial Serbian menu requests — sizes, combos, "remove the salad".',
-        'Full internationalization — every string and menu item maintained in both languages.',
+        'Making the chatbot reliably understand colloquial Serbian menu requests: sizes, combos, “remove the salad”.',
+        'Full internationalization: every string and menu item maintained in both languages.',
         'Real-time coordination between the kitchen and customer views, including reconnect edge cases.',
         'Weight-based pricing needed a custom cart UI plus strict server-side validation.',
         'Keeping a snappy experience on mobile despite a large menu and many images.',
@@ -229,171 +279,170 @@ export const projects: Project[] = [
         'The internal system saves the owner daily manual work on reports and regulatory paperwork.',
       ],
       privacyNote:
-        'Private client repositories. This is a high-level overview — business logic, configuration and customer data are not shown. The live ordering site is public; a deeper walk-through is available on request.',
+        'Private client repositories. This is a high-level overview: business logic, configuration and customer data are not shown. The live ordering site is public, and a deeper walk-through is available on request.',
     },
-  },
-
-  // ---------- More projects (compact list) ----------
-  {
-    id: 'crypto-agent',
-    title: 'cryptoAgent',
-    subtitle: 'Automated crypto portfolio agent',
-    blurb:
-      'A sibling of tradingAgent applying the same reliable-automation playbook to crypto portfolio management.',
-    year: '2025',
-    status: 'Active development',
-    featured: false,
-    categories: ['AI & Automation'],
-    tech: ['Python', 'REST APIs', 'Automation'],
-    highlights: [
-      'Reuses the observability, retry and guardrail patterns from tradingAgent for a different asset class and exchange APIs.',
-    ],
-  },
-  {
-    id: 'student-brain-agent',
-    title: 'student-brain-agent',
-    subtitle: 'AI agent for academic knowledge',
-    blurb:
-      'A Node.js AI agent that processes academic material and generates structured notes in an Obsidian knowledge base.',
-    year: '2025',
-    status: 'Maintained',
-    featured: false,
-    categories: ['AI & Automation', 'Tooling & Observability'],
-    tech: ['Node.js', 'Obsidian API', 'AI'],
-    highlights: [
-      'Turns raw study material into linked, structured notes — part of the same second-brain ecosystem as dev-dashboard.',
-    ],
   },
   {
     id: 'pilatiq',
     title: 'Pilatiq Reformeri',
-    subtitle: 'Catalog site for a Pilates reformer brand (client)',
+    subtitle: 'Product catalog for a Pilates reformer brand',
     blurb:
-      'A production catalog website for Pilatiq Pilates reformers — clean product presentation with variants and strong visuals, built for search visibility and a smooth client handoff.',
+      'A production catalog site for Pilatiq Pilates reformers: products with variants and strong visuals, built for search visibility and a smooth handoff to the client.',
     year: '2024',
     status: 'In production',
     featured: true,
     categories: ['Client Delivery', 'Web & Apps'],
-    tech: ['React', 'Vite', 'SEO', 'Responsive design'],
+    tech: ['React', 'Vite'],
     highlights: [
       'Designed and built the product catalog with variants and strong visuals for a Pilates equipment brand.',
       'Optimized for SEO and performance, then handed off cleanly to the client.',
       'Iterated with the client across multiple sprints, from brief to live site.',
     ],
     liveUrl: 'https://pilatiq.rs/',
-  },
-  {
-    id: 'brand-app',
-    title: 'Brand Management App',
-    subtitle: 'Tested CRUD single-page app',
-    blurb:
-      'A React + TypeScript SPA for managing brand entries with full CRUD, client-side routing and a component/integration test suite.',
-    year: '2024',
-    status: 'Completed',
-    featured: false,
-    categories: ['Web & Apps'],
-    tech: ['React 18', 'TypeScript', 'Vite', 'Vitest', 'Testing Library'],
-    highlights: [
-      'Full CRUD with form validation and client-side routing, backed by Vitest + Testing Library tests.',
+    notes: [
+      'Built for search and performance, then handed off cleanly to the client.',
+      'Iterated with the client over several sprints, from brief to live site.',
+    ],
+    media: [
+      desktop(
+        'pilatiq',
+        'pilatiq.rs on a desktop: a Pilates reformer in a bright studio, under a purple header',
+        'Catalog with product variants, built for search.',
+      ),
+      phone('pilatiq', 'pilatiq.rs on a phone: a Pilates reformer in a bright studio, under a purple header'),
     ],
   },
   {
     id: 'stan-pro-tim',
     title: 'Stan Pro Tim',
-    subtitle: 'Website for a property-management company, Zlatibor (client)',
+    subtitle: 'Site for a property-management company in Zlatibor',
     blurb:
       'A multi-page website for a Zlatibor property-management company: a custom brand palette, service pages, testimonials and a clear contact path.',
     year: '2023',
     status: 'In production',
     featured: true,
     categories: ['Client Delivery', 'Web & Apps'],
-    tech: ['JavaScript', 'HTML/CSS', 'Responsive design'],
+    tech: ['JavaScript', 'HTML', 'CSS'],
     highlights: [
       'Gathered requirements from the client and designed around a custom brand palette.',
       'Built service pages, testimonials and a contact section with a responsive, mobile-first layout.',
-      'Delivered from brief to live — deployed and maintained.',
+      'Delivered from brief to live, then deployed and maintained.',
     ],
     liveUrl: 'https://stanprotim.rs/',
+    notes: [
+      'Designed around a custom brand palette, from requirements gathered with the client.',
+      'Deployed and maintained.',
+    ],
+    media: [
+      desktop(
+        'stan-pro-tim',
+        'stanprotim.rs on a desktop: a stone and timber residential building in Zlatibor behind the company name',
+        'Service pages, testimonials, a clear way to get in touch.',
+      ),
+      phone('stan-pro-tim', 'stanprotim.rs on a phone: a residential building in Zlatibor behind the company name'),
+    ],
   },
   {
     id: 'kutlesic-vikendice',
     title: 'Kutlešić Vikendice',
-    subtitle: 'Website for holiday cottages (client)',
+    subtitle: 'Site for holiday cottages',
     blurb:
       'A presentation website for Kutlešić Vikendice (holiday cottages): a clean, inviting layout that showcases the accommodation, with responsive design and easy contact.',
     year: '2023',
     status: 'In production',
     featured: true,
     categories: ['Client Delivery', 'Web & Apps'],
-    tech: ['JavaScript', 'HTML/CSS', 'Responsive design'],
+    tech: ['JavaScript', 'HTML', 'CSS'],
     highlights: [
       'Showcased the cottages with a clean, inviting visual layout.',
       'Responsive, mobile-first design with a straightforward contact path for guests.',
-      'Delivered end to end for the client — design, build and deployment.',
+      'Delivered end to end for the client: design, build and deployment.',
     ],
     liveUrl: 'https://vikendicekutlesic.rs/',
+    notes: ['Mobile-first, with a short path from the cottages to getting in touch.'],
+    media: [
+      desktop(
+        'kutlesic-vikendice',
+        'vikendicekutlesic.rs on a desktop: a timber holiday cottage on a green lawn',
+        'Designed, built and deployed end to end.',
+      ),
+      phone('kutlesic-vikendice', 'vikendicekutlesic.rs on a phone: a timber holiday cottage with call and WhatsApp buttons'),
+    ],
   },
+
+  // ---------- Systems of my own ----------
   {
     id: 'trading-agent',
     title: 'tradingAgent',
     subtitle: 'AI-driven daily trading pipeline',
     blurb:
-      'Python + Claude agent that runs a daily S&P 500 rotation end to end — data, scoring, risk, execution — with live dashboards and human-in-the-loop approval.',
-    year: '2025 — present',
+      'A Python and Claude agent that runs a daily S&P 500 rotation from start to finish: data, scoring, risk, execution. A FastAPI dashboard shows the portfolio, P&L and the reason behind every decision.',
+    year: '2025–now',
     status: 'Active development',
     featured: true,
     categories: ['AI & Automation', 'Tooling & Observability'],
-    tech: ['Python', 'Claude tool-use', 'FastAPI', 'Interactive Brokers / Alpaca', 'Telegram', 'yfinance'],
+    tech: ['Python', 'Claude tool use', 'FastAPI', 'Interactive Brokers / Alpaca', 'Telegram', 'yfinance'],
     highlights: [
       'Full daily pipeline: market-calendar check, concurrent price fetch for ~500 tickers, technical + fundamental scoring with an SPY-overlap penalty, then risk-aware position sizing.',
       'Safety first: circuit breakers, position limits, retry logic, persisted state, and explicit human approval over Telegram before anything executes.',
       'Built custom live + historical dashboards (FastAPI) so the portfolio state, P&L and every decision are visible and explainable in seconds.',
-      'Designed to fail safely and leave a clear audit trail — the system has to be debuggable when external APIs misbehave.',
+      'Designed to fail safely and leave a clear audit trail: the system has to be debuggable when external APIs misbehave.',
     ],
     note: 'Private repo (proprietary strategy). Architecture and code walk-through available on request.',
-  },
-  {
-    id: 'belgrade-buddy',
-    title: 'BelgradeBuddy AI',
-    subtitle: 'AI companion app for international visitors',
-    blurb:
-      'A React Native (Expo) + Supabase mobile app for international visitors to Belgrade: an AI chatbot with smart model routing, an arrival wizard, offline support and real-time features.',
-    year: '2025 — present',
-    status: 'Active development',
-    featured: true,
-    categories: ['Mobile', 'AI & Automation', 'Web & Apps'],
-    tech: ['React Native (Expo)', 'NativeWind', 'Supabase', 'Edge Functions', 'OpenRouter / Claude', 'i18n'],
-    highlights: [
-      'Context-aware AI chatbot with smart model routing to balance quality, latency and cost.',
-      'Offline-first by design: phrasebook and FAQ keep working with no signal — built for stressed travellers in low-connectivity moments.',
-      'Real-time features via Supabase, an arrival wizard for high-stress first-hour scenarios, and full internationalization (EN/SR + more).',
-      'Heavy focus on graceful degradation and genuinely helpful error states.',
+    notes: [
+      'Guarded by circuit breakers, position limits, retry logic and persisted state.',
+      'Every decision is logged, so a bad day can be traced when an external API misbehaves.',
     ],
-    note: 'Large solo product — full spec and phased roadmap, currently in active development.',
+    figure: {
+      kind: 'pipeline',
+      caption: 'One trading day',
+      steps: [
+        { label: 'Check', note: 'Is the market open today?', actor: 'system' },
+        { label: 'Fetch', note: 'Prices for ~500 tickers, concurrently, with retries', actor: 'system' },
+        { label: 'Score', note: 'Technical + fundamental, with an SPY-overlap penalty', actor: 'system' },
+        { label: 'Size', note: 'Against circuit breakers and position limits', actor: 'system' },
+        { label: 'Approve', note: 'Me, on Telegram. Nothing executes before this.', actor: 'person' },
+        { label: 'Execute', note: 'And log the decision, so it can be explained later', actor: 'system' },
+      ],
+    },
   },
   {
     id: 'dev-dashboard',
-    title: 'dev-dashboard + "Brain" system',
-    subtitle: 'Self-built developer observability & knowledge tooling',
+    title: 'dev-dashboard + Brain',
+    subtitle: 'Developer observability and knowledge tooling, built for myself',
     blurb:
-      'A Next.js + TypeScript tool that scans all my local git repos and GitHub, aggregates activity and stats, and syncs structured data into an Obsidian knowledge base.',
-    year: '2025 — present',
+      'Scans every git repository on my machine plus my GitHub account, marks each project active, paused or abandoned, and writes a note for every active one into my Obsidian vault without overwriting what I wrote by hand. It has no third-party runtime dependencies: the git, GitHub and Obsidian integrations are my own.',
+    year: '2025–now',
     status: 'Maintained',
+    statusNote: 'Used daily',
     featured: true,
     categories: ['Tooling & Observability', 'Web & Apps', 'AI & Automation'],
     tech: ['Next.js 16', 'TypeScript', 'Node', 'Tailwind 4', 'Git', 'GitHub API', 'Obsidian', 'PowerShell'],
     highlights: [
       'Scans dozens of repositories and GitHub accounts, then aggregates activity into one dashboard so I always know what is active and what needs attention.',
-      'Syncs into a structured second-brain knowledge base (developerBrain) — searchable history and structured data, exactly what good operational systems need.',
+      'Syncs into a structured second-brain knowledge base (developerBrain): searchable history and structured data.',
       'Zero third-party runtime dependencies by design; custom git/GitHub/Obsidian integration libraries.',
       'Part of a larger personal automation + agent system (with a planned orchestrator that routes requests to the right agent).',
     ],
     note: 'Used daily as my own monitoring and productivity layer.',
-    // Detailed case study — drafted from a scan of the local repo (case-study-scan skill);
-    // secrets / paths / email scrubbed. Tier: DETAILED (own tooling). Edit freely.
+    notes: [
+      'Read-only: it observes repositories and never changes one.',
+      'A repository that fails to scan is logged and skipped, and the rest of the sync continues.',
+    ],
+    figure: {
+      kind: 'status-axis',
+      caption: 'Status, by days since the last commit',
+      scaleNote: 'One column of the page grid is 30 days',
+      scaleNoteNarrow: 'Drawn to scale, 0 to 360 days',
+      daysPerColumn: 30,
+      maxDays: 360,
+      thresholds: { active: 30, paused: 180 },
+      activeNote: 'Gets a note in the vault',
+    },
+    // Detailed case study of my own tooling; secrets, paths and email scrubbed.
     caseStudy: {
       intro:
-        'The observability layer over my own work, dev-dashboard scans every local git repository and my GitHub account, merges them into one view, and syncs structured notes into a unified Obsidian "second brain" — so I always know what is active, paused or abandoned, and the knowledge base stays current without manual upkeep. Built with zero third-party runtime dependencies, it is the first working slice of a larger personal agent system.',
+        'dev-dashboard is the observability layer over my own work. It scans every local git repository and my GitHub account, merges them into one view, and syncs structured notes into a unified Obsidian “second brain”, so I always know what is active, paused or abandoned and the knowledge base stays current without manual upkeep. It has zero third-party runtime dependencies and is the first working slice of a larger personal agent system.',
       metrics: [
         { value: '0', label: 'Runtime deps' },
         { value: '40+', label: 'Languages detected' },
@@ -410,7 +459,7 @@ export const projects: Project[] = [
         {
           title: 'Git extractor',
           detail:
-            'Runs the native git CLI per repo for commit count, last-commit date, branch and remote — respecting .gitignore and submodule edge cases for free.',
+            'Runs the native git CLI per repo for commit count, last-commit date, branch and remote, which respects .gitignore and handles submodule edge cases for free.',
           tech: ['git', 'child_process'],
         },
         {
@@ -434,13 +483,13 @@ export const projects: Project[] = [
         {
           title: 'Obsidian brain sync',
           detail:
-            'Writes idempotent project notes into the vault — auto frontmatter + README section — while preserving everything I write by hand below a manual marker.',
+            'Writes idempotent project notes into the vault (auto frontmatter plus a README section) while preserving everything I write by hand below a manual marker.',
           tech: ['Obsidian', 'Markdown'],
         },
         {
           title: 'Nightly git log',
           detail:
-            "A scheduled PowerShell task records each day's commits into the developer brain automatically, following the same idempotent + manual-marker pattern.",
+            'A scheduled PowerShell task records each day’s commits into the developer brain automatically, following the same idempotent, manual-marker pattern.',
           tech: ['PowerShell', 'Task Scheduler'],
         },
         {
@@ -487,56 +536,157 @@ export const projects: Project[] = [
         {
           actor: 'System',
           title: 'Nightly log',
-          detail:
-            "A scheduled task appends each day's commits into the developer brain — no manual upkeep.",
+          detail: 'A scheduled task appends each day’s commits into the developer brain, with no manual upkeep.',
         },
       ],
       decisions: [
-        'Zero third-party runtime dependencies — custom git / GitHub / Obsidian integration so I control behaviour and keep the supply-chain surface minimal.',
-        'Native git CLI over parsing .git internals — it respects .gitignore and handles submodules and edge cases for free.',
+        'Zero third-party runtime dependencies: custom git, GitHub and Obsidian integration, so I control the behaviour and keep the supply-chain surface minimal.',
+        'Native git CLI over parsing .git internals: it respects .gitignore and handles submodules and edge cases for free.',
         'Detect non-git projects by file markers (Docker, design files, game engines, VMs) so design and infra work counts, not just code.',
-        'One unified Obsidian vault across three domains (student / developer / life) so [[links]] and queries span everything.',
-        'Classify status by days-since-activity (active ≤30d, paused ≤180d, otherwise abandoned) — simple and predictable.',
+        'One unified Obsidian vault across three domains (student, developer, life), so [[links]] and queries span everything.',
+        'Classify status by days since the last activity (active ≤30d, paused ≤180d, otherwise abandoned): simple and predictable.',
       ],
       guardrails: [
-        'Read-only scanning — the tool observes, it never mutates a source repo.',
-        'Idempotent sync with a manual-edit marker — re-running never clobbers notes I wrote by hand.',
-        'Per-project error isolation — a failing repo is logged and skipped so the sync continues.',
+        'Read-only scanning: the tool observes, it never changes a source repo.',
+        'Idempotent sync with a manual-edit marker: re-running never overwrites notes I wrote by hand.',
+        'Per-project error isolation: a failing repo is logged and skipped, so the sync continues.',
         'The scan degrades gracefully when a data source is unavailable, rather than failing the whole run.',
-        'Configurable scan roots — scanning can be limited to chosen folders for speed and privacy.',
+        'Configurable scan roots: scanning can be limited to chosen folders for speed and privacy.',
       ],
       challenges: [
         'Telling real projects apart from tutorials, vendored code and generic folders took multi-heuristic filtering.',
-        'Nested repositories — a vault that is itself a git repo containing more repos — meant the walker could not stop at the first .git.',
+        'Nested repositories (a vault that is itself a git repo containing more repos) meant the walker could not stop at the first .git.',
         'Matching local repos to their GitHub counterparts across ssh and https remote formats.',
         'Keeping the Obsidian sync idempotent while preserving hand-written content.',
-        'Windows path handling — illegal filename characters, symlink loops, and full-disk scan performance.',
+        'Windows path handling: illegal filename characters, symlink loops and full-disk scan performance.',
       ],
       outcomes: [
-        'Used as my own monitoring and productivity layer — one place shows what is active, paused or abandoned across all my repos.',
+        'Used as my own monitoring and productivity layer: one place shows what is active, paused or abandoned across all my repos.',
         'The developer brain stays current automatically: project notes and a daily commit log sync without manual upkeep.',
         'The first working slice of a larger agent system, with a planned orchestrator to synthesize across the three brains.',
       ],
-      privacyNote:
-        'Overview of my own internal tooling. Full code and a deeper walk-through are available on request.',
+      privacyNote: 'Overview of my own internal tooling. Full code and a deeper walk-through are available on request.',
     },
+  },
+  {
+    id: 'belgrade-buddy',
+    title: 'BelgradeBuddy AI',
+    subtitle: 'AI companion app for international visitors',
+    blurb:
+      'A React Native and Supabase app for international visitors to Belgrade. The AI chat routes each question to a model that balances quality, latency and cost, and an arrival wizard covers the first hour after arriving. The interface is in English, Serbian and more.',
+    year: '2025–now',
+    status: 'Active development',
+    statusNote: 'Mobile, in development',
+    featured: true,
+    categories: ['Mobile', 'AI & Automation', 'Web & Apps'],
+    tech: ['React Native (Expo)', 'NativeWind', 'Supabase', 'Edge Functions', 'OpenRouter / Claude', 'i18n'],
+    highlights: [
+      'Context-aware AI chatbot with smart model routing to balance quality, latency and cost.',
+      'Offline-first by design: the phrasebook and FAQ keep working with no signal, built for stressed travellers in low-connectivity moments.',
+      'Real-time features via Supabase, an arrival wizard for high-stress first-hour scenarios, and full internationalization (EN/SR + more).',
+      'Heavy focus on graceful degradation and genuinely helpful error states.',
+    ],
+    note: 'Large solo product with a full spec and a phased roadmap, in active development.',
+    notes: [
+      'Degrades gracefully, with error states written to actually help.',
+      'Fully internationalized: English, Serbian and more.',
+    ],
+    figure: {
+      kind: 'signal',
+      caption: 'What works where',
+      aside: 'Offline-first by design',
+      online: { label: 'Online', note: 'AI chat with model routing, and the real-time features' },
+      offline: { label: 'No signal', note: 'The phrasebook and FAQ keep working' },
+    },
+  },
+
+  // ---------- Smaller projects ----------
+  {
+    id: 'crypto-agent',
+    title: 'cryptoAgent',
+    subtitle: 'The tradingAgent playbook applied to a crypto portfolio',
+    blurb:
+      'A sibling of tradingAgent applying the same reliable-automation playbook to crypto portfolio management.',
+    year: '2025',
+    status: 'Active development',
+    featured: false,
+    categories: ['AI & Automation'],
+    tech: ['Python', 'REST APIs'],
+    highlights: [
+      'Reuses the observability, retry and guardrail patterns from tradingAgent for a different asset class and exchange APIs.',
+    ],
+  },
+  {
+    id: 'student-brain-agent',
+    title: 'student-brain-agent',
+    subtitle: 'Turns study material into linked notes in Obsidian',
+    blurb:
+      'A Node.js AI agent that processes academic material and generates structured notes in an Obsidian knowledge base.',
+    year: '2025',
+    status: 'Maintained',
+    featured: false,
+    categories: ['AI & Automation', 'Tooling & Observability'],
+    tech: ['Node.js', 'Obsidian API'],
+    highlights: [
+      'Turns raw study material into linked, structured notes, part of the same second-brain ecosystem as dev-dashboard.',
+    ],
+  },
+  {
+    id: 'brand-app',
+    title: 'Brand Management App',
+    subtitle: 'CRUD single-page app with component and integration tests',
+    blurb:
+      'A React + TypeScript SPA for managing brand entries with full CRUD, client-side routing and a component/integration test suite.',
+    year: '2024',
+    status: 'Completed',
+    featured: false,
+    categories: ['Web & Apps'],
+    tech: ['React 18', 'TypeScript', 'Vite', 'Vitest', 'Testing Library'],
+    highlights: ['Full CRUD with form validation and client-side routing, backed by Vitest + Testing Library tests.'],
   },
   {
     id: 'dsa-java',
     title: 'Data Structures & Algorithms',
-    subtitle: 'Java coursework (FON)',
+    subtitle: 'Eight Java projects: linked and circular lists, binary trees, sorting',
     blurb:
       'Eight Java projects covering linked lists, circular lists, binary trees and sorting algorithms, completed across exam cycles.',
     year: '2024',
     status: 'Completed',
     featured: false,
     categories: ['Tooling & Observability'],
-    tech: ['Java', 'Eclipse', 'Algorithms'],
-    highlights: [
-      'Singly/doubly/circular linked lists, binary trees and sorting algorithms implemented from scratch.',
-    ],
+    tech: ['Java', 'Eclipse'],
+    highlights: ['Singly/doubly/circular linked lists, binary trees and sorting algorithms implemented from scratch.'],
   },
 ];
 
-export const featuredProjects = projects.filter((p) => p.featured);
-export const moreProjects = projects.filter((p) => !p.featured);
+/** Client sites, live (the index). */
+export const clientProjects = projects.filter((p) => p.categories.includes('Client Delivery'));
+/** Systems of my own (each with a figure). */
+export const systemProjects = projects.filter((p) => p.featured && !p.categories.includes('Client Delivery'));
+/** Smaller projects (the compact list). */
+export const smallerProjects = projects.filter((p) => !p.featured);
+/** Projects with a `#project/<id>` case study page. */
+export const studyProjects = projects.filter((p): p is StudyProject => Boolean(p.caseStudy));
+/** The projects the CV sheet lists, in order. */
+export const cvProjectIds = ['mesara', 'trading-agent', 'dev-dashboard', 'belgrade-buddy', 'pilatiq'] as const;
+
+export function projectById(id: string): Project | undefined {
+  return projects.find((p) => p.id === id);
+}
+
+/** The home-page anchor of a project's row: `client-`, `system-` or `also-` + id. */
+export function projectAnchor(p: Project): string {
+  if (p.categories.includes('Client Delivery')) return `client-${p.id}`;
+  if (p.featured) return `system-${p.id}`;
+  return `also-${p.id}`;
+}
+
+/** Hostname of the live site without 'www.' ('rostiljsisko.rs'), if there is one. */
+export function projectDomain(p: Project): string | undefined {
+  if (!p.liveUrl) return undefined;
+  try {
+    return new URL(p.liveUrl).hostname.replace(/^www\./, '');
+  } catch {
+    return undefined;
+  }
+}

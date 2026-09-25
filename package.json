@@ -3,17 +3,18 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Professional developer portfolio of Ratko Šišović",
+  "description": "Portfolio of Ratko Šišović, in two modes: professional and personal",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "pdf": "node scripts/generate-pdf.mjs",
-    "daily-message": "node scripts/generate-daily-message.mjs"
+    "daily-message": "node scripts/generate-daily-message.mjs",
+    "worklog": "node scripts/export-worklog.mjs",
+    "og": "node scripts/generate-og.mjs"
   },
   "dependencies": {
-    "framer-motion": "^11.11.17",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
@@ -22,10 +23,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.49",
     "puppeteer": "^25.1.0",
-    "tailwindcss": "^3.4.15",
     "typescript": "^5.6.3",
     "vite": "^5.4.11",
     "vitest": "^4.1.8"

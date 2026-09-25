@@ -1,5 +1,7 @@
-// Renders the résumé view (#resume) from the production build to a one-page PDF.
+// Renders the CV page (#resume) from the production build to a one-page A4 PDF.
 // Usage: npm run build && npm run pdf
+// Writes public/Ratko_Sisovic_CV.pdf (committed) and dist/Ratko_Sisovic_CV.pdf,
+// and fails if the sheet does not fit on exactly one page.
 import { createServer } from 'node:http';
 import { readFile, writeFile, copyFile, access } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -18,6 +20,7 @@ const MIME = {
   '.css': 'text/css',
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
+  '.webp': 'image/webp',
   '.json': 'application/json',
   '.woff2': 'font/woff2',
 };
@@ -32,7 +35,7 @@ async function exists(p) {
 }
 
 if (!(await exists(join(dist, 'index.html')))) {
-  console.error('✗ dist/ not found. Run "npm run build" first.');
+  console.error('dist/ not found. Run "npm run build" first.');
   process.exit(1);
 }
 
@@ -54,32 +57,36 @@ const server = createServer(async (req, res) => {
 await new Promise((r) => server.listen(0, r));
 const port = server.address().port;
 
-const browser = await puppeteer.launch({ headless: 'new' });
+let failed = false;
+const browser = await puppeteer.launch({ headless: true });
 try {
   const page = await browser.newPage();
-  // Force the light theme so the printed sheet never picks up dark backgrounds.
-  await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'light' }]);
-  await page.evaluateOnNewDocument(() => {
-    try {
-      localStorage.setItem('theme', 'light');
-    } catch {}
-  });
   await page.goto(`http://localhost:${port}/#resume`, { waitUntil: 'networkidle0' });
   await page.waitForSelector('.resume-sheet', { timeout: 10000 });
-  // Let webfonts settle.
-  await new Promise((r) => setTimeout(r, 600));
+  // Golos Text (the page's stylesheets) must be in before the PDF is drawn.
+  await page.evaluate(() => document.fonts.ready);
 
-  const pdf = await page.pdf({
-    format: 'A4',
-    printBackground: true,
-    margin: { top: '12mm', bottom: '12mm', left: '14mm', right: '14mm' },
-  });
+  const pdf = Buffer.from(
+    await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: { top: '12mm', bottom: '12mm', left: '14mm', right: '14mm' },
+    }),
+  );
 
-  await writeFile(outPublic, pdf);
-  await copyFile(outPublic, outDist);
-  console.log('✓ Wrote', outPublic);
-  console.log('✓ Wrote', outDist);
+  // Chrome writes one "/Type /Page" object per page (and "/Type /Pages" once for the tree).
+  const pages = (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;
+  if (pages !== 1) {
+    console.error(`The CV must fit on one A4 page, but it has ${pages}. Nothing was written.`);
+    failed = true;
+  } else {
+    await writeFile(outPublic, pdf);
+    await copyFile(outPublic, outDist);
+    console.log('Wrote', outPublic);
+    console.log('Wrote', outDist);
+  }
 } finally {
   await browser.close();
   server.close();
 }
+if (failed) process.exit(1);

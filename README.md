@@ -1,11 +1,29 @@
-# Ratko Šišović — Developer Portfolio
+# Ratko Šišović, portfolio
 
-A fast, elegant, data-driven personal portfolio + one-page résumé, built with
-**Vite + React + TypeScript + Tailwind CSS**. Light/dark themes, searchable &
-filterable projects, and a print-optimized résumé that also exports to a
-standalone PDF.
+A data-driven personal site in two modes, plus a one-page CV that also exports to PDF.
+Built with **Vite + React + TypeScript** and plain CSS (no UI framework, no animation library).
 
-**Live:** _add your URL here after deploying_ · update `siteUrl` in `src/data/profile.ts`
+**Live:** https://shikamaru1010.github.io
+
+---
+
+## Two modes
+
+The site has two personas, and the URL decides which one you see:
+
+| URL | Mode |
+| --- | --- |
+| `/` or `/?mode=professional` | **Professional**: paper and ink, one vermilion mark. Work, experience, skills, contact. |
+| `/?mode=personal` | **Personal**: warm ink, bone text. First name, work log, now, today’s thought, side projects, links. |
+
+- Any other value (or none) means Professional. The mode is never stored: a shared link decides.
+- The **Professional | Personal** switch in the header changes mode in place (no reload), updates the URL
+  with `history.replaceState` and keeps any `#hash`. It is a radiogroup (Arrow keys, Home, End) built on
+  two real `?mode=` links, so Ctrl/Cmd-click opens a mode in a new tab.
+- The switch plays one wipe (View Transitions). With `prefers-reduced-motion` it switches instantly.
+- An inline script in `index.html` sets `<html data-mode>` before first paint, so there is no flash of the
+  other palette. `src/lib/mode.test.ts` runs that script against the app’s own parsers.
+- `#resume` (the CV) and `#project/<id>` (case studies) always use the Professional palette.
 
 ---
 
@@ -13,123 +31,80 @@ standalone PDF.
 
 ```bash
 npm install
-npm run dev        # local dev at http://localhost:5173
-npm run build      # type-check + production build into dist/
-npm run preview    # preview the production build
-npm run pdf        # regenerate public/Ratko_Sisovic_CV.pdf (run AFTER npm run build)
+npm run dev            # local dev server
+npm run build          # type-check + production build into dist/
+npm run preview        # preview the production build
+npm test               # vitest: data integrity, copy rules, render, SEO
 ```
 
-Requires Node 18+ (developed on Node 24).
+Scripts that import `.ts` data files use Node’s type stripping: **Node ≥ 22.18** (developed on Node 24).
+
+| Script | What it does |
+| --- | --- |
+| `npm run dev` / `build` / `preview` / `test` | as above |
+| `npm run pdf` | renders `/#resume` from `dist/` to `public/Ratko_Sisovic_CV.pdf` and fails unless it is exactly one A4 page. Run **after** `npm run build`. |
+| `npm run daily-message` | picks today’s quote from `scripts/quote-pool.mjs` into `src/data/daily-message.json` (also run every morning by a GitHub Action). |
+| `npm run worklog` | counts my work-log entries per day into `src/data/worklog.json` (see below). |
+| `npm run og` | renders `public/og-image.png` (2400 × 1260). |
 
 ---
 
-## Keeping it up to date (the whole point of a living portfolio)
+## Where the content lives
 
-All content lives in plain TypeScript data files — **you almost never touch the
-components.** Edit a file, save, and the dev server hot-reloads instantly.
+Every visible fact comes from `src/data/`. You almost never touch the components.
 
 | What to change | File |
 | --- | --- |
-| Name, role, headline, about, contact, pitch, site URL | `src/data/profile.ts` |
-| Projects (featured + more) | `src/data/projects.ts` |
-| Skills groups + "how I work" principles | `src/data/skills.ts` |
-| Experience, education, languages | `src/data/experience.ts` |
+| Name, role, lede, contact, site URL, meta description | `src/data/profile.ts` |
+| Projects: clients, systems, smaller projects, screenshots, engineering notes, figures, case studies | `src/data/projects.ts` |
+| Roles, education, courses, languages | `src/data/experience.ts` |
+| Skills, each with the projects or courses where it was used | `src/data/skills.ts` |
+| Everything the Personal mode says | `src/data/personal.ts` |
+| Interface labels, titles and templates (not facts) | `src/data/site.ts` |
+| Work-log counts (generated, dates and counts only) | `src/data/worklog.json` |
+| Today’s thought (generated daily) | `src/data/daily-message.json` |
 
-### Add a new project
+Rules the tests enforce (`src/copy.test.ts`, `src/data/*.test.ts`):
 
-Append an object to the `projects` array in `src/data/projects.ts`:
+- Say **CV**, never the accented French word. The degree is in its 4th year.
+- Data strings use typographic quotes and apostrophes (’ “ ”) and no em dashes.
+- Every skill’s evidence points at a real project id or FON course.
+- Every client has two real screenshots in `public/screenshots/<id>/` (desktop 1440 × 900, phone 780 × 1688)
+  whose alt text starts with the site’s domain.
+- After editing `scripts/quote-pool.mjs`, run `npm run daily-message`: the page says how many quotes the
+  pool holds, and a test checks that number.
 
-```ts
-{
-  id: 'my-project',
-  title: 'My Project',
-  subtitle: 'One-line role/type',
-  blurb: 'One sentence shown on the card.',
-  year: '2026',
-  status: 'In production',      // In production | Active development | Maintained | Completed
-  featured: true,               // true = big card up top, false = compact list
-  categories: ['Web & Apps'],   // see CATEGORIES in the same file
-  tech: ['React', 'TypeScript'],
-  highlights: ['Bullet shown in the detail modal.'],
-  links: [{ label: 'GitHub', href: 'https://...' }], // optional
-  note: 'Optional note shown in the modal.',          // optional
-}
-```
+### Work log
 
-Filtering, search and the result count update automatically.
+`npm run worklog [-- <dir>]` lists `../dokumentacija/dnevnik` (or `<dir>`) and looks only at file names that
+start with a date (`YYYY-MM-DD…txt|md`). It never opens a file and never writes a name: `worklog.json` is
+`{ asOf, total, days: { "YYYY-MM-DD": count } }`. Local only; it does not run in CI.
 
----
+### CV and PDF
 
-## Résumé / PDF
-
-- The résumé is the same data rendered as a print-optimized sheet at **`/#resume`**
-  (also reachable via the "Résumé" button in the nav).
-- **Browser export:** open `/#resume` → *Print / Save as PDF* → choose "Save as PDF".
-- **Standalone file:** `public/Ratko_Sisovic_CV.pdf` is committed and served at
-  `/Ratko_Sisovic_CV.pdf` (the "Download PDF" button). Regenerate it whenever you
-  change your data:
-
-  ```bash
-  npm run build && npm run pdf
-  ```
-
-  This renders `/#resume` from the production build with headless Chrome
-  (via `puppeteer`) and writes the PDF to both `public/` and `dist/`. Commit the
-  updated `public/Ratko_Sisovic_CV.pdf`.
+- The CV is the same data rendered as a print-ready A4 sheet at **`/#resume`** (the “CV” link in the header).
+- `public/Ratko_Sisovic_CV.pdf` is committed and served at `/Ratko_Sisovic_CV.pdf`. Regenerate it after
+  changing data: `npm run build && npm run pdf`, then commit the PDF.
 
 ---
 
-## Theming
+## Design system
 
-Colors are CSS variables in `src/index.css` (`:root` = light, `.dark` = dark),
-mapped to semantic Tailwind classes (`bg`, `surface`, `fg`, `muted`, `accent`, …)
-in `tailwind.config.ts`. Change the accent in one place:
-
-```css
-:root  { --accent: 79 70 229; }     /* indigo-600 (R G B channels) */
-.dark  { --accent: 129 140 248; }   /* indigo-400 */
-```
-
-Theme choice is stored in `localStorage` and applied before first paint
-(inline script in `index.html`) so there's no flash.
+- **One family:** Golos Text (variable 400–900, Latin and Cyrillic), with a metric-matched Arial fallback.
+- **Five sizes:** 13 / 17 / 28 / 64 px at ≥ 1280 px (26 / 52 at 721–1279, 22 / 40 on phones), plus fitted
+  display lines sized to the width of the page. Tokens `--t1`…`--t4` in `src/styles/tokens.css`.
+- **Grid:** 12 columns (4 on phones), 40 px margins and 24 px gutters on desktop.
+- **Colour:** Professional paper `#F2F1EC`, ink `#111110`, one vermilion `#D83218`; Personal `#15130F` /
+  `#EEE6D8` / `#FF6A3D`. Hairline rules, no shadows, no rounded corners.
+- **Files:** `src/styles/tokens.css` (tokens), `base.css` (reset, grid, type roles, shared primitives),
+  `shell.css` (header, switch, wipe). Each section imports its own CSS next to its component.
+- **Motion:** only the mode wipe and short hover transitions; all of it respects `prefers-reduced-motion`.
 
 ---
 
 ## Deploy
 
-The repo itself is part of the portfolio — push it public.
+`master` deploys to GitHub Pages through `.github/workflows/deploy.yml`. Routing uses hashes
+(`/#resume`, `/#project/mesara`), so no SPA rewrite rules are needed.
 
-```bash
-git add -A && git commit -m "Update portfolio"
-git push
-```
-
-- **Vercel / Netlify (recommended):** import the repo. Framework: **Vite**,
-  build command `npm run build`, output dir `dist`. Auto-deploys on every push.
-  After your first deploy, set `siteUrl` in `src/data/profile.ts` to the live URL.
-- **GitHub Pages:** set `base: '/<repo-name>/'` in `vite.config.ts`, then publish
-  `dist/` (e.g. via a GitHub Actions workflow).
-
-Navigation uses hash routing (`/#resume`), so no SPA rewrite rules are needed.
-
-### Update workflow
-`edit src/data/*.ts → npm run dev (preview) → npm run build && npm run pdf → commit → push (auto-deploy)`
-
----
-
-## Tailoring for a specific role
-
-The site is general-purpose. To lean into a specific role (e.g. a technical
-support / infrastructure position) without forking it, lightly adjust the About
-copy / pitch in `src/data/profile.ts` and reorder skills in `src/data/skills.ts`.
-The networking coursework (TCP/IP, Wireshark, sockets) and the observability /
-reliability angle of the projects are already there to emphasize.
-
----
-
-## Tech
-
-React 18 · TypeScript · Vite 5 · Tailwind CSS 3 · Framer Motion (subtle, respects
-`prefers-reduced-motion`) · Puppeteer (dev-only, for the PDF). Accessible: semantic
-HTML, focus-visible rings, ARIA on filters and the modal (focus trap, Esc to close),
-live region for the result count.
+Update workflow: `edit src/data/*.ts → npm run dev → npm test → npm run build && npm run pdf → commit → push`.
