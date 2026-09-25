@@ -17,30 +17,6 @@ const MONTHS = [
   'December',
 ] as const;
 
-const NUMBER_WORDS = [
-  'zero',
-  'one',
-  'two',
-  'three',
-  'four',
-  'five',
-  'six',
-  'seven',
-  'eight',
-  'nine',
-  'ten',
-  'eleven',
-  'twelve',
-  'thirteen',
-  'fourteen',
-  'fifteen',
-  'sixteen',
-  'seventeen',
-  'eighteen',
-  'nineteen',
-  'twenty',
-] as const;
-
 /**
  * The ISO date the content was last stamped: "Updated <date>" in the colophon, the case
  * studies, the CV page and the PDF. `npm run pdf` writes it (src/data/updated.json) when it
@@ -56,11 +32,6 @@ export function fill(template: string, vars: Record<string, string | number>): s
   return template.replace(/\{(\w+)\}/g, (whole, key: string) =>
     Object.prototype.hasOwnProperty.call(vars, key) ? String(vars[key]) : whole,
   );
-}
-
-/** 0–20 as a word ('four'); anything else as digits. */
-export function numberWord(n: number): string {
-  return Number.isInteger(n) && n >= 0 && n < NUMBER_WORDS.length ? NUMBER_WORDS[n] : String(n);
 }
 
 export function capitalize(s: string): string {
@@ -106,27 +77,6 @@ export function formatDate(iso: string): string {
 export function monthYear(iso: string): string {
   const { year, month } = parseYearMonth(iso);
   return month ? `${MONTHS[month - 1]} ${year}` : String(year);
-}
-
-export type Years = { start: number; end: number | 'now' };
-
-/** '2024–now' → { start: 2024, end: 'now' }; '2024' → { start: 2024, end: 2024 }. */
-export function parseYears(value: string): Years {
-  const [a, b] = value.split(/\s*[–-]\s*/);
-  const start = Number(a);
-  if (b === undefined) return { start, end: start };
-  return { start, end: /^now$/i.test(b) ? 'now' : Number(b) };
-}
-
-/** The span of a set of projects' years: '2023–now', '2024–2025', or a single year. */
-export function yearRange(items: ReadonlyArray<{ year: string }>): string {
-  if (!items.length) return '';
-  const spans = items.map((p) => parseYears(p.year));
-  const start = Math.min(...spans.map((s) => s.start));
-  const open = spans.some((s) => s.end === 'now');
-  if (open) return `${start}–now`;
-  const end = Math.max(...spans.map((s) => s.end as number));
-  return end === start ? String(start) : `${start}–${end}`;
 }
 
 /** ['a', 'b', 'c'] → 'a, b and c'. */

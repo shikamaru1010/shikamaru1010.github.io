@@ -48,7 +48,7 @@ export const personal = {
   nameCyrillic: ['Ратко', 'Шишовић'],
   signCaption: 'My name in Serbian Cyrillic.',
   line: 'I build tools for my own work and study.',
-  intro: 'Based in Belgrade. Two of these tools, student-brain-agent and dev-dashboard, write into the same Obsidian vault.',
+  intro: 'Based in Belgrade.',
   /**
    * Luminance-only copies of ratko-square.webp (scripts/image-variants.mjs): the duotone filter
    * keeps only luminance, so the colour file would look the same at five times the bytes.
@@ -66,17 +66,15 @@ export const personal = {
     heading: 'Work log',
     asOf: 'As of {date}',
     headline: '{total} entries on {days} days since {first}.',
-    note: 'I keep a daily engineering log, written in Serbian. Only the entry dates are shown here.',
+    note: 'I keep an engineering work log, written in Serbian. Only the entry dates are shown here.',
     busiest: 'Busiest day: {count} entries on {date}',
+    /** Read by screen readers, one per month (the figure's marks are hidden from them). */
     monthSummary: '{month}: {entries} entries on {days} days',
-    monthCount: '{entries} entries on {days} days',
     oneEntry: 'One entry',
     /** The templates say "entries" and "days"; where a count is 1, these words replace them. */
     singular: { entries: 'entry', days: 'day' },
   },
   nowHeading: 'Now',
-  nowUpdated: 'Updated {date}',
-  nowUpdatedAt: '2026-09-25',
   now,
   toolsLead: 'Daily tools:',
   tools: ['Obsidian', 'the terminal', 'Git', 'Claude Code', 'Grok'],
@@ -96,7 +94,6 @@ export const personal = {
   offline: [] as string[],
   elsewhereHeading: 'Elsewhere',
   elsewhere,
-  footPlace: profile.city,
 };
 
 export type Personal = typeof personal;

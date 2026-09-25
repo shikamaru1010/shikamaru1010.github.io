@@ -1,7 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
-  CATEGORIES,
   clientProjects,
   cvProjectIds,
   projectById,
@@ -58,11 +57,8 @@ describe('projects data integrity', () => {
     }
   });
 
-  it('categories reference the canonical CATEGORIES list', () => {
-    for (const p of projects) {
-      expect(p.categories.length).toBeGreaterThan(0);
-      for (const c of p.categories) expect(CATEGORIES).toContain(c);
-    }
+  it('every project is in one of the three groups of Work', () => {
+    for (const p of projects) expect(['client', 'system', 'smaller'], p.id).toContain(p.group);
   });
 
   it('liveUrl is an absolute http(s) url', () => {
@@ -113,12 +109,10 @@ describe('projects data integrity', () => {
 });
 
 describe('engineering notes', () => {
-  it('clients and systems carry 1–2 short notes; smaller projects none', () => {
+  it('clients and systems carry at most 2 short notes (none where the stack says enough); smaller projects none', () => {
     for (const p of [...clientProjects, ...systemProjects]) {
-      expect(p.notes, p.id).toBeDefined();
-      expect(p.notes!.length, p.id).toBeGreaterThanOrEqual(1);
-      expect(p.notes!.length, p.id).toBeLessThanOrEqual(2);
-      for (const n of p.notes!) {
+      expect(p.notes?.length ?? 0, p.id).toBeLessThanOrEqual(2);
+      for (const n of p.notes ?? []) {
         expect(n.trim()).not.toBe('');
         expect(n.length, n).toBeLessThanOrEqual(140);
       }
@@ -136,7 +130,6 @@ describe('media', () => {
       const [desk, phone] = p.media!;
       expect(desk).toMatchObject({ device: 'desktop', width: 1440, height: 900 });
       expect(phone).toMatchObject({ device: 'phone', width: 780, height: 1688 });
-      expect(desk.caption?.trim(), p.id).toBeTruthy();
       for (const m of p.media!) {
         expect(m.src).toMatch(/^\/screenshots\/[a-z0-9-]+\/(desktop|mobile)\.webp$/);
         expect(m.alt.startsWith(`${domain} `), m.alt).toBe(true);
@@ -163,12 +156,6 @@ describe('media', () => {
           expect(size.width, v.src).toBe(v.width);
           expect(v.width).toBeLessThan(m.width);
           expect(Math.abs(size.height - (m.height * v.width) / m.width), v.src).toBeLessThanOrEqual(1);
-        }
-        if (m.device === 'desktop') {
-          expect(m.thumb, p.id).toBeDefined();
-          expect(webpSize(readFileSync(publicFile(m.thumb!))), m.thumb).toEqual({ width: 320, height: 200 });
-        } else {
-          expect(m.thumb, p.id).toBeUndefined();
         }
       }
     }

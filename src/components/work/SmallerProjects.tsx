@@ -1,6 +1,6 @@
 import { smallerProjects } from '../../data/projects';
 import { site } from '../../data/site';
-import { stackLine, yearRange } from '../../lib/format';
+import { stackLine } from '../../lib/format';
 
 /** How many technologies each smaller project shows. */
 const STACK_SHOWN = 3;
@@ -11,7 +11,6 @@ export default function SmallerProjects(): JSX.Element {
     <div className="also">
       <div className="sub-head">
         <h3>{site.work.smaller}</h3>
-        <span className="label tnum">{yearRange(smallerProjects)}</span>
       </div>
       <ul className="also-list">
         {smallerProjects.map((p) => (

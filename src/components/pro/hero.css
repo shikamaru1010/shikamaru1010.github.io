@@ -22,17 +22,16 @@
   --u: calc((100cqw + var(--g)) / var(--d));                                  /* one month */
   --tx: min(calc((var(--a) + var(--today)) * var(--u)), calc(100cqw - 1px));  /* today, never past the edge */
   --txr: var(--tx);                                                           /* the same, on a whole pixel */
-  --steps-top: 48px;     /* CV to the first step */
+  --steps-top: var(--sp-7);   /* CV to the first step */
   --lab: 22px;           /* a step's label line */
   --lift: 9px;           /* label to bar */
   --tick: 7px;           /* a tick under the axis */
-  padding-top: 56px;
+  padding-top: var(--sp-7);
   align-items: start;
 }
 /* a 1px vermilion line on a half pixel reads brown: snap today to the pixel grid */
 @supports (width: round(down, 1.5px, 1px)) { .hx { --txr: round(down, var(--tx), 1px); } }
 .hx > * { min-width: 0; }
-.hx-nw { white-space: nowrap; }
 
 /* ---------------- the top right: one sentence and the CV ---------------- */
 .hx-intro { grid-column: 7 / -1; grid-row: 1; }
@@ -83,7 +82,7 @@
 .hx-title {
   grid-column: 1 / -1; grid-row: 3;
   display: flex; flex-wrap: wrap; align-items: last baseline; gap: 0 18px;
-  margin-top: 60px; padding-bottom: 10px;
+  margin-top: var(--sp-8); padding-bottom: 10px;
 }
 .hx-name {
   font-size: var(--s5); line-height: 1; letter-spacing: -.03em; font-weight: 600;
@@ -91,6 +90,8 @@
   white-space: nowrap;
 }
 .hx-role { font-size: var(--s3); line-height: 1.3; }
+/* where the today line reaches the name line (721–791px), it passes behind the role, as behind the step labels */
+@media (min-width: 721px) { .hx-role { position: relative; z-index: 1; background: var(--paper); box-shadow: 0 0 0 5px var(--paper); } }
 
 /* ---------------- the axis: the same rule, with the years under it ---------------- */
 .hx-axis { grid-column: 1 / -1; grid-row: 4; position: relative; height: 30px; border-top: 1px solid var(--ink); }
@@ -114,7 +115,7 @@
 .hx-strip {
   grid-column: 1 / -1; grid-row: 5;
   display: grid; grid-template-columns: subgrid; align-items: baseline;
-  margin-top: 34px;
+  margin-top: var(--sp-6);
 }
 .hx-strip > div { grid-row: 1; }
 .hx-lang { grid-column: 1 / span 6; }
@@ -122,9 +123,12 @@
 .hx-strip dd { font-size: var(--s2); line-height: 1.4; }
 .hx-mail dd, .hx-pair { display: flex; flex-wrap: wrap; gap: 0 24px; }
 .hx-strip a { display: inline-flex; align-items: center; min-height: 24px; }
+/* touch: 44px targets; the strip is one row from 721px, so the taller boxes cannot overlap, and the
+   negative margin keeps the strip's height */
+@media (pointer: coarse) and (min-width: 721px) { .hx-strip a { min-height: 44px; margin-block: -10px; } }
 
-/* Work follows the hero directly: the strip already ends it, so a shorter step than 120 */
-.hero + .work.sec { padding-top: 96px; }
+/* Work follows the hero directly: the strip already ends it, so a shorter step than a section's 144 */
+.hero + .work.sec { padding-top: var(--sp-9); }
 
 @media (forced-colors: active) {
   .hx-bar, .hx-study .hx-bar::after { forced-color-adjust: none; background: CanvasText; }
@@ -133,9 +137,9 @@
 
 /* ---------------- tablets ---------------- */
 @media (min-width: 721px) and (max-width: 1100px) {
-  .hx { padding-top: 44px; --steps-top: 40px; }
+  .hx { padding-top: var(--sp-7); --steps-top: var(--sp-6); }
   .hx-step + .hx-step { margin-top: 18px; }
-  .hx-title { margin-top: 48px; }
+  .hx-title { margin-top: var(--sp-7); }
 }
 /* where the newest label no longer fits after its bar start, it ends 10px short of today, over its bar */
 @media (min-width: 721px) and (max-width: 1060px) {
@@ -148,11 +152,11 @@
 
 /* ---------------- phones: the steps become a list of four lines; the name stands on the rule over it ---------------- */
 @media (max-width: 720px) {
-  .hx { padding-top: 28px; }
+  .hx { padding-top: var(--sp-5); }
   .hx-intro { grid-column: 1 / -1; grid-row: 1; }
   .hx-title {
     grid-row: 2; flex-direction: column-reverse; align-items: flex-start; gap: 2px;
-    margin-top: 52px; padding-bottom: 8px; border-bottom: 1px solid var(--ink);
+    margin-top: var(--sp-7); padding-bottom: 8px; border-bottom: 1px solid var(--ink);
   }
   .hx-role { font-size: var(--s2); color: var(--ink-2); }
   .hx-steps { grid-row: 3; margin-top: 6px; }
@@ -162,7 +166,7 @@
   .hx-yrs { text-align: right; }
   .hx-yrs::before { content: none; }
   .hx-bar, .hx-axis, .hx-today { display: none; }
-  .hx-strip { grid-row: 4; margin-top: 30px; row-gap: 10px; }
+  .hx-strip { grid-row: 4; margin-top: var(--sp-6); row-gap: 10px; }
   .hx-strip > div { grid-row: auto; }
   .hx-lang, .hx-mail { grid-column: 1 / -1; }
   .hx-mail dd { flex-direction: column; align-items: flex-start; }

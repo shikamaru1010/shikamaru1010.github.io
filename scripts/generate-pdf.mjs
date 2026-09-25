@@ -6,8 +6,8 @@
 // and fails if the sheet does not fit on exactly one page.
 //
 // updated.json is the site's one "Updated" date (the CV page and this PDF, the colophon and the
-// case studies all print it). It moves when the CV is regenerated, not with the daily rebuild
-// that refreshes the quote, so commit it with the PDF.
+// case studies all print it, and public/sitemap.xml carries it as <lastmod>). It moves when the
+// CV is regenerated, not with the daily rebuild that refreshes the quote, so commit it with the PDF.
 import { execSync } from 'node:child_process';
 import { createServer } from 'node:http';
 import { readFile, writeFile, copyFile, access } from 'node:fs/promises';
@@ -51,6 +51,17 @@ if (!process.argv.includes('--keep-date')) {
   const date = localIsoDate();
   await writeFile(join(root, 'src', 'data', 'updated.json'), JSON.stringify({ date }, null, 2) + '\n');
   console.log('Stamped src/data/updated.json:', date);
+}
+// The sitemap's <lastmod> is the same date (seo.test.ts checks).
+{
+  const { date } = JSON.parse(await readFile(join(root, 'src', 'data', 'updated.json'), 'utf8'));
+  const sitemapPath = join(root, 'public', 'sitemap.xml');
+  const sitemap = await readFile(sitemapPath, 'utf8');
+  const next = sitemap.replace(/<lastmod>[^<]*<\/lastmod>/, `<lastmod>${date}</lastmod>`);
+  if (next !== sitemap) {
+    await writeFile(sitemapPath, next);
+    console.log('Stamped public/sitemap.xml lastmod:', date);
+  }
 }
 execSync('npm run build', { cwd: root, stdio: 'inherit' });
 

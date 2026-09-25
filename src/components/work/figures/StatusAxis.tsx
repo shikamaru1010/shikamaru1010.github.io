@@ -50,7 +50,6 @@ export default function StatusAxis({ figure }: { figure: AxisFigure }): JSX.Elem
     <figure className="fig">
       <figcaption className="fig-cap label">
         <span>{figure.caption}</span>
-        <span>{figure.scaleNote}</span>
       </figcaption>
       <div className="axis" style={{ '--axis-cols': columns } as CSSProperties}>
         <div className="ticks" aria-hidden="true">
@@ -60,7 +59,7 @@ export default function StatusAxis({ figure }: { figure: AxisFigure }): JSX.Elem
         </div>
         {segments.map((s) => (
           <div key={s.key} className={`seg seg-${s.key}`} style={{ '--seg': `${s.start} / span ${s.span}` } as CSSProperties}>
-            <b className="num">{s.from}</b>
+            <b className={s.from === 0 ? 'num num-zero' : 'num'}>{s.from}</b>
             {s.key === 'aband' && (
               <b className="num num-end" aria-hidden="true">
                 {figure.maxDays}

@@ -1,6 +1,6 @@
 import { systemProjects, type Project, type SystemFigure } from '../../data/projects';
 import { site } from '../../data/site';
-import { stackLine, yearRange } from '../../lib/format';
+import { stackLine } from '../../lib/format';
 import Pipeline from './figures/Pipeline';
 import SignalLine from './figures/SignalLine';
 import StatusAxis from './figures/StatusAxis';
@@ -28,7 +28,7 @@ function System({ p }: { p: Project }): JSX.Element {
           {p.caseStudy && (
             <a className="case-link" href={`#project/${p.id}`}>
               {site.work.caseStudy}
-              <span aria-hidden="true">→</span>
+              <span aria-hidden="true">{' →'}</span>
             </a>
           )}
         </div>
@@ -55,7 +55,6 @@ export default function Systems(): JSX.Element {
     <div className="systems">
       <div className="sub-head">
         <h3>{site.work.systems}</h3>
-        <span className="label tnum">{yearRange(systemProjects)}</span>
       </div>
       {systemProjects.map((p) => (
         <System key={p.id} p={p} />

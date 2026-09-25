@@ -1,22 +1,9 @@
 import { education, experience, type Experience as Role } from '../../data/experience';
 import { site } from '../../data/site';
-import { fill, formatPeriod, monthYear, ordinal } from '../../lib/format';
+import { fill, formatPeriod, ordinal } from '../../lib/format';
 import './experience.css';
 
 const X = site.experience;
-
-/** "Intern at Podyx since July 2026, freelance since 2023, B.Sc. expected in 2027." */
-function sectionNote(): string {
-  // \b…\b: "Internal Tools Developer" must not count as an internship.
-  const intern = experience.find((x) => /\bintern\b/i.test(x.role)) ?? experience[0];
-  const freelance = experience.find((x) => /freelance/i.test(x.org)) ?? experience[1];
-  return fill(X.note, {
-    org: intern.org,
-    month: monthYear(intern.start),
-    freelance: String(freelance.start).slice(0, 4),
-    graduation: education.expectedEnd,
-  });
-}
 
 /** A period as two <time> elements: "Jul 2026–now", "2023–2027". */
 function Period({ start, end }: { start: string | number; end?: string | number }): JSX.Element {
@@ -54,10 +41,9 @@ export default function Experience(): JSX.Element {
           <h2 className="h2" id="exp-h">
             {X.heading}
           </h2>
-          <p className="sec-note">{sectionNote()}</p>
         </header>
 
-        <ol className="xp-list">
+        <ol>
           {experience.map((x) => (
             <RoleRow key={`${x.org}-${x.start}`} x={x} />
           ))}

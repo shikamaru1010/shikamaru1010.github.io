@@ -6,10 +6,8 @@ export type Experience = {
   location: string;
   start: string;
   end?: string;
+  /** What the role is, one fact per point; the home page and the CV show all of them. */
   points: string[];
-  /** How many of `points` the CV sheet shows (the rest are covered by its Selected projects). All when absent. */
-  cvPoints?: number;
-  tech?: string[];
   /** The label on the hero's time axis, where `org` alone would not say the role ('Podyx, intern'). `org` when absent. */
   short?: string;
   /** What the role covers, in a few words: the hero's time axis reads it to screen readers after the label. */
@@ -38,23 +36,16 @@ export const experience: Experience[] = [
     points: [
       'Websites and internal tools for local businesses, from the first conversation with the owner to deployment and ongoing support.',
       'For Mesara Šisko I built the internal system that produces daily P&L reports and the PDF declarations Serbian regulations require, on a schedule.',
-      'I also delivered several client websites, working directly with the owners on requirements and iterations.',
     ],
-    tech: ['Python/Django', 'JavaScript', 'Node.js', 'Docker', 'Tailwind', 'AI integrations'],
   },
   {
-    role: 'Independent Systems',
+    role: 'Independent developer',
     org: 'Personal projects',
     location: '',
     start: '2025',
     summary: 'agent pipelines, data pipelines and monitoring',
-    points: [
-      'Agent pipelines, data pipelines and monitoring of my own, built with guardrails and logs so a failure can be traced.',
-      'tradingAgent runs a daily AI trading pipeline with FastAPI dashboards, circuit breakers and my approval on Telegram before anything executes.',
-      'dev-dashboard monitors dozens of my repositories and syncs them into my Obsidian vault through git, GitHub and Obsidian integrations I wrote myself.',
-    ],
-    cvPoints: 1,
-    tech: ['Python', 'TypeScript', 'Next.js', 'React Native', 'FastAPI', 'REST APIs'],
+    // tradingAgent and dev-dashboard are told in Work (home) and Selected projects (CV), not again here
+    points: ['Agent pipelines, data pipelines and monitoring of my own, built with guardrails and logs so a failure can be traced.'],
   },
 ];
 
@@ -77,13 +68,11 @@ export const education = {
   university: 'University of Belgrade',
   field: 'Information Systems & Technologies',
   degree: 'B.Sc. Information Systems & Technologies',
-  /** Not shown: it needs its English name first. */
-  module: 'TEP module',
   start: 2023,
   expectedEnd: 2027,
   year: 4,
   detail:
-    'FON pairs the technical core with management, economics and a lot of mathematics. Outside the curriculum I work hands-on with Wireshark, GNS3, Cisco Packet Tracer, Docker and Linux tooling.',
+    'FON combines information systems with management, economics and mathematics. Outside the curriculum I work with GNS3, Cisco Packet Tracer, Docker and Linux tooling.',
   courses,
 };
 
@@ -98,5 +87,5 @@ export type Language = {
 
 export const languages: Language[] = [
   { name: 'Serbian', level: 'native' },
-  { name: 'English', level: 'professional working proficiency', levelShort: 'professional working' },
+  { name: 'English', level: 'professional working proficiency', levelShort: 'professional' },
 ];

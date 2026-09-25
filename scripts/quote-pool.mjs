@@ -1,9 +1,7 @@
-// The pool for Personal's daily thought. No AI-invented text or authors here on
-// purpose: misattributing a quote on a professional portfolio is the kind of
-// small error a visitor might actually notice. Several popular entries below are
-// often traced to someone else (the Aristotle "patience", Buddha, Leonardo,
-// Twain, Mandela "glory" and Rumi lines, among others): keep only quotes with a
-// primary source you can point to. No em dashes (the page's typography rule).
+// The pool for Personal's daily thought. No AI-invented text or authors: misattributing a
+// quote on a professional portfolio is the kind of small error a visitor might notice. Keep
+// only quotes with a primary source you can point to. No em dashes (the page's typography rule).
+// After editing, run `npm run daily-message` (the page prints the pool's size; a test checks it).
 export const quotePool = [
   { text: 'We suffer more often in imagination than in reality.', author: 'Seneca' },
   { text: 'You have power over your mind, not outside events. Realize this, and you will find strength.', author: 'Marcus Aurelius' },
@@ -13,17 +11,11 @@ export const quotePool = [
   { text: 'The only true wisdom is in knowing you know nothing.', author: 'Socrates' },
   { text: 'Wonder is the beginning of wisdom.', author: 'Socrates' },
   { text: 'Knowing yourself is the beginning of all wisdom.', author: 'Aristotle' },
-  { text: 'Patience is bitter, but its fruit is sweet.', author: 'Aristotle' },
   { text: 'It does not matter how slowly you go as long as you do not stop.', author: 'Confucius' },
   { text: 'The man who moves a mountain begins by carrying away small stones.', author: 'Confucius' },
   { text: 'A journey of a thousand miles begins with a single step.', author: 'Lao Tzu' },
   { text: 'First say to yourself what you would be; and then do what you have to do.', author: 'Epictetus' },
   { text: 'No man is free who is not master of himself.', author: 'Epictetus' },
-  { text: 'Peace comes from within. Do not seek it without.', author: 'Buddha' },
-  { text: 'What you seek is seeking you.', author: 'Rumi' },
-  { text: 'Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.', author: 'Rumi' },
-  { text: 'Simplicity is the ultimate sophistication.', author: 'Leonardo da Vinci' },
-  { text: 'Learning never exhausts the mind.', author: 'Leonardo da Vinci' },
   { text: 'Knowing is not enough; we must apply. Willing is not enough; we must do.', author: 'Johann Wolfgang von Goethe' },
   { text: 'He who has a why to live can bear almost any how.', author: 'Friedrich Nietzsche' },
   { text: 'Imagination is more important than knowledge.', author: 'Albert Einstein' },
@@ -34,9 +26,7 @@ export const quotePool = [
   { text: 'Live as if you were to die tomorrow. Learn as if you were to live forever.', author: 'Mahatma Gandhi' },
   { text: 'The future depends on what you do today.', author: 'Mahatma Gandhi' },
   { text: 'It always seems impossible until it is done.', author: 'Nelson Mandela' },
-  { text: 'The greatest glory in living lies not in never falling, but in rising every time we fall.', author: 'Nelson Mandela' },
   { text: 'Do what you can, with what you have, where you are.', author: 'Theodore Roosevelt' },
-  { text: 'The secret of getting ahead is getting started.', author: 'Mark Twain' },
   { text: 'Whether you think you can, or you think you can’t, you’re right.', author: 'Henry Ford' },
   { text: 'I have not failed. I’ve just found 10,000 ways that won’t work.', author: 'Thomas Edison' },
   { text: 'Genius is one percent inspiration and ninety-nine percent perspiration.', author: 'Thomas Edison' },

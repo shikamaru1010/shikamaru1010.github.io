@@ -55,21 +55,13 @@
 
 .reach { margin-top: 64px; border-top: 1px solid var(--rule); padding-top: 14px; align-items: start; }
 .reach > div { grid-column: span 3; }
-.reach > div:nth-child(3) { grid-column: 7 / span 2; }
-.reach > .reach-walk { grid-column: 9 / -1; }
+.reach > .reach-walk { grid-column: 9 / -1; }   /* under the availability note */
 .reach dt { font-size: var(--s1); line-height: 1.4; font-weight: 500; color: var(--ink-2); margin-bottom: 4px; }
 .reach dd a { display: inline-flex; align-items: center; min-height: 32px; }
 .reach .reach-walk dd { max-width: 36ch; }
 
-/* ---------------- colophon: one quiet line, and the way to the other side ---------------- */
+/* ---------------- the colophon on the plate (the line itself is shell.css) ---------------- */
 .foot { padding: 112px 0 28px; }
-.colophon {
-  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 24px;
-  border-top: 1px solid var(--rule); padding-top: 14px;
-  font-size: var(--s1); line-height: 1.55; font-weight: 500; color: var(--ink-2);
-}
-.colophon-line { text-wrap: pretty; }
-.colophon-turn { color: var(--ink); }
 
 /* touch screens of any width: 44px targets */
 @media (pointer: coarse) {
@@ -78,8 +70,7 @@
 
 /* ---------------- tablet (721–1100) ---------------- */
 @media (min-width: 721px) and (max-width: 1100px) {
-  .reach > div,
-  .reach > div:nth-child(3) { grid-column: span 4; }
+  .reach > div { grid-column: span 4; }
   .reach > .reach-walk { grid-column: 1 / -1; margin-top: 20px; }
 }
 
@@ -92,15 +83,9 @@
   .copy-row { margin-top: 20px; }
   .reach { margin-top: 40px; row-gap: 18px; }
   .reach > div { grid-column: span 2; }
-  /* GitHub | LinkedIn share a row; the CV link and the code note each get the full width */
-  .reach > div:nth-child(3),
+  /* GitHub | LinkedIn share a row; the code note gets the full width */
   .reach > .reach-walk { grid-column: 1 / -1; }
   .reach dd a { min-height: 44px; }
 
   .foot { padding-top: 72px; }
-  .colophon { display: block; }
-  /* the three parts of the line stack; the dots go */
-  .colophon-line > span:not(.colophon-sep) { display: block; }
-  .colophon-sep { display: none; }
-  .colophon-turn { margin-top: 10px; }
 }

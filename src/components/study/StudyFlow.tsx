@@ -1,6 +1,6 @@
 import type { WorkflowStep } from '../../data/projects';
 import { site } from '../../data/site';
-import { fill } from '../../lib/format';
+import { keepCompounds } from '../../lib/compounds';
 
 // "How it works": the steps on a vertical stop line (the home pipeline's phone
 // form, at every width). Shape code (DECISIONS 10): a square is the system, a
@@ -25,7 +25,6 @@ export default function StudyFlow({ steps }: { steps: WorkflowStep[] }): JSX.Ele
               {site.study.legend.person}
             </li>
           </ul>
-          <p className="label tnum">{fill(site.study.counts.flow, { n: steps.length })}</p>
         </div>
       </div>
       <ol className="study-flow">
@@ -34,7 +33,7 @@ export default function StudyFlow({ steps }: { steps: WorkflowStep[] }): JSX.Ele
             <p className="study-actor label">{step.actor}</p>
             <div className="study-step-body">
               <h3 className="study-step-title">{step.title}</h3>
-              <p className="study-step-detail">{step.detail}</p>
+              <p className="study-step-detail">{keepCompounds(step.detail)}</p>
             </div>
           </li>
         ))}

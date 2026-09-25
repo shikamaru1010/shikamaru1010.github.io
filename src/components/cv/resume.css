@@ -94,7 +94,6 @@
   border-top: 1px solid var(--rs-ink); padding-top: 6px;
 }
 .resume-h3 { font-size: var(--rs-h3); line-height: 1.25; font-weight: 600; }
-.resume-sub { font-weight: 400; }
 .resume-meta { font-size: var(--rs-meta); line-height: 1.45; color: var(--rs-ink-2); font-variant-numeric: tabular-nums; }
 .resume-text { text-wrap: pretty; }
 
@@ -138,8 +137,8 @@
   .resume-bar-actions { gap: 16px; }
   .resume-main { padding: 0; }
   .resume-sheet {
-    /* on a phone the sheet is read, not previewed: set it at reading sizes */
-    --rs-name: 28px; --rs-role: 13px; --rs-h2: 13px; --rs-h3: 16px; --rs-body: 15px; --rs-meta: 13px;
+    /* on a phone the sheet is read, not previewed: set it on the site's own scale */
+    --rs-name: var(--s4); --rs-role: var(--s1); --rs-h2: var(--s1); --rs-h3: var(--s2); --rs-body: var(--s2); --rs-meta: var(--s1);
     width: 100%; max-width: none; min-height: 0; margin: 0;
     padding: 24px max(var(--m), calc((100% - 660px) / 2)) 28px;   /* a 660px column on narrow tablets */
     outline: 0; border-bottom: 1px solid var(--rule);
@@ -170,7 +169,8 @@
   .resume-plain, .resume-col-side .resume-sec > .resume-text { padding-top: 12px; }
   .resume-foot { margin-top: 32px; padding-top: 12px; border-top: 1px solid var(--rs-rule); flex-wrap: wrap; }
 }
-@media screen and (max-width: 359px) {
+/* up to 399px the centred "CV" would sit against "Download PDF"; the page says what it is */
+@media screen and (max-width: 399px) {
   .resume-bar-label { display: none; }
   .resume-bar-row { grid-template-columns: minmax(0, 1fr) auto; }
 }

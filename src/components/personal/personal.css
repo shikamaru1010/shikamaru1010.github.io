@@ -32,7 +32,7 @@
 
 /* ---------------- sections: a label on columns 1–5, the content from column 6 ---------------- */
 .p-sec { margin-top: 168px; }
-/* the label (16px) and the text beside it (21px) share a baseline, not a top edge */
+/* the label and the text beside it share a baseline, not a top edge (the log's sentence is larger) */
 .p-row { align-items: baseline; }
 .p-label { grid-column: 1 / span 5; }
 .p-label h2 { font-size: var(--s2); line-height: 1.4; font-weight: 600; }
@@ -43,12 +43,13 @@
 .p-log-t { font-size: var(--s3); line-height: 1.2; letter-spacing: -.02em; max-width: 22em; text-wrap: pretty; }
 .p-log-note { color: var(--ink-2); margin-top: 14px; max-width: 38ch; text-wrap: pretty; }
 
-/* now: run-in lead words, reads like a note, not a table */
+/* now: run-in lead words, reads like a note, not a table. Running text is body size; --s3 is kept for
+   the hero line and the log's one sentence (owner feedback: not a lot of big text) */
 .p-now { grid-column: 6 / span 6; }
-.p-now li { font-size: var(--s3); line-height: 1.28; letter-spacing: -.02em; max-width: 25em; text-wrap: pretty; }
-.p-now li + li { margin-top: 24px; }
-.p-now b { font-weight: 500; color: var(--ink-2); }
-.p-tools { grid-column: 6 / span 6; margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--ink-2); }
+.p-now li { max-width: 60ch; text-wrap: pretty; }
+.p-now li + li { margin-top: var(--sp-4); }
+.p-now b { font-weight: 600; }
+.p-tools { grid-column: 6 / span 6; margin-top: var(--sp-7); padding-top: 14px; border-top: 1px solid var(--rule); color: var(--ink-2); }
 .p-tools b { color: var(--ink); font-weight: 500; }
 
 /* today's thought: on the column-6 axis like the rest; the opening quote hangs in the gutter
@@ -61,13 +62,13 @@
 
 /* side projects (the vault and its domains): each domain a row, its name on columns 1–5 and
    what writes into it from column 6 */
-.p-lede { grid-column: 6 / span 6; font-size: var(--s3); line-height: 1.22; letter-spacing: -.02em; max-width: 22em; }
-.p-domains { margin-top: 64px; }
+.p-lede { grid-column: 6 / span 6; max-width: 60ch; text-wrap: pretty; }
+.p-domains { margin-top: var(--sp-8); }
 .p-domains li { border-top: 1px solid var(--rule-strong); padding: 14px 0 36px; align-items: baseline; }
-.p-dom { grid-column: 1 / span 5; font-size: var(--s3); line-height: 1.1; letter-spacing: -.02em; font-weight: 600; }
-.p-domains p { grid-column: 6 / span 6; max-width: 46ch; }
+/* a domain is a label of the same tier as the section labels */
+.p-dom { grid-column: 1 / span 5; font-size: var(--s2); line-height: 1.4; font-weight: 600; }
+.p-domains p { grid-column: 6 / span 6; max-width: 60ch; }
 .p-domains strong { font-weight: 600; }
-.p-none { color: var(--ink-2); }
 .p-study { text-decoration-color: var(--ink-2); }
 .p-study:hover { text-decoration-color: var(--accent); }
 .p-orch { grid-column: 6 / span 6; margin-top: 4px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--ink-2); }
@@ -75,8 +76,8 @@
 
 /* off screen (only rendered when filled) */
 .p-off { grid-column: 6 / span 6; }
-.p-off li { font-size: var(--s3); line-height: 1.28; letter-spacing: -.02em; }
-.p-off li + li { margin-top: 18px; }
+.p-off li { max-width: 60ch; text-wrap: pretty; }
+.p-off li + li { margin-top: var(--sp-4); }
 
 /* elsewhere: on a subgrid of columns 6–12, two columns each, so each link starts on a column */
 .p-else { grid-column: 6 / -1; display: grid; grid-template-columns: subgrid; }
@@ -85,7 +86,7 @@
    flex line, so align-content can centre it) */
 .p-else a {
   display: inline-flex; flex-wrap: wrap; align-items: baseline; align-content: center; min-height: 56px;
-  font-size: var(--s3); line-height: 1.2; letter-spacing: -.025em; font-weight: 500;
+  font-size: var(--s2); line-height: 1.4; font-weight: 600;
 }
 /* one hairline under the name only (the handle sits on a different baseline) */
 .p-link {
@@ -93,31 +94,23 @@
   text-decoration-color: var(--rule); transition: text-decoration-color .15s;
 }
 .p-else a:hover .p-link { text-decoration-color: var(--accent); }
-.p-handle { color: var(--ink-2); font-size: var(--s1); margin-left: 12px; letter-spacing: 0; font-weight: 400; transition: color .15s; }
+.p-handle { color: var(--ink-2); font-size: var(--s1); margin-left: 12px; font-weight: 400; transition: color .15s; }
 .p-else a:hover .p-handle { color: var(--ink); }
 
-/* ---------------- footer: the name in Cyrillic ---------------- */
-.p-end { margin-top: 168px; }   /* the same gap as between sections */
-.p-cap { color: var(--ink-2); margin-bottom: 12px; }
+/* ---------------- footer: the name in Cyrillic, then the colophon line (shell.css) ---------------- */
+.p-end { margin-top: 168px; padding-bottom: 28px; }   /* the same gap as between sections */
+.p-cap { color: var(--ink-2); margin-bottom: var(--sp-3); }
 .p-sign {
   font-size: var(--s4); line-height: 1.1; letter-spacing: -.03em; font-weight: 600; color: var(--accent);
   margin-left: -.04em;
 }
-.p-foot {
-  margin-top: 28px; padding: 2px 0 16px; border-top: 1px solid var(--rule);
-  font-size: var(--s1); color: var(--ink-2); align-items: center;
-}
-.p-copy { grid-column: 1 / span 5; }
-.p-place { grid-column: 6 / span 3; }
-.p-turn { grid-column: 9 / -1; justify-self: end; color: var(--ink); white-space: nowrap; }
+.p-end .colophon { margin-top: 28px; }
 
 /* ---------------- tablet (721–1100): the photo takes six columns, text runs to the edge ---------------- */
 @media (min-width: 721px) and (max-width: 1100px) {
   .p-photo { grid-column: 6 / span 6; }
   .p-log-text, .p-now, .p-tools, .p-lede, .p-off, .p-thought, .p-orch { grid-column: 6 / -1; }
   .p-domains p { grid-column: 6 / -1; }
-  .p-place { grid-column: 6 / span 2; }
-  .p-turn { grid-column: 8 / -1; }
 }
 
 /* ≤1100: seven columns are too narrow for three links in a row; they stack as full rows,
@@ -149,7 +142,6 @@
   .p-sec { margin-top: 104px; }
   .p-row { row-gap: 20px; }
   .p-label, .p-log-text, .p-now, .p-tools, .p-thought, .p-lede, .p-off, .p-else { grid-column: 1 / -1; }
-  .p-now li + li { margin-top: 18px; }
   .p-tools { margin-top: 28px; }
 
   .p-thought blockquote { text-indent: 0; }
@@ -161,7 +153,4 @@
   .p-orch { grid-column: 1 / -1; }
 
   .p-end { margin-top: 104px; }   /* the phone's gap between sections */
-  .p-foot { padding-top: 10px; row-gap: 2px; }
-  .p-copy, .p-place, .p-turn { grid-column: 1 / -1; justify-self: start; }
-  .p-turn { margin-top: 6px; }
 }

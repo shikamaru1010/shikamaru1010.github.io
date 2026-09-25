@@ -1,13 +1,11 @@
 import { personal } from '../../data/personal';
-import { profile } from '../../data/profile';
-import { updatedYear } from '../../lib/format';
-import TurnThePage from '../shell/TurnThePage';
+import ColophonLine from '../shell/ColophonLine';
 import './personal.css';
 
 /**
  * The Personal close: my name in Serbian Cyrillic (the only Cyrillic moment,
- * DECISIONS 15), then the foot row and the way back to the professional side.
- * App renders it inside <footer class="only-personal">.
+ * DECISIONS 15), then the colophon line every page ends on, with the way back to
+ * the professional side. App renders it inside <footer class="only-personal">.
  */
 export default function PersonalFooter(): JSX.Element {
   return (
@@ -21,15 +19,7 @@ export default function PersonalFooter(): JSX.Element {
           </span>
         ))}
       </p>
-      <div className="p-foot grid">
-        <p className="p-copy">
-          © <span className="tnum">{updatedYear}</span> {profile.name}
-        </p>
-        <p className="p-place">{personal.footPlace}</p>
-        <p className="p-turn">
-          <TurnThePage to="professional" />
-        </p>
-      </div>
+      <ColophonLine turn="professional" />
     </div>
   );
 }

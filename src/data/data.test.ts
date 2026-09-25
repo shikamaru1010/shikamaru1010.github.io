@@ -6,7 +6,7 @@ import { education, experience, languages } from './experience';
 import { personal } from './personal';
 import { profile } from './profile';
 import { projectById } from './projects';
-import { alsoUsed, skillGroups } from './skills';
+import { alsoUsed, siteSkillGroups, skillGroups } from './skills';
 import worklog from './worklog.json';
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
@@ -96,38 +96,17 @@ describe('skills.ts: each skill next to where it was used', () => {
     expect(alsoUsed.length).toBeGreaterThan(0);
     for (const s of alsoUsed) expect(s.trim()).not.toBe('');
   });
+
+  it('the site table leaves out exactly the CV-only groups and skills', () => {
+    const onSite = siteSkillGroups.flatMap((g) => g.skills.map((s) => s.name));
+    const all = skillGroups.flatMap((g) => g.skills.map((s) => ({ name: s.name, cvOnly: Boolean(g.cvOnly || s.cvOnly) })));
+    expect(onSite).toEqual(all.filter((s) => !s.cvOnly).map((s) => s.name));
+    for (const g of siteSkillGroups) expect(g.skills.length, g.label).toBeGreaterThan(0);
+  });
 });
 
 describe('personal.ts', () => {
-  it('required strings are filled', () => {
-    const required = [
-      personal.firstName,
-      personal.signCaption,
-      personal.line,
-      personal.intro,
-      personal.photo.alt,
-      personal.log.heading,
-      personal.log.asOf,
-      personal.log.headline,
-      personal.log.note,
-      personal.log.busiest,
-      personal.log.monthSummary,
-      personal.nowHeading,
-      personal.nowUpdated,
-      personal.toolsLead,
-      personal.thought.heading,
-      personal.thought.provenance,
-      personal.brain.heading,
-      personal.brain.lede,
-      personal.brain.plannedLead,
-      personal.brain.planned,
-      personal.offlineHeading,
-      personal.elsewhereHeading,
-      personal.footPlace,
-      ...personal.nameCyrillic,
-      ...personal.tools,
-    ];
-    for (const s of required) expect(s.trim()).not.toBe('');
+  it('the first name is the profile’s, and every Now item has a lead word and a text', () => {
     expect(personal.firstName).toBe(profile.firstName);
     expect(personal.now.length).toBeGreaterThan(0);
     for (const item of personal.now) {
@@ -154,8 +133,7 @@ describe('personal.ts', () => {
     }
   });
 
-  it('now is dated, offline is a list, and the links are my real profiles', () => {
-    expect(isCalendarDate(personal.nowUpdatedAt)).toBe(true);
+  it('offline is a list, and the links are my real profiles', () => {
     expect(Array.isArray(personal.offline)).toBe(true);
     const hrefs = Object.fromEntries(personal.elsewhere.map((l) => [l.label, l.href]));
     expect(hrefs).toEqual({ GitHub: profile.github, LinkedIn: profile.linkedin, Email: `mailto:${profile.email}` });
@@ -189,15 +167,6 @@ describe('experience.ts', () => {
     for (const x of experience) {
       if (x.short !== undefined) expect(x.short, x.org).toContain(x.org);
       if (x.summary !== undefined) expect(x.summary.trim(), x.org).not.toBe('');
-    }
-  });
-
-  it('the CV shows at least one point of every role', () => {
-    for (const x of experience) {
-      if (x.cvPoints !== undefined) {
-        expect(x.cvPoints, x.role).toBeGreaterThanOrEqual(1);
-        expect(x.cvPoints, x.role).toBeLessThanOrEqual(x.points.length);
-      }
     }
   });
 

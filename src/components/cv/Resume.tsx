@@ -6,7 +6,7 @@ import { site } from '../../data/site';
 import { alsoUsed, skillGroups } from '../../data/skills';
 import { UPDATED, capitalize, domainOf, fill, formatPeriod, listJoin, ordinal } from '../../lib/format';
 import { returnHome } from '../../lib/history';
-import NewTab from '../shell/NewTab';
+import ExternalLink from '../shell/ExternalLink';
 import SkipLink from '../shell/SkipLink';
 
 // The CV (#resume): a no-print toolbar over one white A4 sheet. `.resume-sheet`
@@ -19,34 +19,32 @@ function ContactLine({ item }: { item: ContactItem }): JSX.Element {
   if (!item.href) return <li>{item.text}</li>;
   return (
     <li>
-      <a
-        className="resume-link"
-        href={item.href}
-        {...(item.external ? { target: '_blank', rel: 'noreferrer' } : {})}
-      >
-        {item.text}
-        {item.external && <NewTab />}
-      </a>
+      {item.external ? (
+        <ExternalLink className="resume-link" href={item.href}>
+          {item.text}
+        </ExternalLink>
+      ) : (
+        <a className="resume-link" href={item.href}>
+          {item.text}
+        </a>
+      )}
     </li>
   );
 }
 
+/** A project: its title and the blurb (which already says what it is), then the stack and the live site. */
 function ProjectEntry({ project }: { project: Project }): JSX.Element {
   const domain = projectDomain(project);
   return (
     <div className="resume-entry">
-      <h3 className="resume-h3">
-        {project.title}
-        <span className="resume-sub"> · {project.subtitle}</span>
-      </h3>
+      <h3 className="resume-h3">{project.title}</h3>
       <p className="resume-text">{project.blurb}</p>
       <p className="resume-meta resume-meta-row">
         <span>{project.tech.join(', ')}</span>
         {domain && project.liveUrl && (
-          <a className="resume-link" href={project.liveUrl} target="_blank" rel="noreferrer">
+          <ExternalLink className="resume-link" href={project.liveUrl}>
             {domain}
-            <NewTab />
-          </a>
+          </ExternalLink>
         )}
       </p>
     </div>
@@ -87,7 +85,7 @@ export default function Resume(): JSX.Element {
         </div>
       </header>
 
-      <main id="main" tabIndex={-1} className="resume-main">
+      <main id="main" className="resume-main">
         <article className="resume-sheet" aria-labelledby="resume-name">
           <header className="resume-head">
             <div className="resume-id">
@@ -117,13 +115,13 @@ export default function Resume(): JSX.Element {
                   <div className="resume-entry" key={`${x.org}-${x.start}`}>
                     <div className="resume-entry-head">
                       <h3 className="resume-h3">{x.role}</h3>
-                      <p className="resume-meta resume-org">
+                      <p className="resume-meta">
                         {x.location ? `${x.org} · ${x.location}` : x.org}
                       </p>
                       <p className="resume-meta resume-when tnum">{formatPeriod(x.start, x.end)}</p>
                     </div>
                     <ul className="resume-points">
-                      {x.points.slice(0, x.cvPoints ?? x.points.length).map((point) => (
+                      {x.points.map((point) => (
                         <li key={point}>{point}</li>
                       ))}
                     </ul>
@@ -170,6 +168,7 @@ export default function Resume(): JSX.Element {
                 </h2>
                 <dl className="resume-dl">
                   {skillGroups.map((g) => (
+                    // the CV lists every group, the CV-only ones included
                     <div key={g.label}>
                       <dt>{g.label}</dt>
                       <dd>{capitalize(g.skills.map((s) => s.name).join(', '))}</dd>
@@ -200,8 +199,8 @@ export default function Resume(): JSX.Element {
             </div>
           </div>
 
+          {/* the site's address is in the contact block */}
           <footer className="resume-foot">
-            <p>{domainOf(profile.siteUrl)}</p>
             <p className="tnum">{fill(site.cv.updated, { date: UPDATED })}</p>
           </footer>
         </article>

@@ -7,6 +7,11 @@ import { isPlainClick } from './mode';
 export type NavState = {
   /** On a home entry: the scroll position when the visitor left it. */
   homeY?: number;
+  /**
+   * On a home entry: the link the visitor left it by, so Back puts focus on it again: its href,
+   * its index among the shown links with that href, and the id of the nearest box around it.
+   */
+  homeFocus?: { href: string; i: number; within?: string };
   /** On a CV or case-study entry: it was opened by a link on home, so Back returns to home. */
   fromHome?: boolean;
 };

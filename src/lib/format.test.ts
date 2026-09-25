@@ -8,12 +8,9 @@ import {
   formatPeriod,
   listJoin,
   monthYear,
-  numberWord,
   ordinal,
-  parseYears,
   stackLine,
   updatedYear,
-  yearRange,
 } from './format';
 
 describe('fill', () => {
@@ -21,16 +18,6 @@ describe('fill', () => {
     expect(fill('{a} and {b}', { a: 1, b: 'two' })).toBe('1 and two');
     expect(fill('{a} and {c}', { a: 'x' })).toBe('x and {c}');
     expect(fill('{n} modules', { n: 0 })).toBe('0 modules');
-  });
-});
-
-describe('numberWord', () => {
-  it('spells 0–20 and falls back to digits', () => {
-    expect(numberWord(0)).toBe('zero');
-    expect(numberWord(4)).toBe('four');
-    expect(numberWord(11)).toBe('eleven');
-    expect(numberWord(20)).toBe('twenty');
-    expect(numberWord(21)).toBe('21');
   });
 });
 
@@ -70,22 +57,6 @@ describe('formatDate / monthYear', () => {
     expect(formatDate('2026-09-25')).toBe('25 September 2026');
     expect(monthYear('2026-09-25')).toBe('September 2026');
     expect(monthYear('2026-07')).toBe('July 2026');
-  });
-});
-
-describe('parseYears / yearRange', () => {
-  it('parses year strings', () => {
-    expect(parseYears('2024–now')).toEqual({ start: 2024, end: 'now' });
-    expect(parseYears('2024')).toEqual({ start: 2024, end: 2024 });
-    expect(parseYears('2024–2025')).toEqual({ start: 2024, end: 2025 });
-  });
-
-  it('spans a set of projects', () => {
-    expect(yearRange([{ year: '2024–now' }, { year: '2023' }])).toBe('2023–now');
-    expect(yearRange([{ year: '2025' }, { year: '2024' }])).toBe('2024–2025');
-    expect(yearRange([{ year: '2025–now' }, { year: '2025–now' }])).toBe('2025–now');
-    expect(yearRange([{ year: '2024' }])).toBe('2024');
-    expect(yearRange([])).toBe('');
   });
 });
 

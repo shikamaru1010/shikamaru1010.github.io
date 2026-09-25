@@ -9,7 +9,8 @@ import SiteHeader from './components/shell/SiteHeader';
 import SkipLink from './components/shell/SkipLink';
 import { studyProjects } from './data/projects';
 import { applyDocumentMeta } from './lib/documentMeta';
-import { navState, patchNavState } from './lib/history';
+import { focusMain, visibleLinks } from './lib/focus';
+import { navState, patchNavState, type NavState } from './lib/history';
 import { isPlainClick } from './lib/mode';
 import { parseRoute, routeKey, scrollStep, type Route } from './lib/route';
 import { syncModeFromUrl, useMode } from './lib/useMode';
@@ -27,14 +28,33 @@ function visibleElement(id: string | undefined): HTMLElement | null {
  * ([data-focus-target] in base.css): it marks a place, it is not a control.
  */
 function focusPage(target: HTMLElement | null): void {
-  const el =
-    (target && target.id !== 'top' ? target : null) ??
-    document.querySelector<HTMLElement>('main h1[data-focus-target]') ??
-    document.getElementById('main');
-  if (!el) return;
+  const el = (target && target.id !== 'top' ? target : null) ?? document.querySelector<HTMLElement>('main h1[data-focus-target]');
+  if (!el) {
+    focusMain({ preventScroll: true });
+    return;
+  }
   if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '-1');
   el.setAttribute('data-focus-target', '');
   el.focus({ preventScroll: true });
+}
+
+/**
+ * Back to home through history: focus returns to the link the visitor left by, so the next Tab
+ * continues from the place the scroll position was restored to, not from the top of the page.
+ * Falls back to the box around that link; false when neither is there (App then uses focusPage).
+ */
+function focusReturn(saved: NavState['homeFocus']): boolean {
+  if (!saved) return false;
+  const links = visibleLinks(saved.href);
+  const link = links[saved.i] ?? links[0];
+  if (link) {
+    link.focus({ preventScroll: true });
+    return true;
+  }
+  const box = visibleElement(saved.within);
+  if (!box || box.id === 'main' || box.id === 'root') return false;
+  focusPage(box);
+  return true;
 }
 
 export default function App(): JSX.Element {
@@ -45,28 +65,40 @@ export default function App(): JSX.Element {
   const prevKey = useRef<string | null>(null);
   /** A plain click on home just followed a link to the CV or a case study. */
   const leavingHome = useRef(false);
+  /** The hash the route was last taken from (or rewritten to), so the second of two events is a no-op. */
+  const handledHash = useRef(location.hash);
 
   useEffect(() => {
-    const onHash = () => {
+    // Both events: a traversal across a ?mode change (the switch rewrites the search with
+    // replaceState) fires only popstate, and an ordinary hash change fires both.
+    const sync = () => {
+      syncModeFromUrl(); // Back / Forward can land on an entry of the other mode
+      if (location.hash === handledHash.current) return;
+      handledHash.current = location.hash;
       const next = parseRoute(location.hash);
       // The new entry was opened from home by a link: its "back to the site" links can use history.
       if (leavingHome.current && next.kind !== 'home') patchNavState({ fromHome: true });
       leavingHome.current = false;
-      syncModeFromUrl(); // Back / Forward can land on an entry of the other mode
       setRoute(next);
     };
-    // Leaving home by a link: save the position in the home entry while it is still the current one.
+    // Leaving home by a link (a click, or Enter on it): save the position and the link in the
+    // home entry while it is still the current one.
     const onClick = (e: MouseEvent) => {
       if (prevKey.current !== 'home' || !isPlainClick(e)) return;
-      const href = (e.target as Element | null)?.closest?.('a')?.getAttribute('href');
-      if (!href || !href.startsWith('#') || parseRoute(href).kind === 'home') return;
-      patchNavState({ homeY: Math.round(window.scrollY) });
+      const link = (e.target as Element | null)?.closest?.('a');
+      const href = link?.getAttribute('href');
+      if (!link || !href || !href.startsWith('#') || parseRoute(href).kind === 'home') return;
+      const i = Math.max(0, visibleLinks(href).indexOf(link));
+      const within = link.parentElement?.closest('[id]')?.id;
+      patchNavState({ homeY: Math.round(window.scrollY), homeFocus: { href, i, within } });
       leavingHome.current = true;
     };
-    window.addEventListener('hashchange', onHash);
+    window.addEventListener('popstate', sync);
+    window.addEventListener('hashchange', sync);
     document.addEventListener('click', onClick, true);
     return () => {
-      window.removeEventListener('hashchange', onHash);
+      window.removeEventListener('popstate', sync);
+      window.removeEventListener('hashchange', sync);
       document.removeEventListener('click', onClick, true);
     };
   }, []);
@@ -100,6 +132,7 @@ export default function App(): JSX.Element {
       } catch {
         /* ignore */
       }
+      handledHash.current = location.hash;
     }
     const before = prevKey.current;
     prevKey.current = routeKey(route);
@@ -107,8 +140,12 @@ export default function App(): JSX.Element {
 
     let target: HTMLElement | null = null;
     if (scroll.kind === 'top') window.scrollTo(0, 0);
-    else if (scroll.kind === 'restore') window.scrollTo(0, scroll.y);
-    else if (scroll.kind === 'anchor') {
+    else if (scroll.kind === 'restore') {
+      window.scrollTo(0, scroll.y);
+      const { homeFocus } = navState();
+      if (homeFocus) patchNavState({ homeFocus: undefined }); // used once: a later return may come another way
+      if (focus && focusReturn(homeFocus)) return;
+    } else if (scroll.kind === 'anchor') {
       target = visibleElement(scroll.id);
       if (target) target.scrollIntoView();
       else if (before !== null) window.scrollTo(0, 0); // the anchor is hidden in this mode
@@ -124,7 +161,7 @@ export default function App(): JSX.Element {
     <>
       <SkipLink />
       <SiteHeader />
-      <main id="main" tabIndex={-1}>
+      <main id="main">
         <span id="top" />
         <div className="only-pro">
           <ProfessionalHome />

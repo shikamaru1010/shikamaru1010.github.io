@@ -33,10 +33,30 @@ describe('render', () => {
     for (const re of BANNED) expect(markup).not.toMatch(re);
   });
 
+  // Golos Text has no U+2011: the data's no-break hyphens must reach the page through keepCompounds()
+  it.each(pages)('%s prints no U+2011 (it would fall back to another font)', (_, markup) => {
+    expect(markup).not.toContain('‑');
+  });
+
   it('Professional says who: 4th year, Podyx, and a CV link', () => {
     expect(html.ProfessionalHome).toContain('4th');
     expect(html.ProfessionalHome).toContain('Podyx');
-    expect(html.ProfessionalHome).toContain('CV');
+    expect(html.ProfessionalHome).toContain('href="#resume"');
+  });
+
+  it('each client has its own row with both screenshots, and the full-size capture is a srcset candidate', () => {
+    for (const id of ['mesara', 'pilatiq', 'stan-pro-tim', 'kutlesic-vikendice']) {
+      expect(html.ProfessionalHome).toContain(`id="client-${id}"`);
+      expect(html.ProfessionalHome).toContain(`/screenshots/${id}/desktop.webp 1440w`);
+      expect(html.ProfessionalHome).toContain(`/screenshots/${id}/mobile.webp 780w`);
+    }
+    expect(html['CaseStudy mesara']).toContain('/screenshots/mesara/desktop.webp 1440w');
+  });
+
+  it('the colophon keeps a space around each hidden dot, so screen readers do not run the parts together', () => {
+    for (const markup of [html.Colophon, html.PersonalFooter, html['CaseStudy mesara']]) {
+      expect(markup).toMatch(/ <span class="colophon-sep" aria-hidden="true">·<\/span> /);
+    }
   });
 
   it('the Professional hero puts who and since when on its time axis', () => {

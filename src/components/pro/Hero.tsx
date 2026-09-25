@@ -5,7 +5,7 @@ import { site } from '../../data/site';
 import { around } from '../../lib/around';
 import { fill, ordinal, shortPoint } from '../../lib/format';
 import { BUILD_DATE, careerAxis, monthsFrom } from '../../lib/timeline';
-import NewTab from '../shell/NewTab';
+import ExternalLink from '../shell/ExternalLink';
 import './hero.css';
 
 const H = site.hero;
@@ -52,18 +52,6 @@ const steps: Step[] = [
     end: monthsFrom(education.expectedEnd + 1, axis.first),
   },
 ];
-
-function External({ href, children }: { href: string; children: string }): JSX.Element {
-  return (
-    <a className="u" href={href} target="_blank" rel="noreferrer">
-      {children}
-      <span className="ext-mark" aria-hidden="true">
-        ↗
-      </span>
-      <NewTab />
-    </a>
-  );
-}
 
 /**
  * The Professional hero (DECISIONS C, the owner's choice): the name stands on the career
@@ -134,7 +122,7 @@ export default function Hero(): JSX.Element {
               {languages.map((l, i) => (
                 <Fragment key={l.name}>
                   {i > 0 && ' '}
-                  <span className="hx-nw">
+                  <span className="nw">
                     {fill(H.strip.language, { name: l.name, level: l.levelShort ?? l.level }) +
                       (i < languages.length - 1 ? ',' : '')}
                   </span>
@@ -149,8 +137,12 @@ export default function Hero(): JSX.Element {
                 {profile.email}
               </a>
               <span className="hx-pair">
-                <External href={profile.github}>{site.contact.github}</External>
-                <External href={profile.linkedin}>{site.contact.linkedin}</External>
+                <ExternalLink className="u" href={profile.github} mark>
+                  {site.contact.github}
+                </ExternalLink>
+                <ExternalLink className="u" href={profile.linkedin} mark>
+                  {site.contact.linkedin}
+                </ExternalLink>
               </span>
             </dd>
           </div>

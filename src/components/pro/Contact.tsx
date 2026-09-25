@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { profile } from '../../data/profile';
 import { site } from '../../data/site';
 import { fill } from '../../lib/format';
-import NewTab from '../shell/NewTab';
+import ExternalLink from '../shell/ExternalLink';
 import './contact.css';
 
 const C = site.contact;
@@ -25,16 +25,7 @@ async function copyText(text: string): Promise<void> {
   if (!ok) throw new Error('copy failed');
 }
 
-function External({ href, children }: { href: string; children: string }): JSX.Element {
-  return (
-    <a className="u" href={href} target="_blank" rel="noreferrer">
-      {children}
-      <NewTab />
-    </a>
-  );
-}
-
-/** Professional ends on an ink plate: the address, a copy button, and the other ways in. */
+/** Professional ends on an ink plate: the address, a copy button, and the other ways in (the CV is in the header and the hero). */
 export default function Contact(): JSX.Element {
   const [status, setStatus] = useState('');
   const timer = useRef<ReturnType<typeof setTimeout>>();
@@ -85,21 +76,17 @@ export default function Contact(): JSX.Element {
           <div>
             <dt>{C.github}</dt>
             <dd>
-              <External href={profile.github}>{profile.githubHandle}</External>
+              <ExternalLink className="u" href={profile.github}>
+                {profile.githubHandle}
+              </ExternalLink>
             </dd>
           </div>
           <div>
             <dt>{C.linkedin}</dt>
             <dd>
-              <External href={profile.linkedin}>{profile.linkedinHandle}</External>
-            </dd>
-          </div>
-          <div>
-            <dt>{C.cv}</dt>
-            <dd>
-              <a className="u" href="#resume">
-                {C.cvText}
-              </a>
+              <ExternalLink className="u" href={profile.linkedin}>
+                {profile.linkedinHandle}
+              </ExternalLink>
             </dd>
           </div>
           <div className="reach-walk">

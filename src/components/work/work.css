@@ -1,15 +1,23 @@
 /* ------------------------------------------------------------------
    Work: the section frame and the smaller projects list.
    Prototype 147, 273–280, 421–422, 496, 533–537; SPEC §6.1.2.
-   The index, the systems and the figures have their own files.
+   The client rows, the systems and the figures have their own files.
 ------------------------------------------------------------------- */
+
+/* "Case study →", in a client row and a system row: underlined in the accent on hover, like the hero's "View CV" */
+.case-link {
+  display: inline-flex; align-items: center; min-height: 44px; font-weight: 600;
+  text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px;
+  text-underline-offset: .3em; transition: text-decoration-color .15s;
+}
+.case-link:hover { text-decoration-color: var(--accent); }
 
 /* 120, not a section's 144: Work follows the hero directly, and at 1440 × 900 this keeps its
    head on the first screen, so the work is visible without scrolling */
 .work.sec { padding-top: 120px; }
 
 /* ---------------- smaller projects: one line each on the grid ---------------- */
-.also { margin-top: 64px; }
+.also { margin-top: var(--sp-8); }
 .also-list li { border-top: 1px solid var(--rule); padding: 14px 0 15px; align-items: baseline; }
 .also-list li:last-child { border-bottom: 1px solid var(--rule); }
 .also-list .a-name { grid-column: 1 / span 3; font-weight: 600; }

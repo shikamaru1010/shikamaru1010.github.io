@@ -41,6 +41,12 @@ describe('parseRoute', () => {
     expect(parseRoute('#top')).toEqual({ kind: 'home', anchor: 'top' });
     expect(parseRoute('#client-mesara')).toEqual({ kind: 'home', anchor: 'client-mesara' });
   });
+
+  it('a malformed percent-escape never throws (it is kept as it is)', () => {
+    expect(parseRoute('#client-%')).toEqual({ kind: 'home', anchor: 'client-%' });
+    expect(parseRoute('#client-%E0%A4%A')).toEqual({ kind: 'home', anchor: 'client-%E0%A4%A' });
+    expect(parseRoute('#project/%')).toEqual({ kind: 'home', rewriteHash: '' });
+  });
 });
 
 describe('routeKey', () => {

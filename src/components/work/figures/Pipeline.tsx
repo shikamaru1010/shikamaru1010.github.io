@@ -1,5 +1,6 @@
 import type { SystemFigure } from '../../../data/projects';
 import { site } from '../../../data/site';
+import { keepCompounds } from '../../../lib/compounds';
 import './figures.css';
 
 type PipelineFigure = Extract<SystemFigure, { kind: 'pipeline' }>;
@@ -26,7 +27,7 @@ export default function Pipeline({ figure }: { figure: PipelineFigure }): JSX.El
             <b className="stop">{s.label}</b>
             {/* the circle says it visually; a screen reader hears the legend's word for it */}
             {s.actor === 'person' && <span className="sr-only"> ({site.work.legend.person})</span>}
-            <span className="note label">{s.note}</span>
+            <span className="note label">{keepCompounds(s.note)}</span>
           </li>
         ))}
       </ol>

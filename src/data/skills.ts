@@ -6,9 +6,11 @@ export type Evidence = { project: string; part?: string } | { course: string } |
  * `name` is written as it reads mid-sentence: proper names capitalized ('Python'), common
  * nouns in lower case ('agent pipelines'). The Skills table capitalizes the first letter;
  * the CV joins them into one line and capitalizes only the first.
+ * `cvOnly`: listed on the CV but not in the site's Skills table, where Experience already
+ * says it (the FON coursework and the tools used alongside it).
  */
-export type Skill = { name: string; evidence: Evidence[] };
-export type SkillGroup = { label: string; skills: Skill[] };
+export type Skill = { name: string; evidence: Evidence[]; cvOnly?: boolean };
+export type SkillGroup = { label: string; skills: Skill[]; cvOnly?: boolean };
 
 const internal = 'internal system';
 const menu = 'QR menu';
@@ -41,7 +43,7 @@ export const skillGroups: SkillGroup[] = [
     skills: [
       { name: 'PostgreSQL / Supabase', evidence: [{ project: 'mesara', part: menu }, { project: 'belgrade-buddy' }] },
       { name: 'SQLite', evidence: [{ project: 'mesara', part: internal }] },
-      { name: 'MySQL, Oracle', evidence: [{ course: 'Databases' }] },
+      { name: 'MySQL, Oracle', evidence: [{ course: 'Databases' }], cvOnly: true },
     ],
   },
   {
@@ -57,13 +59,14 @@ export const skillGroups: SkillGroup[] = [
     label: 'Tools and workflow',
     skills: [
       { name: 'Git and GitHub', evidence: [{ project: 'dev-dashboard' }] },
-      { name: 'the terminal (PowerShell, bash)', evidence: [{ project: 'dev-dashboard', part: 'nightly git log' }] },
+      { name: 'PowerShell and bash', evidence: [{ project: 'dev-dashboard', part: 'nightly git log' }] },
       { name: 'Docker', evidence: [{ project: 'mesara' }] },
       { name: 'Obsidian', evidence: [{ project: 'dev-dashboard' }, { project: 'student-brain-agent' }] },
     ],
   },
   {
     label: 'Networking and CS',
+    cvOnly: true,
     skills: [
       { name: 'TCP/IP, HTTP, Wireshark, sockets', evidence: [{ course: 'Computer networks and internet technologies' }] },
       { name: 'GNS3, Cisco Packet Tracer', evidence: [{ text: 'Hands-on, alongside the FON curriculum' }] },
@@ -82,4 +85,10 @@ export const skillGroups: SkillGroup[] = [
 ];
 
 /** Real skills with no project on the site to point to. */
-export const alsoUsed = ['Figma', 'Grok', 'Agile', 'technical writing'];
+export const alsoUsed = ['Figma', 'Agile', 'technical writing'];
+
+/** The Skills table on the site: everything that is not CV-only. */
+export const siteSkillGroups: SkillGroup[] = skillGroups
+  .filter((g) => !g.cvOnly)
+  .map((g) => ({ ...g, skills: g.skills.filter((s) => !s.cvOnly) }))
+  .filter((g) => g.skills.length > 0);

@@ -24,7 +24,7 @@ function WorkLog(): JSX.Element {
         <div className="p-label">
           <h2 id="log-h">{copy.heading}</h2>
           <p className="label">
-            {around(copy.asOf, 'date', <time dateTime={log.asOf}>{log.asOf}</time>)}
+            {around(copy.asOf, 'date', <time dateTime={log.asOf}>{keepTogether(formatDate(log.asOf))}</time>)}
           </p>
         </div>
         <div className="p-log-text">
@@ -47,14 +47,14 @@ function WorkLog(): JSX.Element {
   );
 }
 
-/** Personal mode: first name, photo, the log, now, a thought, side projects and where else to find me. */
+/** Personal mode, in the order of its nav: first name and photo, now, the log, a thought, side projects and where else to find me. */
 export default function PersonalHome(): JSX.Element {
   return (
     <>
       <DuotoneFilter />
       <PersonalHero />
-      <WorkLog />
       <Now />
+      <WorkLog />
       <Thought />
       <Brain />
       <OffScreen />

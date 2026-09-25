@@ -138,6 +138,11 @@
 
   .seg .st { grid-column: 1 / span 5; }
   .seg .note { grid-column: 6 / -1; }
+  /* the 0–30 step is ~30px wide here: the rule's start marks 0, so its numeral is left to screen readers */
+  .seg .num-zero {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
 
   .signal .sg-on { grid-column: 1 / span 2; }
   .signal .sg-off { grid-column: 3 / -1; }

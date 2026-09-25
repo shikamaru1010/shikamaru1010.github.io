@@ -35,6 +35,19 @@
   --cols: 12;
   --max: 1520px;               /* .wrap max width incl. margins */
   --head-h: 64px;
+
+  /* spacing: one scale for margins, paddings and gaps (--sp-9 / --sp-10 are the steps
+     between blocks and sections). A value off the scale needs a reason next to it. */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 96px;
+  --sp-10: 144px;
   --ease: cubic-bezier(.76, 0, .24, 1);
   --wipe: 620ms;               /* the mode switch's one transition (shell.css) */
 

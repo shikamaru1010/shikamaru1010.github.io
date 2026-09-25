@@ -18,8 +18,8 @@
 }
 .study-title:focus { outline: none; }
 .study-sub {
-  margin-top: 18px; max-width: 28em;
-  font-size: var(--s3); line-height: 1.22; letter-spacing: -.02em; font-weight: 400; text-wrap: pretty;
+  margin-top: 18px; max-width: 36em;
+  font-size: var(--s3); line-height: 1.22; letter-spacing: -.02em; font-weight: 400; text-wrap: balance;
 }
 .study-meta { margin-top: 40px; border-top: 1px solid var(--rule-strong); padding-top: 14px; row-gap: 20px; }
 .study-meta > div { grid-column: span 3; }
@@ -29,7 +29,7 @@
 .study-intro {
   margin-top: 48px; margin-left: calc((100% + var(--g)) * 3 / 12);   /* from column 4, like the home lede */
   max-width: min(31em, calc((100% + var(--g)) * 8 / 12 - var(--g)));
-  font-size: var(--s3); line-height: 1.22; letter-spacing: -.02em; text-wrap: pretty;
+  font-size: var(--s3); line-height: 1.4; letter-spacing: -.01em; text-wrap: pretty;   /* the hero lede's leading */
 }
 
 /* ---------------- at a glance ---------------- */
@@ -45,31 +45,23 @@
   font-size: var(--s3); line-height: 1.1; letter-spacing: -.02em; font-weight: 600;
 }
 
-/* ---------------- the plate, on the page grid ----------------
+/* ---------------- the screenshots, on the page grid ----------------
    The desktop capture takes columns 1–9, the phone 10–12 (3 and 1 of the phone's 4).
    The phone is cropped from the top to the desktop's height, so the two end on one
    line: --desk-h is the desktop's height from the grid (the figure is a .wrap, so
    100cqi is its measure). */
 .study-plate { margin-top: 104px; }
-.study-plate-head {
-  font-size: var(--s1); line-height: 1.55; color: var(--ink-2); font-weight: 500;
-  padding-bottom: 10px; border-bottom: 1px solid var(--rule-strong);
-}
-.study-plate-head b { color: var(--ink); font-weight: 600; margin-right: 6px; }
 .study-plate-grid {
   --desk-span: 9;
   --desk-h: calc(((100cqi + var(--g)) * var(--desk-span) / var(--cols) - var(--g)) * 10 / 16);
-  display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--g); margin-top: 20px;
+  display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--g); align-items: start;
 }
-.study-shot-desk { grid-column: 1 / span var(--desk-span); }
-.study-shot-phone { grid-column: calc(var(--desk-span) + 1) / -1; }
-.study-shot img {
+.study-shot {
   width: 100%; height: auto; background: var(--rule);
-  outline: 1px solid var(--rule-strong); outline-offset: -1px;
+  outline: 1px solid var(--rule); outline-offset: -1px;
 }
-.study-shot-desk img { aspect-ratio: 1440 / 900; }
-.study-shot-phone img { height: var(--desk-h); object-fit: cover; object-position: top; }
-.study-shot .label { display: block; margin-top: 8px; }
+.study-shot-desk { grid-column: 1 / span var(--desk-span); aspect-ratio: 1440 / 900; }
+.study-shot-phone { grid-column: calc(var(--desk-span) + 1) / -1; height: var(--desk-h); object-fit: cover; object-position: top; }
 
 /* ---------------- sections ---------------- */
 .study-sec { padding-top: 104px; }
@@ -118,15 +110,18 @@
 .study-step-title { font-size: var(--s3); line-height: 1.05; letter-spacing: -.02em; font-weight: 600; }
 .study-step-detail { margin-top: 8px; max-width: 46ch; text-wrap: pretty; }
 
-/* decisions | guardrails; what was hard; outcomes */
+/* decisions | guardrails; what was hard; outcomes. A line of running text stays under 68 characters. */
 .study-pair { align-items: start; }
 .study-half { grid-column: span 6; }
-.study-list li { border-top: 1px solid var(--rule); padding: 12px 0 14px; text-wrap: pretty; }
+.study-list li { border-top: 1px solid var(--rule); padding: 12px 0 14px; max-width: 68ch; text-wrap: pretty; }
 .study-list li:last-child { border-bottom: 1px solid var(--rule); }
+/* side by side, rows of different heights would step their hairlines past each other: the pair has none */
+.study-pair .study-list li { border: 0; padding: 0; }
+.study-pair .study-list li + li { margin-top: 14px; }
 .study-wide .study-list { max-width: calc((100% + var(--g)) * 8 / 12 - var(--g)); }   /* columns 1–8 */
 
 .study-private-wrap { padding-top: 72px; }
-.study-private { max-width: calc((100% + var(--g)) * 8 / 12 - var(--g)); border-top: 1px solid var(--rule); padding-top: 12px; }
+.study-private { max-width: min(68ch, calc((100% + var(--g)) * 8 / 12 - var(--g))); border-top: 1px solid var(--rule); padding-top: 12px; }
 .study-private dd { margin-top: 4px; text-wrap: pretty; }
 
 /* ---------------- next ---------------- */
@@ -149,14 +144,8 @@
 .study-next-back:hover { text-decoration-thickness: 1px; }
 .study-next-link:hover .study-next-title { text-underline-offset: .14em; text-decoration-thickness: 2px; }
 
-/* ---------------- footer ---------------- */
-.study-foot { margin-top: 104px; }
-.study-foot-row {
-  border-top: 1px solid var(--rule); padding: 14px 0 28px;
-  font-size: var(--s1); line-height: 1.4; color: var(--ink-2); align-items: baseline;
-}
-.study-foot-row p:first-child { grid-column: 1 / span 3; }
-.study-foot-row p:last-child { grid-column: 4 / -1; }
+/* ---------------- footer: the colophon line (shell.css) ---------------- */
+.study-foot { margin-top: 104px; padding-bottom: 28px; }
 
 /* touch screens of any width: 44px targets */
 @media (pointer: coarse) {
@@ -191,9 +180,7 @@
   .study-metrics > div { grid-column: span 2; }
 
   .study-plate { margin-top: 72px; }
-  .study-plate-grid { --desk-span: 3; margin-top: 16px; }
-  /* the phone column is narrow: its dims label sits flush right and runs back over the gap */
-  .study-shot-phone .label { display: flex; justify-content: flex-end; white-space: nowrap; }
+  .study-plate-grid { --desk-span: 3; }
 
   .study-sec { padding-top: 72px; }
   .study-sec-head { margin-bottom: 24px; }
@@ -216,6 +203,4 @@
   .study-next-link { grid-column: 1 / -1; justify-self: stretch; align-items: flex-start; text-align: left; min-height: 44px; }
 
   .study-foot { margin-top: 72px; }
-  .study-foot-row { row-gap: 4px; }
-  .study-foot-row p:first-child, .study-foot-row p:last-child { grid-column: 1 / -1; }
 }

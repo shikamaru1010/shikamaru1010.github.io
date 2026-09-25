@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { profile } from './data/profile';
 import { site } from './data/site';
+import updated from './data/updated.json';
 
 // Structural checks for the SEO surface: JSON-LD must stay valid JSON and in
 // sync with profile.ts, the head must match site.ts, and the static SEO files
@@ -86,7 +87,7 @@ describe('static SEO files', () => {
     expect(sitemap).toContain(`<loc>${profile.siteUrl}/</loc>`);
   });
 
-  it('the Search Console verification file is still there', () => {
-    expect(read('../public/google41f9898f330a62c6.html').length).toBeGreaterThan(0);
+  it('sitemap.xml is last modified on the content date (npm run pdf writes both)', () => {
+    expect(read('../public/sitemap.xml')).toContain(`<lastmod>${updated.date}</lastmod>`);
   });
 });

@@ -10,7 +10,7 @@ export default function SiteHeader(): JSX.Element {
         <a className="brand" href="#top">
           <span className="only-pro">
             {profile.firstName}
-            <span className="sur"> {profile.lastName}</span>
+            <span> {profile.lastName}</span>
           </span>
           <span className="only-personal">{profile.firstName}</span>
         </a>

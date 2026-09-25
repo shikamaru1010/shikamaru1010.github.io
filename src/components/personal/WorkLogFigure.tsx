@@ -126,8 +126,7 @@ export default function WorkLogFigure({ summary }: { summary: WorklogSummary }):
               ))}
             </ol>
             <p className="wl-axis">
-              <span className="wl-mname">{axisName(mo.key, i)}</span>{' '}
-              <span className="wl-mcount tnum">{plural(fill(personal.log.monthCount, { entries: mo.entries, days: mo.days }))}</span>
+              <span className="wl-mname">{axisName(mo.key, i)}</span>
             </p>
           </li>
         ))}

@@ -33,6 +33,9 @@ ul, ol { padding: 0; list-style: none; }
 button { font: inherit; color: inherit; }
 table { border-collapse: collapse; }
 
+/* a phrase or a hyphenated name that never breaks inside */
+.nw { white-space: nowrap; }
+
 /* numbers: every year, date, period, count and dimension */
 .tnum, time { font-variant-numeric: tabular-nums; }
 
@@ -65,10 +68,9 @@ main[tabindex="-1"]:focus,
   text-decoration-color: var(--rule); transition: text-decoration-color .15s;
 }
 .u:hover { text-decoration-color: var(--accent); }
-.ext-mark { margin-left: .15em; }
 
 /* ---------------- section scaffolding ---------------- */
-.sec { padding-top: 144px; }
+.sec { padding-top: var(--sp-10); }
 /* the head and its note share the first baseline */
 .sec-head {
   display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--g);

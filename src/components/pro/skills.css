@@ -31,31 +31,12 @@
 .skills-area { font-size: var(--s1); line-height: 1.4; font-weight: 500; color: var(--ink-2); text-wrap: balance; }
 .skills-name { font-size: var(--s2); line-height: 1.45; font-weight: 600; color: var(--ink); text-wrap: balance; }
 .skills-used { font-size: var(--s2); line-height: 1.45; font-weight: 400; color: var(--ink); text-wrap: pretty; }
-/* a project and its part never break inside (the longest is ~270px at 16px); the list breaks between items */
-.skills-used .skills-ev.is-project { white-space: nowrap; }
+/* a project and its part, or a course, never break inside (the longest is ~250px at 16px); the list breaks between items */
+.skills-used .skills-ev { white-space: nowrap; }
+.skills-part { color: var(--ink-2); }
 
 /* under the skill column: skills with no project here to point to */
-.skills-also { margin-top: 20px; padding-left: calc(25cqi + var(--g) / 4); color: var(--ink-2); text-wrap: pretty; }
-
-/* ---------------- touch: 44px targets that never overlap ----------------
-   Each link's hit area is 44px tall around its line. On phones every piece of evidence is its
-   own 44px row (a short list reads better than a comma list at a 44px pitch); on touch tablets,
-   where the evidence column is wide and rarely wraps, the comma list keeps a 44px line pitch.
-   Either way the block's negative margins take back the extra space of its first and last line,
-   so a one-line cell keeps its height. */
-@media (max-width: 720px), (pointer: coarse) {
-  .skills-evs { display: block; margin-block: calc((1.45em - 44px) / 2); }
-  .skills-used a { position: relative; }
-  .skills-used a::before { content: ''; position: absolute; left: 0; right: 0; top: calc((1.2em - 44px) / 2); bottom: calc((1.2em - 44px) / 2); }
-}
-@media (pointer: coarse) and (min-width: 721px) {
-  .skills-evs { line-height: 44px; }
-}
-@media (max-width: 720px) {
-  .skills-used .skills-ev,
-  .skills-used .skills-ev.is-project { display: block; white-space: normal; padding-block: calc((44px - 1.45em) / 2); }
-  .skills-sep { display: none; }
-}
+.skills-also { margin-top: var(--sp-5); padding-left: calc(25cqi + var(--g) / 4); color: var(--ink-2); text-wrap: pretty; }
 
 /* ---------------- tablet (721–1100): area 2 columns, skill 4, evidence 6 ----------------
    Three columns for a skill name wrap most names at 768px while the area column stays

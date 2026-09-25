@@ -22,7 +22,7 @@
 .wl-days i { display: block; width: 100%; aspect-ratio: 1; background: var(--ink); }
 .wl-days .wl-top i { background: var(--accent); }
 
-/* the month axis: a tick at each month's first day, the name, its count */
+/* the month axis: a tick at each month's first day and its name (the counts are for screen readers, in the caption) */
 .wl-axis {
   position: relative; display: flex; flex-wrap: wrap; gap: 0 10px;
   padding: 14px 8px 0 0; font-size: var(--s1); line-height: 1.4;
@@ -32,7 +32,6 @@
   content: ''; position: absolute; right: var(--wl-gap); top: 0; height: 8px; border-right: 1px solid var(--rule-strong);
 }
 .wl-mname { font-weight: 500; color: var(--ink); }
-.wl-mcount { color: var(--ink-2); }
 
 .wl-legend { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 6px 28px; }
 .wl-key { display: inline-flex; align-items: center; gap: 8px; }
@@ -50,8 +49,6 @@
 /* tablet: the same axis in less width, so a hairline gap keeps the squares legible */
 @media (min-width: 721px) and (max-width: 1100px) {
   .wl { --wl-gap: 1px; }
-  /* September is narrow here: the name and its count always stack, so every month reads the same */
-  .wl-axis { flex-direction: column; }
 }
 
 /* phone: the months stack, each on the same 31 day slots so dates line up down the page */
@@ -60,7 +57,7 @@
   .wl-months { grid-template-columns: 1fr; row-gap: 28px; }
   .wl-month { display: flex; flex-direction: column; }
   .wl-days { grid-template-columns: repeat(31, minmax(0, 1fr)); padding-right: 0; }
-  .wl-axis { order: -1; justify-content: space-between; padding: 0 0 10px; }
+  .wl-axis { order: -1; padding: 0 0 10px; }
   .wl-axis::before,
   .wl-month:last-child .wl-axis::after { display: none; }
 }

@@ -1,5 +1,5 @@
 import { personal } from '../../data/personal';
-import NewTab from '../shell/NewTab';
+import ExternalLink from '../shell/ExternalLink';
 
 /** Where else to find me: each link with its handle; external ones open in a new tab (R7). */
 export default function Elsewhere(): JSX.Element {
@@ -11,14 +11,14 @@ export default function Elsewhere(): JSX.Element {
         </div>
         <ul className="p-else">
           {personal.elsewhere.map((l) => {
-            const external = /^https?:/.test(l.href);
+            const text = (
+              <>
+                <span className="p-link">{l.label}</span> <span className="p-handle">{l.text}</span>
+              </>
+            );
             return (
               <li key={l.label}>
-                <a href={l.href} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
-                  <span className="p-link">{l.label}</span>{' '}
-                  <span className="p-handle">{l.text}</span>
-                  {external && <NewTab />}
-                </a>
+                {/^https?:/.test(l.href) ? <ExternalLink href={l.href}>{text}</ExternalLink> : <a href={l.href}>{text}</a>}
               </li>
             );
           })}

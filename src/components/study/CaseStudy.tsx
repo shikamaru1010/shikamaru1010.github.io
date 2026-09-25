@@ -1,43 +1,19 @@
 import './study.css';
 import { personal } from '../../data/personal';
-import { profile } from '../../data/profile';
 import { projectAnchor, projectDomain, studyProjects, type StudyProject } from '../../data/projects';
 import { site } from '../../data/site';
-import { UPDATED, fill, updatedYear } from '../../lib/format';
 import { returnHome } from '../../lib/history';
+import { keepCompounds } from '../../lib/compounds';
+import { mediaOf, srcSet } from '../../lib/media';
 import { useMode } from '../../lib/useMode';
-import NewTab from '../shell/NewTab';
+import ColophonLine from '../shell/ColophonLine';
+import ExternalLink from '../shell/ExternalLink';
 import SkipLink from '../shell/SkipLink';
 import StudyFlow from './StudyFlow';
 
 // A case study (#project/<id>), in the Swiss language and always in the
 // Professional palette (tokens.css gates Personal to data-route="home").
 // No in-page hash links here: the hash router would leave the page (SPEC R7).
-
-/** An external domain link. Only the header's shows the visible ↗ (SPEC R7). */
-function ExternalDomain({
-  href,
-  domain,
-  className,
-  mark,
-}: {
-  href: string;
-  domain: string;
-  className?: string;
-  mark?: boolean;
-}): JSX.Element {
-  return (
-    <a className={className} href={href} target="_blank" rel="noreferrer">
-      {domain}
-      {mark && (
-        <span className="ext-mark" aria-hidden="true">
-          ↗
-        </span>
-      )}
-      <NewTab />
-    </a>
-  );
-}
 
 function ListSection({
   id,
@@ -62,7 +38,7 @@ function ListSection({
       </div>
       <List className="study-list">
         {items.map((item) => (
-          <li key={item}>{item}</li>
+          <li key={item}>{keepCompounds(item)}</li>
         ))}
       </List>
     </section>
@@ -84,8 +60,8 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
   const back = backHref(project, useMode() === 'personal');
   const domain = projectDomain(project);
   const live = domain && project.liveUrl ? { href: project.liveUrl, domain } : undefined;
-  const desktop = project.media?.find((m) => m.device === 'desktop');
-  const phone = project.media?.find((m) => m.device === 'phone');
+  const desktop = mediaOf(project, 'desktop');
+  const phone = mediaOf(project, 'phone');
   const at = studyProjects.findIndex((p) => p.id === project.id);
   const next = studyProjects.length > 1 ? studyProjects[(at + 1) % studyProjects.length] : undefined;
   const hasPair = Boolean(cs.decisions?.length || cs.guardrails?.length);
@@ -101,7 +77,6 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
           </a>
           <p className="study-kicker label">{site.study.label}</p>
           <nav className="nav" aria-label={site.study.headNav}>
-            {live && <ExternalDomain className="study-head-domain" href={live.href} domain={live.domain} mark />}
             <a className="nav-cv" href="#resume">
               {site.nav.cv}
             </a>
@@ -109,7 +84,7 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
         </div>
       </header>
 
-      <main id="main" tabIndex={-1} className="study">
+      <main id="main" className="study">
         <div className="study-top wrap">
           {/* the page's focus target after a route change (App); no ring, it marks a place */}
           <h1 className="study-title" tabIndex={-1} data-focus-target="">
@@ -134,7 +109,9 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
               <div>
                 <dt className="label">{site.study.meta.live}</dt>
                 <dd>
-                  <ExternalDomain className="u" href={live.href} domain={live.domain} />
+                  <ExternalLink className="u" href={live.href} mark>
+                    {live.domain}
+                  </ExternalLink>
                 </dd>
               </div>
             )}
@@ -160,40 +137,32 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
         ) : null}
 
         {desktop && phone ? (
-          <figure className="study-plate wrap" aria-labelledby="study-plate-cap">
-            <figcaption className="study-plate-head" id="study-plate-cap">
-              {live && <b>{live.domain}</b>}
-              {desktop.caption}
-            </figcaption>
+          <div className="study-plate wrap">
             <div className="study-plate-grid">
-              <div className="study-shot study-shot-desk">
-                <img
-                  src={desktop.src}
-                  srcSet={desktop.variants?.map((v) => `${v.src} ${v.width}w`).join(', ')}
-                  sizes="(max-width: 720px) 70vw, min(74vw, 1070px)"
-                  alt={desktop.alt}
-                  width={desktop.width}
-                  height={desktop.height}
-                  loading="lazy"
-                  decoding="async"
-                />
-                <span className="label">{site.work.dims.desktop}</span>
-              </div>
-              <div className="study-shot study-shot-phone">
-                <img
-                  src={phone.src}
-                  srcSet={phone.variants?.map((v) => `${v.src} ${v.width}w`).join(', ')}
-                  sizes="(max-width: 720px) 22vw, min(24vw, 340px)"
-                  alt={phone.alt}
-                  width={phone.width}
-                  height={phone.height}
-                  loading="lazy"
-                  decoding="async"
-                />
-                <span className="label">{site.work.dims.phone}</span>
-              </div>
+              <img
+                className="study-shot study-shot-desk"
+                src={desktop.src}
+                srcSet={srcSet(desktop)}
+                sizes="(max-width: 720px) 70vw, min(71vw, 1070px)"
+                alt={desktop.alt}
+                width={desktop.width}
+                height={desktop.height}
+                loading="lazy"
+                decoding="async"
+              />
+              <img
+                className="study-shot study-shot-phone"
+                src={phone.src}
+                srcSet={srcSet(phone)}
+                sizes="(max-width: 720px) 22vw, min(23vw, 340px)"
+                alt={phone.alt}
+                width={phone.width}
+                height={phone.height}
+                loading="lazy"
+                decoding="async"
+              />
             </div>
-          </figure>
+          </div>
         ) : null}
 
         {cs.architecture?.length ? (
@@ -202,13 +171,12 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
               <h2 className="study-h2" id="study-arch-h">
                 {site.study.sections.architecture}
               </h2>
-              <p className="label tnum">{fill(site.study.counts.architecture, { n: cs.architecture.length })}</p>
             </div>
             <ul className="study-arch grid">
               {cs.architecture.map((node) => (
                 <li key={node.title}>
                   <h3 className="study-arch-title">{node.title}</h3>
-                  <p className="study-arch-detail">{node.detail}</p>
+                  <p className="study-arch-detail">{keepCompounds(node.detail)}</p>
                   {node.tech?.length ? <p className="study-arch-tech label">{node.tech.join(', ')}</p> : null}
                 </li>
               ))}
@@ -289,14 +257,7 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
       </main>
 
       <footer className="study-foot wrap">
-        <div className="study-foot-row grid">
-          <p>
-            © <span className="tnum">{updatedYear}</span> {profile.name}
-          </p>
-          <p>
-            {site.colophon.updated} <time dateTime={UPDATED}>{UPDATED}</time>
-          </p>
-        </div>
+        <ColophonLine />
       </footer>
     </>
   );

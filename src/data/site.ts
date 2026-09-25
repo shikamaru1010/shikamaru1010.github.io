@@ -53,21 +53,10 @@ export const site = {
   },
   work: {
     heading: 'Work',
-    note: '{clients} client websites in production, {systems} systems I designed and built, and {smaller} smaller projects.',
     clients: 'Client work',
     systems: 'Systems and automation',
     smaller: 'Other projects',
-    tableCaption: 'Client websites, with the stack, engineering notes and years of each',
-    columns: {
-      client: 'Client',
-      about: 'About',
-      stack: 'Stack and engineering notes',
-      year: 'Year',
-      shot: 'Phone screenshot',
-    },
     caseStudy: 'Case study',
-    plateLabel: 'Screenshots of the selected client site',
-    dims: { desktop: 'Desktop', phone: 'Phone' },
     legend: { system: 'Automated step', person: 'Human approval' },
     axis: {
       active: 'Active',
@@ -79,17 +68,15 @@ export const site = {
   },
   experience: {
     heading: 'Experience',
-    note: 'Intern at {org} since {month}, freelance since {freelance}, B.Sc. expected in {graduation}.',
     coursework: 'Relevant coursework',
     eduMeta: '{short}, {university} · {ordinal} year',
-    now: 'now',
   },
   skills: {
     heading: 'Skills',
-    note: 'Each skill with the projects or courses where I applied it.',
     caption: 'Skills by area, each with the projects or courses where I used it',
     columns: { area: 'Area', skill: 'Skill', used: 'Where I used it' },
-    course: '{course} (FON)',
+    /** After a FON course's name in the evidence column. */
+    course: '(FON)',
     also: 'Also: {list}.',
   },
   contact: {
@@ -99,8 +86,6 @@ export const site = {
     copyFailed: 'Could not copy. The address is {email}.',
     github: 'GitHub',
     linkedin: 'LinkedIn',
-    cv: 'CV',
-    cvText: 'View or download as PDF',
     code: 'Code',
     codeNote: 'Client repositories and the trading strategy are private. I am happy to walk through the code and architecture on request.',
   },
@@ -137,7 +122,6 @@ export const site = {
     meta: { status: 'Status', years: 'Years', stack: 'Stack', live: 'Live site' },
     sections: {
       metrics: 'At a glance',
-      media: 'Screenshots',
       architecture: 'Architecture',
       flow: 'How it works',
       decisions: 'Decisions',
@@ -146,7 +130,6 @@ export const site = {
       outcomes: 'Outcomes',
       privacy: 'Privacy',
     },
-    counts: { architecture: '{n} modules', flow: '{n} steps' },
     legend: { system: 'Automated step', person: 'Human step' },
   },
 };

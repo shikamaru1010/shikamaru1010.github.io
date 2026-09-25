@@ -5,9 +5,9 @@ import { site } from '../../data/site';
 /** A domain's project, linked to its case study when it has one (dev-dashboard). */
 function ProjectName({ project }: { project: NonNullable<BrainDomain['project']> }): JSX.Element {
   const study = projectById(project.id)?.caseStudy;
-  if (!study) return <strong>{project.label}</strong>;
+  if (!study) return <strong className="nw">{project.label}</strong>;
   return (
-    <a className="p-study u" href={`#project/${project.id}`}>
+    <a className="p-study nw u" href={`#project/${project.id}`}>
       <strong>{project.label}</strong>
       <span className="sr-only">, {site.work.caseStudy}</span>
     </a>
