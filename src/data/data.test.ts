@@ -181,6 +181,14 @@ describe('experience.ts', () => {
     for (const l of languages) {
       expect(l.name.trim()).not.toBe('');
       expect(l.level.trim()).not.toBe('');
+      if (l.levelShort !== undefined) expect(l.level.startsWith(l.levelShort), l.name).toBe(true);
+    }
+  });
+
+  it('the hero time-axis fields, where given, are filled', () => {
+    for (const x of experience) {
+      if (x.short !== undefined) expect(x.short, x.org).toContain(x.org);
+      if (x.summary !== undefined) expect(x.summary.trim(), x.org).not.toBe('');
     }
   });
 
@@ -193,8 +201,9 @@ describe('experience.ts', () => {
     }
   });
 
-  it('the lede says 4th-year and Podyx', () => {
-    expect(profile.lede).toContain('4th-year');
-    expect(profile.lede).toContain('Podyx');
+  it('the hero lede is one sentence (who, where and since when are on the hero time axis)', () => {
+    expect(profile.lede.trim()).not.toBe('');
+    expect(profile.lede).toMatch(/\.$/);
+    expect(profile.lede.slice(0, -1)).not.toMatch(/[.!?](\s|$)/);
   });
 });

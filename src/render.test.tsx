@@ -6,7 +6,9 @@ import PersonalHome from './components/personal/PersonalHome';
 import Colophon from './components/pro/Colophon';
 import ProfessionalHome from './components/ProfessionalHome';
 import CaseStudy from './components/study/CaseStudy';
+import { education, experience } from './data/experience';
 import { studyProjects } from './data/projects';
+import { BUILD_DATE, careerAxis } from './lib/timeline';
 
 // Server-renders every page tree in node: render must be pure (no window /
 // document during render), the words must be right, and the two mode trees,
@@ -35,6 +37,26 @@ describe('render', () => {
     expect(html.ProfessionalHome).toContain('4th');
     expect(html.ProfessionalHome).toContain('Podyx');
     expect(html.ProfessionalHome).toContain('CV');
+  });
+
+  it('the Professional hero puts who and since when on its time axis', () => {
+    const hero = html.ProfessionalHome.slice(0, html.ProfessionalHome.indexOf('id="work"'));
+    // React writes the attribute as dateTime; HTML attribute names are case-insensitive
+    expect(hero).toMatch(/Podyx, intern<\/span> <span class="hx-yrs">since <time datetime="2026-07">Jul 2026<\/time>/i);
+    expect(hero).toContain('FON, 4th year');
+    expect(hero).toMatch(/B\.Sc\. expected <time datetime="2027">2027<\/time>/i);
+    // one bar per role and the degree, each read out with its label
+    expect(count(hero, /<li class="hx-step/g)).toBe(experience.length + 1);
+    expect(hero).toMatch(/<figure class="hx-steps" aria-labelledby="hx-steps-cap"><figcaption class="sr-only" id="hx-steps-cap">Work and study since 2023</);
+    // years by the year only where the data has no month
+    expect(hero).toMatch(/since <time datetime="2023">2023<\/time>/i);
+    expect(hero).toMatch(/since <time datetime="2025">2025<\/time>/i);
+  });
+
+  it('the hero today line comes from the build date, not from the markup', () => {
+    const axis = careerAxis([...experience.map((x) => x.start), education.start], education.expectedEnd, BUILD_DATE);
+    expect(html.ProfessionalHome).toContain(`style="--today:${axis.today};--years:${axis.years.length}"`);
+    for (const y of axis.years) expect(html.ProfessionalHome).toContain(`<b>${y}</b>`);
   });
 
   it('the Personal footer signs in Cyrillic', () => {

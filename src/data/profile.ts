@@ -14,7 +14,8 @@ export const profile = {
   linkedinHandle: 'ratkošišović',
   siteUrl: 'https://shikamaru1010.github.io',
   availability: 'Open to future opportunities.',
-  lede: 'I’m a software engineering intern at Podyx and a 4th-year Information Systems & Technologies student at FON, University of Belgrade. Since 2023 I have delivered websites and internal tools for local businesses, and I build my own automation in Python and TypeScript, including a trading pipeline that asks me on Telegram before it trades.',
+  /** The hero's one sentence; who, where and since when are in the hero's time axis. */
+  lede: 'I build websites, internal tools and monitored automation systems in Python and TypeScript.',
   cvSummary:
     'Software engineering intern at Podyx and 4th-year Information Systems & Technologies student at FON, University of Belgrade. Since 2023 I have built websites and internal tools for local businesses.',
   metaDescription:

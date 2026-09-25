@@ -1,74 +1,170 @@
-/* ------------------------------------------------------------------
-   Professional hero: the name, the lede and the record card
-   (SPEC §6.1.1 as amended by the owner feedback in DECISIONS: a quiet
-   scale, no text fitted to the width of the page).
-------------------------------------------------------------------- */
+/* =====================================================================
+   Professional hero: the name stands on the time axis (DECISIONS C).
 
-.hero { padding-top: 64px; }
+   One ink rule does two jobs. It is the ground the name stands on, and it
+   is the time axis. Above it the work rises to the right in steps, each bar
+   drawn to scale from its start to today, towards the lede and the CV at
+   the top right. The one vermilion mark is today: a hairline from the newest
+   step down to the axis, where it ends as a tick like the years.
 
-/* The name: one display size (--s5), 600, set like a heading rather than a poster. */
-.name {
-  font-size: var(--s5); line-height: 1.05; letter-spacing: -.03em; font-weight: 600;
+   Scale: x(s) = (a + s) * u, s = months since 1 January of the first year,
+          u = (content width + gutter) / d = one month, d = a + 12 * years.
+     a = 12, years = 5 (2023-2027): 2023 starts at column 3, and a column
+     with its gutter is 6 months, so every January is a column line.
+   --today and --years are set once, on .hero, from the build date (Hero.tsx);
+   --s (start) and --e (expected end) on each step, --y on each year tick.
+   Everything that moves with today is clamped to the content box, and
+   nothing else (labels, lede, CV) is placed from today.
+===================================================================== */
+
+.hero { --a: 12; --d: calc(var(--a) + 12 * var(--years, 5)); }
+.hx {
+  --u: calc((100cqw + var(--g)) / var(--d));                                  /* one month */
+  --tx: min(calc((var(--a) + var(--today)) * var(--u)), calc(100cqw - 1px));  /* today, never past the edge */
+  --txr: var(--tx);                                                           /* the same, on a whole pixel */
+  --steps-top: 48px;     /* CV to the first step */
+  --lab: 22px;           /* a step's label line */
+  --lift: 9px;           /* label to bar */
+  --tick: 7px;           /* a tick under the axis */
+  padding-top: 56px;
+  align-items: start;
+}
+/* a 1px vermilion line on a half pixel reads brown: snap today to the pixel grid */
+@supports (width: round(down, 1.5px, 1px)) { .hx { --txr: round(down, var(--tx), 1px); } }
+.hx > * { min-width: 0; }
+.hx-nw { white-space: nowrap; }
+
+/* ---------------- the top right: one sentence and the CV ---------------- */
+.hx-intro { grid-column: 7 / -1; grid-row: 1; }
+.hx-lede { font-size: var(--s3); line-height: 1.4; letter-spacing: -.01em; max-width: 30em; text-wrap: pretty; }
+.hx-cv { display: flex; flex-wrap: wrap; gap: 0 28px; margin-top: 12px; }
+.hx-cv a { display: inline-flex; align-items: center; min-height: 44px; }
+.hx-cv-view {
+  font-weight: 600;
+  text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px;
+  text-underline-offset: .3em; transition: text-decoration-color .15s;
+}
+.hx-cv-view:hover { text-decoration-color: var(--accent); }
+
+/* ---------------- the steps, drawn to scale ---------------- */
+.hx-steps { grid-column: 1 / -1; grid-row: 2; margin: var(--steps-top) 0 0; }
+.hx-step + .hx-step { margin-top: 22px; }
+/* the label starts where its bar starts; if that would run it past the edge, the first track gives way */
+.hx-lab {
+  display: grid; grid-template-columns: minmax(0, calc((var(--a) + var(--s)) * var(--u))) max-content;
+  font-size: var(--s2); line-height: var(--lab); white-space: nowrap;
+}
+/* if the today line has to cross a label (narrow tablets), the label is laid on paper and the line passes behind it */
+.hx-lab > span:first-child { grid-column: 2; position: relative; z-index: 1; background: var(--paper); box-shadow: 0 0 0 5px var(--paper); }
+/* the today line runs down through the rows below the newest bar: a label there stops 10px short of it */
+@media (min-width: 721px) { .hx-step:not(:first-child) .hx-lab { width: calc(var(--txr) - 10px); } }
+.hx-org { font-weight: 600; }
+.hx-yrs { color: var(--ink-2); }
+.hx-yrs::before { content: '·'; content: '·' / ''; margin: 0 .45em 0 .2em; }
+.hx-bar {
+  display: block; height: 3px; margin-top: var(--lift);
+  margin-left: calc((var(--a) + var(--s)) * var(--u));
+  width: max(0px, calc(var(--txr) - (var(--a) + var(--s)) * var(--u)));
+  background: var(--ink);
+}
+/* study: the same bar in ink-2, solid to today, dashed to the expected end (the end of that year, or the edge) */
+.hx-study .hx-bar {
+  position: relative; background: var(--ink-2);
+  --end: min(var(--txr), (var(--a) + var(--e)) * var(--u));   /* study stops at its expected end, even if today is later */
+  width: max(0px, calc(var(--end) - (var(--a) + var(--s)) * var(--u)));
+}
+.hx-study .hx-bar::after {
+  content: ''; position: absolute; left: 100%; top: 0; height: 3px;
+  width: max(0px, calc(min((var(--a) + var(--e)) * var(--u), 100cqw) - var(--txr)));
+  background: repeating-linear-gradient(90deg, var(--ink-2) 0 6px, transparent 6px 11px);
+}
+
+/* ---------------- the ground line: the name and the role stand on the axis ---------------- */
+.hx-title {
+  grid-column: 1 / -1; grid-row: 3;
+  display: flex; flex-wrap: wrap; align-items: last baseline; gap: 0 18px;
+  margin-top: 60px; padding-bottom: 10px;
+}
+.hx-name {
+  font-size: var(--s5); line-height: 1; letter-spacing: -.03em; font-weight: 600;
   margin-left: -.05em;   /* optical: the R's stem on the margin, like every left edge below it */
-  text-wrap: balance;
+  white-space: nowrap;
+}
+.hx-role { font-size: var(--s3); line-height: 1.3; }
+
+/* ---------------- the axis: the same rule, with the years under it ---------------- */
+.hx-axis { grid-column: 1 / -1; grid-row: 4; position: relative; height: 30px; border-top: 1px solid var(--ink); }
+.hx-tk { position: absolute; top: 0; left: calc((var(--a) + var(--y)) * var(--u)); height: var(--tick); border-left: 1px solid var(--ink); }
+.hx-tk b {
+  position: absolute; left: -1px; top: 10px;
+  font-size: var(--s1); line-height: 1.4; font-weight: 500; color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
 }
 
-.hero-body { margin-top: 40px; align-items: start; }
-
-.lead {
-  grid-column: 4 / span 8; grid-row: 1;
-  font-size: var(--s3); line-height: 1.4; letter-spacing: -.01em; font-weight: 400;
-  max-width: 34em; text-wrap: pretty;
-}
-.lead-nb { white-space: nowrap; }
-
-/* ---------------- the record card ----------------
-   Each entry: a 13px term over its value, between hairlines. margin-top puts the
-   first term's baseline on the lede's first baseline. Measured in Chrome at both
-   desktop lede sizes (21px and 20px): the lede's first baseline sits 22.7px below
-   its top, the first term's 23.7px below the card's top (Chrome rounds ascent and
-   descent to whole pixels, so this is a measured constant, not a formula). */
-.record {
-  grid-column: 1 / span 3; grid-row: 1;
-  margin-top: -1px;
-  border-bottom: 1px solid var(--rule);
-}
-.record > div { border-top: 1px solid var(--rule); padding: 8px 0 10px; }
-.record dt { font-size: var(--s1); line-height: 1.4; font-weight: 500; color: var(--ink-2); }
-.record dd { font-size: var(--s2); line-height: 1.4; color: var(--ink); text-wrap: pretty; }
-.record-acts { display: flex; flex-wrap: wrap; gap: 0 18px; }
-/* a 44px hit area around one-line links, without moving the text */
-.record a { position: relative; }
-.record a::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%); }
-
-/* touch screens of any width: rows tall enough that the 44px link targets never overlap */
-@media (pointer: coarse) {
-  .record > div { padding: 10px 0 11px; }
+/* ---------------- today: one vermilion hairline, from the newest step to a tick on the axis ---------------- */
+.hx-today {
+  grid-column: 1 / -1; grid-row: 2 / 5; justify-self: start; align-self: stretch;
+  width: 1px; margin-left: var(--txr);
+  margin-top: calc(var(--steps-top) + var(--lab) + var(--lift));
+  margin-bottom: calc(30px - var(--tick));
+  background: var(--accent); pointer-events: none;
 }
 
-/* ---------------- tablet (721–1100): the lede keeps column 4, the card goes under it ---------------- */
+/* ---------------- the strip: only what the figure and the name line do not say ---------------- */
+.hx-strip {
+  grid-column: 1 / -1; grid-row: 5;
+  display: grid; grid-template-columns: subgrid; align-items: baseline;
+  margin-top: 34px;
+}
+.hx-strip > div { grid-row: 1; }
+.hx-lang { grid-column: 1 / span 6; }
+.hx-mail { grid-column: 7 / -1; }      /* the lede's left edge */
+.hx-strip dd { font-size: var(--s2); line-height: 1.4; }
+.hx-mail dd, .hx-pair { display: flex; flex-wrap: wrap; gap: 0 24px; }
+.hx-strip a { display: inline-flex; align-items: center; min-height: 24px; }
+
+/* Work follows the hero directly: the strip already ends it, so a shorter step than 120 */
+.hero + .work.sec { padding-top: 96px; }
+
+@media (forced-colors: active) {
+  .hx-bar, .hx-study .hx-bar::after { forced-color-adjust: none; background: CanvasText; }
+  .hx-today { forced-color-adjust: none; background: Highlight; }
+}
+
+/* ---------------- tablets ---------------- */
 @media (min-width: 721px) and (max-width: 1100px) {
-  .lead { grid-column: 4 / -1; }
-  .record { grid-column: 1 / -1; grid-row: 2; margin-top: 40px; }
-  .record > div {
-    display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--g);
-    align-items: baseline;
-  }
-  .record dt { grid-column: 1 / span 3; }
-  .record dd { grid-column: 4 / -1; }
+  .hx { padding-top: 44px; --steps-top: 40px; }
+  .hx-step + .hx-step { margin-top: 18px; }
+  .hx-title { margin-top: 48px; }
+}
+/* where the newest label no longer fits after its bar start, it ends 10px short of today, over its bar */
+@media (min-width: 721px) and (max-width: 1060px) {
+  .hx-step:first-child .hx-lab { width: calc(var(--txr) - 10px); }
+}
+@media (min-width: 721px) and (max-width: 900px) {
+  .hx-intro, .hx-mail { grid-column: 5 / -1; }   /* the 2024 line */
+  .hx-lang { grid-column: 1 / span 4; }
 }
 
-/* ---------------- phone: the lede first, then the card as term | value rows ---------------- */
+/* ---------------- phones: the steps become a list of four lines; the name stands on the rule over it ---------------- */
 @media (max-width: 720px) {
-  .hero { padding-top: 32px; }
-  .hero-body { margin-top: 20px; }
-  .lead { grid-column: 1 / -1; grid-row: 1; }
-  .record { grid-column: 1 / -1; grid-row: 2; margin-top: 28px; }
-  .record > div {
-    display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--g);
-    align-items: baseline; padding: 10px 0 11px;
+  .hx { padding-top: 28px; }
+  .hx-intro { grid-column: 1 / -1; grid-row: 1; }
+  .hx-title {
+    grid-row: 2; flex-direction: column-reverse; align-items: flex-start; gap: 2px;
+    margin-top: 52px; padding-bottom: 8px; border-bottom: 1px solid var(--ink);
   }
-  /* a term never breaks inside a word ("Languag / es" at 344px); a long one runs into the gutter */
-  .record dt { grid-column: 1; white-space: nowrap; }
-  .record dd { grid-column: 2 / -1; }
+  .hx-role { font-size: var(--s2); color: var(--ink-2); }
+  .hx-steps { grid-row: 3; margin-top: 6px; }
+  .hx-step + .hx-step { margin-top: 0; }
+  .hx-lab { display: block; line-height: 1.4; white-space: normal; }
+  .hx-lab > span:first-child { display: flex; justify-content: space-between; gap: 4px 16px; padding-top: 10px; background: none; box-shadow: none; }
+  .hx-yrs { text-align: right; }
+  .hx-yrs::before { content: none; }
+  .hx-bar, .hx-axis, .hx-today { display: none; }
+  .hx-strip { grid-row: 4; margin-top: 30px; row-gap: 10px; }
+  .hx-strip > div { grid-row: auto; }
+  .hx-lang, .hx-mail { grid-column: 1 / -1; }
+  .hx-mail dd { flex-direction: column; align-items: flex-start; }
+  .hx-strip a { min-height: 44px; }     /* stacked 44px rows: the tap areas touch but never overlap */
 }

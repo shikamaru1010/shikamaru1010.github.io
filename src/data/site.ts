@@ -36,18 +36,20 @@ export const site = {
     toProfessional: 'Switch to the professional side',
   },
   hero: {
-    record: {
-      now: 'Now',
-      studying: 'Studying',
-      based: 'Based in',
-      languages: 'Languages',
-      cv: 'CV',
-      email: 'Email',
-      code: 'Code',
-    },
+    role: '{role}, {city}',
     viewCv: 'View CV',
-    nowValue: '{role} at {org}, since {month}',
-    studyingValue: '{field}, {school}, {ordinal} year ({start}–{end})',
+    /** The time axis: one bar per role since its start, and the degree to its expected end. */
+    axis: {
+      caption: 'Work and study since {year}',
+      since: 'since {point}',
+      study: '{school}, {ordinal} year',
+      expected: 'B.Sc. expected {year}',
+      studyDetail: '{field}, {school}, since {start}',
+      /** Read by screen readers after a bar's label. */
+      detail: ': {detail}',
+    },
+    /** The strip under the axis. Its terms are for screen readers only. */
+    strip: { languages: 'Languages', contact: 'Contact', language: '{name} ({level})' },
   },
   work: {
     heading: 'Work',

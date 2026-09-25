@@ -82,7 +82,8 @@ function parseYearMonth(value: string | number): { year: number; month?: number 
   return { year, month };
 }
 
-function shortPoint(value: string | number): string {
+/** One point in time, by month where the data has one: '2026-07' → 'Jul 2026', '2023' → '2023'. */
+export function shortPoint(value: string | number): string {
   const { year, month } = parseYearMonth(value);
   return month ? `${MONTHS[month - 1].slice(0, 3)} ${year}` : String(year);
 }

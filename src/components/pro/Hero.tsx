@@ -1,95 +1,159 @@
+import { Fragment, type CSSProperties, type ReactNode } from 'react';
 import { education, experience, languages } from '../../data/experience';
 import { profile } from '../../data/profile';
 import { site } from '../../data/site';
-import { fill, monthYear, ordinal } from '../../lib/format';
+import { around } from '../../lib/around';
+import { fill, ordinal, shortPoint } from '../../lib/format';
+import { BUILD_DATE, careerAxis, monthsFrom } from '../../lib/timeline';
 import NewTab from '../shell/NewTab';
 import './hero.css';
 
-const R = site.hero.record;
-const current = experience[0];
+const H = site.hero;
+const A = H.axis;
 
-/** The record card (DECISIONS 6): who, where, and how to read or reach me, one fact per row. */
-const record: Array<{ term: string; value: JSX.Element | string }> = [
+/** Custom properties for the hero's time scale (hero.css). */
+type Vars = CSSProperties & Record<`--${string}`, number>;
+
+/** One ink rule is the ground the name stands on and the time axis: 2023 to 2027, or to the year after today. */
+const axis = careerAxis([...experience.map((x) => x.start), education.start], education.expectedEnd, BUILD_DATE);
+
+type Step = {
+  key: string;
+  label: string;
+  when: ReactNode;
+  detail: string;
+  /** Months from 1 January of the first year to the start. */
+  start: number;
+  /** Study only: months to the expected end (the end of that year). The bar is dashed from today to there. */
+  end?: number;
+};
+
+/** The roles, newest on top, rising to the right in steps; the degree last, under them. */
+const steps: Step[] = [
+  ...[...experience]
+    .sort((a, b) => monthsFrom(b.start, axis.first) - monthsFrom(a.start, axis.first))
+    .map((x) => ({
+      key: x.org,
+      label: x.short ?? x.org,
+      when: around(A.since, 'point', <time dateTime={x.start}>{shortPoint(x.start)}</time>),
+      detail: x.summary ?? x.role,
+      start: monthsFrom(x.start, axis.first),
+    })),
   {
-    term: R.now,
-    value: fill(site.hero.nowValue, { role: current.role, org: current.org, month: monthYear(current.start) }),
-  },
-  {
-    term: R.studying,
-    value: fill(site.hero.studyingValue, {
-      field: education.field,
-      school: education.short,
-      ordinal: ordinal(education.year),
-      start: education.start,
-      end: education.expectedEnd,
-    }),
-  },
-  { term: R.based, value: profile.location },
-  { term: R.languages, value: languages.map((l) => `${l.name} (${l.level})`).join(', ') },
-  {
-    term: R.cv,
-    value: (
-      <span className="record-acts">
-        <a className="u" href="#resume">
-          {site.hero.viewCv}
-        </a>
-        <a className="u" href={site.cv.pdf} download>
-          {site.cv.download}
-        </a>
-      </span>
+    key: education.short,
+    label: fill(A.study, { school: education.short, ordinal: ordinal(education.year) }),
+    when: around(
+      A.expected,
+      'year',
+      <time dateTime={String(education.expectedEnd)}>{education.expectedEnd}</time>,
     ),
-  },
-  {
-    term: R.email,
-    value: (
-      <a className="u" href={`mailto:${profile.email}`}>
-        {profile.email}
-      </a>
-    ),
-  },
-  {
-    term: R.code,
-    value: (
-      <a className="u" href={profile.github} target="_blank" rel="noreferrer">
-        {profile.github.replace(/^https?:\/\//, '')}
-        <NewTab />
-      </a>
-    ),
+    detail: fill(A.studyDetail, { field: education.field, school: education.school, start: education.start }),
+    start: monthsFrom(education.start, axis.first),
+    end: monthsFrom(education.expectedEnd + 1, axis.first),
   },
 ];
 
-/**
- * Keeps hyphenated compounds ("4th-year") on one line: a line that ends in "4th-"
- * reads badly. The text is unchanged; only the break opportunity at the hyphen goes.
- */
-function keepCompounds(text: string): Array<string | JSX.Element> {
-  return text.split(/(\S*\w-\w\S*)/).map((part, i) =>
-    i % 2 === 1 ? (
-      <span key={i} className="lead-nb">
-        {part}
+function External({ href, children }: { href: string; children: string }): JSX.Element {
+  return (
+    <a className="u" href={href} target="_blank" rel="noreferrer">
+      {children}
+      <span className="ext-mark" aria-hidden="true">
+        ↗
       </span>
-    ) : (
-      part
-    ),
+      <NewTab />
+    </a>
   );
 }
 
+/**
+ * The Professional hero (DECISIONS C, the owner's choice): the name stands on the career
+ * time axis, the work rises above it in steps towards the lede and the CV, one vermilion
+ * line marks today, and one strip under the axis carries the languages and the links.
+ */
 export default function Hero(): JSX.Element {
   return (
-    <section className="hero wrap" aria-labelledby="name">
-      <h1 className="name" id="name">
-        {profile.name}
-      </h1>
+    <section className="hero wrap" aria-labelledby="name" style={{ '--today': axis.today, '--years': axis.years.length } as Vars}>
+      <div className="hx grid">
+        <div className="hx-title">
+          <h1 className="hx-name" id="name">
+            {profile.name}
+          </h1>
+          <p className="hx-role">{fill(H.role, { role: profile.role, city: profile.city })}</p>
+        </div>
 
-      <div className="hero-body grid">
-        <p className="lead">{keepCompounds(profile.lede)}</p>
-        <dl className="record">
-          {record.map((r) => (
-            <div key={r.term}>
-              <dt>{r.term}</dt>
-              <dd>{r.value}</dd>
-            </div>
+        <div className="hx-intro">
+          <p className="hx-lede">{profile.lede}</p>
+          <p className="hx-cv">
+            <a className="hx-cv-view" href="#resume">
+              {H.viewCv}
+              <span aria-hidden="true">&nbsp;→</span>
+            </a>
+            <a className="u" href={site.cv.pdf} download>
+              {site.cv.download}
+            </a>
+          </p>
+        </div>
+
+        <figure className="hx-steps" aria-labelledby="hx-steps-cap">
+          <figcaption className="sr-only" id="hx-steps-cap">
+            {fill(A.caption, { year: axis.first })}
+          </figcaption>
+          <ol>
+            {steps.map((s) => (
+              <li
+                key={s.key}
+                className={s.end === undefined ? 'hx-step' : 'hx-step hx-study'}
+                style={{ '--s': s.start, ...(s.end !== undefined && { '--e': s.end }) } as Vars}
+              >
+                <p className="hx-lab">
+                  <span>
+                    <span className="hx-org">{s.label}</span> <span className="hx-yrs">{s.when}</span>
+                  </span>
+                  <span className="sr-only">{fill(A.detail, { detail: s.detail })}</span>
+                </p>
+                <i className="hx-bar" aria-hidden="true" />
+              </li>
+            ))}
+          </ol>
+        </figure>
+
+        <div className="hx-axis" aria-hidden="true">
+          {axis.years.map((y) => (
+            <span key={y} className="hx-tk" style={{ '--y': (y - axis.first) * 12 } as Vars}>
+              <b>{y}</b>
+            </span>
           ))}
+        </div>
+
+        <i className="hx-today" aria-hidden="true" />
+
+        <dl className="hx-strip">
+          <div className="hx-lang">
+            <dt className="sr-only">{H.strip.languages}</dt>
+            <dd>
+              {languages.map((l, i) => (
+                <Fragment key={l.name}>
+                  {i > 0 && ' '}
+                  <span className="hx-nw">
+                    {fill(H.strip.language, { name: l.name, level: l.levelShort ?? l.level }) +
+                      (i < languages.length - 1 ? ',' : '')}
+                  </span>
+                </Fragment>
+              ))}
+            </dd>
+          </div>
+          <div className="hx-mail">
+            <dt className="sr-only">{H.strip.contact}</dt>
+            <dd>
+              <a className="u" href={`mailto:${profile.email}`}>
+                {profile.email}
+              </a>
+              <span className="hx-pair">
+                <External href={profile.github}>{site.contact.github}</External>
+                <External href={profile.linkedin}>{site.contact.linkedin}</External>
+              </span>
+            </dd>
+          </div>
         </dl>
       </div>
     </section>
