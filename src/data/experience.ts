@@ -55,7 +55,7 @@ export type Education = {
 export const education: Education = {
   school: 'Faculty of Organizational Sciences (FON), University of Belgrade',
   degree: 'B.Sc. — Information Systems & Technologies (TEP module)',
-  period: '2023 — Present (3rd year, expected 2027)',
+  period: '2023 — Present (4th year, expected 2027)',
   detail:
     'FON is the Faculty of Organizational Sciences — alongside the technical core, the programme builds management, economics and strong mathematics foundations (organizational + analytical thinking). Beyond the curriculum I work hands-on with Wireshark, GNS3, Cisco Packet Tracer, Docker and Linux tooling.',
   courses: [
