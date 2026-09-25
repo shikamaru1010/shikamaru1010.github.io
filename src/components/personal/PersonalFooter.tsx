@@ -2,9 +2,13 @@ import { personal } from '../../data/personal';
 import { profile } from '../../data/profile';
 import { buildYear } from '../../lib/format';
 import TurnThePage from '../shell/TurnThePage';
+import './personal.css';
 
-// STUB (foundation). Owned by personal (C): replace the body, keep the signature.
-// App renders it inside <footer className="only-personal">.
+/**
+ * The Personal close: the same name in Serbian Cyrillic at the width of the
+ * page (the only Cyrillic moment, DECISIONS 15), then the foot row and the way
+ * back to the professional side. App renders it inside <footer class="only-personal">.
+ */
 export default function PersonalFooter(): JSX.Element {
   return (
     <div className="wrap p-end">
@@ -17,12 +21,12 @@ export default function PersonalFooter(): JSX.Element {
           </span>
         ))}
       </p>
-      <div className="p-foot">
-        <p>
-          © {buildYear} {profile.name}
+      <div className="p-foot grid">
+        <p className="p-copy">
+          © <span className="tnum">{buildYear}</span> {profile.name}
         </p>
-        <p>{personal.footPlace}</p>
-        <p>
+        <p className="p-place">{personal.footPlace}</p>
+        <p className="p-turn">
           <TurnThePage to="professional" />
         </p>
       </div>

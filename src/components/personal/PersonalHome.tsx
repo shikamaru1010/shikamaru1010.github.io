@@ -1,30 +1,74 @@
+import type { ReactNode } from 'react';
 import { personal } from '../../data/personal';
+import worklog from '../../data/worklog.json';
+import { fill, formatDate } from '../../lib/format';
+import Brain from './Brain';
+import DuotoneFilter from './DuotoneFilter';
+import Elsewhere from './Elsewhere';
+import Now from './Now';
+import OffScreen from './OffScreen';
+import PersonalHero from './PersonalHero';
+import Thought from './Thought';
+import WorkLogFigure, { keepTogether, summarizeWorklog, type WorklogData } from './WorkLogFigure';
+import './personal.css';
 
-// STUB (foundation). Owned by personal (C): replace the body, keep the signature.
+// Pure data, computed once (no DOM).
+const log = summarizeWorklog(worklog as WorklogData);
+
+/** Puts `node` where `{key}` sits in `template` (so a date can be a real <time>). */
+function around(template: string, key: string, node: ReactNode): ReactNode {
+  const [before, after = ''] = template.split(`{${key}}`);
+  return (
+    <>
+      {before}
+      {node}
+      {after}
+    </>
+  );
+}
+
+/** The work log: the habit in one sentence, then drawn on the grid (replaces the giant 99). */
+function WorkLog(): JSX.Element {
+  const copy = personal.log;
+  return (
+    <section className="wrap p-sec" id="log" aria-labelledby="log-h">
+      <div className="grid p-row">
+        <div className="p-label">
+          <h2 id="log-h">{copy.heading}</h2>
+          <p className="label">
+            {around(copy.asOf, 'date', <time dateTime={log.asOf}>{keepTogether(formatDate(log.asOf))}</time>)}
+          </p>
+        </div>
+        <div className="p-log-text">
+          {log.first && (
+            <p className="p-log-t">
+              {fill(copy.headline, {
+                total: log.total,
+                days: log.dayCount,
+                first: keepTogether(formatDate(log.first)),
+              })}
+            </p>
+          )}
+          <p className="p-log-note">{copy.note}</p>
+        </div>
+      </div>
+      <WorkLogFigure summary={log} />
+    </section>
+  );
+}
+
+/** Personal mode: first name, photo, the log, now, a thought, the Brain and where else to find me. */
 export default function PersonalHome(): JSX.Element {
   return (
     <>
-      <section className="p-hero wrap" aria-labelledby="p-name">
-        <h1 className="p-name" id="p-name" data-fit>
-          {personal.firstName}
-        </h1>
-        <p className="p-line">{personal.line}</p>
-      </section>
-      <section className="wrap p-sec" id="log" aria-labelledby="log-h">
-        <h2 id="log-h">{personal.log.heading}</h2>
-      </section>
-      <section className="wrap p-sec" id="now" aria-labelledby="now-h">
-        <h2 id="now-h">{personal.nowHeading}</h2>
-      </section>
-      <section className="wrap p-sec" id="thought" aria-labelledby="thought-h">
-        <h2 id="thought-h">{personal.thought.heading}</h2>
-      </section>
-      <section className="wrap p-sec" id="brain" aria-labelledby="brain-h">
-        <h2 id="brain-h">{personal.brain.heading}</h2>
-      </section>
-      <section className="wrap p-sec" id="elsewhere" aria-labelledby="else-h">
-        <h2 id="else-h">{personal.elsewhereHeading}</h2>
-      </section>
+      <DuotoneFilter />
+      <PersonalHero />
+      <WorkLog />
+      <Now />
+      <Thought />
+      <Brain />
+      <OffScreen />
+      <Elsewhere />
     </>
   );
 }
