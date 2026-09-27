@@ -14,8 +14,8 @@ export const profile = {
   linkedinHandle: 'ratkošišović',
   siteUrl: 'https://shikamaru1010.github.io',
   availability: 'Open to future opportunities.',
-  /** The hero's one sentence; who, where and since when are in the hero's time axis. */
-  lede: 'I build websites and internal tools for local businesses, and automation systems in Python and TypeScript.',
+  /** The hero's one sentence; name, role and where I am now are in the lines above it. */
+  lede: 'From first brief to production: websites, internal tools and automation systems.',
   /** Under the CV's role line, which already says Podyx and FON: only what that line lacks. */
   cvSummary:
     'Since 2023 I have built websites and internal tools for local businesses, and since 2025 automation systems of my own in Python and TypeScript.',

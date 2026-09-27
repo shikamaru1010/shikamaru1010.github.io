@@ -1,35 +1,16 @@
 /* ------------------------------------------------------------------
    Personal home. Warm ink, bone, one vermilion-orange.
-   Column 6 is the second axis everywhere: the photo and every block of
-   content start on it; names and labels hold columns 1–5.
+   The hero is the Professional composition; below it, column 6 is the
+   second axis: every block of content starts on it, names and labels
+   hold columns 1–5.
    Every selector starts with .p-, so nothing here reaches the Professional
    tree that shares the document.
 ------------------------------------------------------------------- */
 
 /* ---------------- hero ----------------
-   The name, the line and the intro in columns 1–5; the photo from column 6,
-   square, five columns wide. The name has the Professional name's size and
-   metrics (hero.css). */
-.p-hero { padding-top: 64px; }
-.p-hero-grid { grid-template-rows: auto auto 1fr; align-items: start; }
-.p-name {
-  grid-column: 1 / span 5; grid-row: 1;
-  font-size: var(--s5); line-height: 1.05; letter-spacing: -.03em; font-weight: 600;
-  margin-left: -.05em;   /* optical: the R's stem on the margin */
-}
-.p-line {
-  grid-column: 1 / span 5; grid-row: 2; margin-top: 24px;
-  font-size: var(--s3); line-height: 1.3; letter-spacing: -.015em; font-weight: 400;
-  max-width: 24em; text-wrap: balance;
-}
-.p-body { grid-column: 1 / span 5; grid-row: 3; margin-top: 16px; max-width: 38ch; text-wrap: pretty; }
-/* the photo's top edge on the name's cap height */
-.p-photo { grid-column: 6 / span 5; grid-row: 1 / -1; margin-top: calc(var(--s5) * .22); }
-.p-photo img {
-  width: 100%; aspect-ratio: 1 / 1; object-fit: cover; object-position: 50% 35%;
-  filter: url(#duotone-personal);
-  background: var(--rule);                 /* the frame holds its place while the photo decodes */
-}
+   The Professional composition (hero/monolith.css); here only the photo in the
+   circle, printed in the page's two inks. */
+.p-photo { filter: url(#duotone-personal); object-position: 50% 40%; }
 
 /* ---------------- sections: a label on columns 1–5, the content from column 6 ---------------- */
 .p-sec { margin-top: var(--sp-10); }
@@ -101,9 +82,8 @@
 }
 .p-end .foot-line { margin-top: var(--sp-6); }
 
-/* ---------------- tablet (721–1100): the photo takes six columns, text runs to the edge ---------------- */
+/* ---------------- tablet (721–1100): text runs to the edge ---------------- */
 @media (min-width: 721px) and (max-width: 1100px) {
-  .p-photo { grid-column: 6 / span 6; }
   .p-now, .p-tools, .p-lede, .p-off, .p-thought, .p-orch { grid-column: 6 / -1; }
   .p-domains p { grid-column: 6 / -1; }
 }
@@ -126,14 +106,8 @@
   .p-study::before { content: ''; position: absolute; left: 0; right: 0; top: -12px; bottom: -12px; }
 }
 
-/* ---------------- phone (≤720): one column; name, line, photo, intro ---------------- */
+/* ---------------- phone (≤720): one column ---------------- */
 @media (max-width: 720px) {
-  .p-hero { padding-top: 32px; }
-  .p-hero-grid { display: block; }
-  .p-line { margin-top: 16px; }
-  .p-photo { margin-top: 24px; }
-  .p-body { margin-top: var(--sp-5); }
-
   .p-sec { margin-top: var(--sp-9); }
   .p-row { row-gap: var(--sp-4); }
   .p-label, .p-now, .p-tools, .p-thought, .p-lede, .p-off, .p-else { grid-column: 1 / -1; }

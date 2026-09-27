@@ -46,17 +46,21 @@ export const personal = {
   firstName: profile.firstName,
   nameCyrillic: ['Ратко', 'Шишовић'],
   signCaption: 'My name in Serbian Cyrillic.',
+  /** The hero's one sentence, beside the photo. */
   line: 'I build tools for my own work and study.',
+  /** The line under the first name. */
   intro: 'Based in Belgrade.',
   /**
    * Luminance-only copies of ratko-square.webp (scripts/image-variants.mjs): the duotone filter
    * keeps only luminance, so the colour file would look the same at five times the bytes.
-   * index.html's pre-paint script preloads the same srcset and sizes (mode.test.ts checks).
+   * `sizes` is the hero circle's width (monolith.css): one column on phones, four columns at
+   * 721–860, three to 1100, two above. index.html's pre-paint script preloads the same srcset
+   * and sizes (mode.test.ts checks).
    */
   photo: {
     src: '/ratko/ratko-square-l.webp',
     srcset: '/ratko/ratko-square-l-480.webp 480w, /ratko/ratko-square-l.webp 800w',
-    sizes: '(max-width: 720px) calc(100vw - 32px), (max-width: 1100px) 50vw, 40vw',
+    sizes: '(max-width: 720px) 25vw, (max-width: 860px) 34vw, (max-width: 1100px) 25vw, 16vw',
     width: 800,
     height: 800,
     alt: 'Ratko outdoors in bright sun, wearing sunglasses and a hoodie',

@@ -36,20 +36,22 @@ export const site = {
     toProfessional: 'Switch to the professional side',
   },
   hero: {
+    /** The two lines under the name: what and where, then the current role and the year of study. */
     role: '{role}, {city}',
+    now: '{role} at {org}',
+    study: '{school}, {ordinal} year',
     viewCv: 'View CV',
-    /** The time axis: one bar per role since its start, and the degree to its expected end. */
-    axis: {
-      caption: 'Work and study since {year}',
-      since: 'since {point}',
-      study: '{school}, {ordinal} year',
-      expected: 'B.Sc. expected {year}',
-      studyDetail: '{field}, {school}, since {start}',
-      /** Read by screen readers after a bar's label. */
-      detail: ': {detail}',
+    /**
+     * The Professional circle: a muted, seamless 720 × 720 loop made from this repository's
+     * code and its test and build output (public/hero). VP9 first, H.264 as the fallback; the
+     * poster is a still of it and the only thing shown under reduced motion.
+     */
+    loop: {
+      webm: '/hero/code-loop.webm',
+      mp4: '/hero/code-loop.mp4',
+      poster: '/hero/code-loop-poster.webp',
+      size: 720,
     },
-    /** The strip under the axis. Its terms are for screen readers only. */
-    strip: { languages: 'Languages', contact: 'Contact', language: '{name} ({level})' },
   },
   work: {
     heading: 'Work',

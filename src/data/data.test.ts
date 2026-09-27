@@ -110,20 +110,20 @@ describe('experience.ts', () => {
     for (const l of languages) {
       expect(l.name.trim()).not.toBe('');
       expect(l.level.trim()).not.toBe('');
-      if (l.levelShort !== undefined) expect(l.level.startsWith(l.levelShort), l.name).toBe(true);
     }
   });
 
-  it('the hero time-axis fields, where given, are filled', () => {
+  it('a short role, where given, is a word of the full role', () => {
     for (const x of experience) {
-      if (x.short !== undefined) expect(x.short, x.org).toContain(x.org);
-      if (x.summary !== undefined) expect(x.summary.trim(), x.org).not.toBe('');
+      if (x.roleShort !== undefined) expect(x.role.split(' '), x.org).toContain(x.roleShort);
     }
   });
 
-  it('the hero lede is one sentence (who, where and since when are on the hero time axis)', () => {
-    expect(profile.lede.trim()).not.toBe('');
-    expect(profile.lede).toMatch(/\.$/);
-    expect(profile.lede.slice(0, -1)).not.toMatch(/[.!?](\s|$)/);
+  it('each hero sentence is one sentence (who and where are in the lines above it)', () => {
+    for (const s of [profile.lede, personal.line]) {
+      expect(s.trim()).not.toBe('');
+      expect(s).toMatch(/\.$/);
+      expect(s.slice(0, -1)).not.toMatch(/[.!?](\s|$)/);
+    }
   });
 });

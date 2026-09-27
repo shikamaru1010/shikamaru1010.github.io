@@ -26,9 +26,9 @@
 .study-meta dd { margin-top: 4px; max-width: 34ch; text-wrap: pretty; }
 .study-meta dd a { display: inline-flex; align-items: center; min-height: 32px; margin-top: -5px; }
 .study-intro {
-  margin-top: var(--sp-7); margin-left: calc((100% + var(--g)) * 3 / 12);   /* from column 4, like the home lede */
+  margin-top: var(--sp-7); margin-left: calc((100% + var(--g)) * 3 / 12);   /* from column 4 */
   max-width: min(31em, calc((100% + var(--g)) * 8 / 12 - var(--g)));
-  font-size: var(--s3); line-height: 1.4; letter-spacing: -.01em; text-wrap: pretty;   /* the hero lede's leading */
+  font-size: var(--s3); line-height: 1.4; letter-spacing: -.01em; text-wrap: pretty;
 }
 
 /* ---------------- at a glance (optional; hairlines like the modules below it) ---------------- */

@@ -7,10 +7,11 @@ import PersonalHome from './components/personal/PersonalHome';
 import ProFooter from './components/pro/ProFooter';
 import ProfessionalHome from './components/ProfessionalHome';
 import CaseStudy from './components/study/CaseStudy';
-import { education, experience } from './data/experience';
+import { personal } from './data/personal';
+import { profile } from './data/profile';
 import { clientProjects, studyProjects } from './data/projects';
+import { site } from './data/site';
 import updated from './data/updated.json';
-import { BUILD_DATE, careerAxis } from './lib/timeline';
 
 // Server-renders every page tree in node: render must be pure (no window /
 // document during render), the words must be right, and the two mode trees,
@@ -76,8 +77,10 @@ describe('render', () => {
     expect(html['CaseStudy mesara']).toContain('/screenshots/mesara/desktop.webp 1440w');
   });
 
-  it('the hero axis is the only timeline: Work draws no figures', () => {
+  it('no timelines: the hero has no figure or list, and Work draws no figures', () => {
     const P = html.ProfessionalHome;
+    const hero = P.slice(0, P.indexOf('id="work"'));
+    expect(hero).not.toMatch(/<(figure|ol|ul|time)[\s>]/);
     const work = P.slice(P.indexOf('id="work"'), P.indexOf('id="experience"'));
     expect(work).not.toMatch(/<figure(?! class="plate")/);
     expect(work).not.toMatch(/abandoned|180 days/i);
@@ -94,24 +97,50 @@ describe('render', () => {
     expect(html.PersonalHome).not.toMatch(/GitHub Action|\d+ quotes/);
   });
 
-  it('the Professional hero puts who and since when on its time axis', () => {
-    const hero = html.ProfessionalHome.slice(0, html.ProfessionalHome.indexOf('id="work"'));
-    // React writes the attribute as dateTime; HTML attribute names are case-insensitive
-    expect(hero).toMatch(/Podyx, intern<\/span> <span class="hx-yrs">since <time datetime="2026-07">Jul 2026<\/time>/i);
-    expect(hero).toContain('FON, 4th year');
-    expect(hero).toMatch(/B\.Sc\. expected <time datetime="2027">2027<\/time>/i);
-    // one bar per role and the degree, each read out with its label
-    expect(count(hero, /<li class="hx-step/g)).toBe(experience.length + 1);
-    expect(hero).toMatch(/<figure class="hx-steps" aria-labelledby="hx-steps-cap"><figcaption class="sr-only" id="hx-steps-cap">Work and study since 2023</);
-    // years by the year only where the data has no month
-    expect(hero).toMatch(/since <time datetime="2023">2023<\/time>/i);
-    expect(hero).toMatch(/since <time datetime="2025">2025<\/time>/i);
+  // The hero (Monolith): the markup up to the next section, and what its circle holds.
+  const heroOf = (markup: string, next: string) => markup.slice(0, markup.indexOf(next));
+  const discOf = (hero: string) => {
+    const at = hero.indexOf('<div class="mono-disc"');
+    expect(at, 'the circle').toBeGreaterThan(-1);
+    return hero.slice(at, hero.indexOf('<div class="mono-body"', at));
+  };
+
+  it('the Professional hero: name, role and now, the one sentence and one CV link', () => {
+    const hero = heroOf(html.ProfessionalHome, 'id="work"');
+    expect(hero).toContain(`<h1 class="mono-name" id="name">${profile.name}</h1>`);
+    expect(hero).toContain('Software developer, Belgrade');
+    expect(hero).toMatch(/<span class="nw">Intern at Podyx<\/span>.*<span class="nw">FON, 4th year<\/span>/);
+    expect(profile.lede).toBe('From first brief to production: websites, internal tools and automation systems.');
+    expect(hero).toContain(`<p class="mono-lede">${profile.lede}</p>`);
+    expect(count(hero, /href="#resume"/g)).toBe(1);
+    expect(hero).toContain(`${site.hero.viewCv}<span aria-hidden="true"> →</span></a>`);
   });
 
-  it('the hero today line comes from the build date, not from the markup', () => {
-    const axis = careerAxis([...experience.map((x) => x.start), education.start], education.expectedEnd, BUILD_DATE);
-    expect(html.ProfessionalHome).toContain(`style="--today:${axis.today};--years:${axis.years.length}"`);
-    for (const y of axis.years) expect(html.ProfessionalHome).toContain(`<b>${y}</b>`);
+  it('the Professional circle holds the code loop: a muted inline loop, webm first, loaded only when played', () => {
+    const disc = discOf(heroOf(html.ProfessionalHome, 'id="work"'));
+    const L = site.hero.loop;
+    expect(disc).toMatch(/^<div class="mono-disc" aria-hidden="true"><video /);
+    expect(disc).not.toContain('<img');
+    expect(disc).not.toMatch(/autoplay/i); // an IntersectionObserver plays it on screen (CodeLoop)
+    for (const attr of ['muted=""', 'loop=""', 'playsinline=""', 'preload="none"', `poster="${L.poster}"`]) {
+      expect(disc).toContain(attr);
+    }
+    expect(disc.indexOf(`<source src="${L.webm}" type="video/webm"/>`)).toBeLessThan(
+      disc.indexOf(`<source src="${L.mp4}" type="video/mp4"/>`),
+    );
+  });
+
+  it('the Personal hero: the same composition, the first name, the Personal sentence and the photo in the circle', () => {
+    const hero = heroOf(html.PersonalHome, 'id="now"');
+    expect(hero).toContain(`<h1 class="mono-name" id="p-name">${personal.firstName}</h1>`);
+    expect(hero).toContain(`<p class="mono-sub">${personal.intro}</p>`);
+    expect(hero).toContain(`<p class="mono-lede">${personal.line}</p>`);
+    expect(hero).not.toContain('href="#resume"');
+    const disc = discOf(hero);
+    expect(disc).toMatch(/^<div class="mono-disc"><img /); // not aria-hidden: the photo has its alt text
+    expect(disc).toContain(`alt="${personal.photo.alt}"`);
+    expect(disc).toContain('data-warm=""');
+    expect(disc).not.toContain('<video');
   });
 
   // The PDF recruiters download is committed; this ties it to the data (generate-pdf.mjs writes cvHash).
