@@ -1,7 +1,9 @@
-// Writes the smaller copies of the site's images that `srcset` uses (src/lib/media.ts):
+// Writes the smaller copies of the site's images that `srcset` (src/lib/media.ts) and the client
+// index's thumbnail strip use:
 //   public/screenshots/<id>/desktop-720.webp   720 × 450, the desktop capture at half size
 //   public/screenshots/<id>/desktop-1200.webp  1200 × 750, for the 2x and 3x screens whose slot needs
 //                                              about 1000 device pixels (phones, tablets, 1280@2x)
+//   public/screenshots/<id>/thumb.webp         320 × 200, the client index's contact strip (not a srcset)
 //   public/screenshots/<id>/mobile-480.webp    480 wide, the phone capture
 //   public/ratko/ratko-square-l.webp           800 × 800, the Personal photo in luminance only
 //   public/ratko/ratko-square-l-480.webp       480 × 480, the same, smaller
@@ -23,6 +25,7 @@ const jobs = [];
 for (const id of CLIENTS) {
   jobs.push([`screenshots/${id}/desktop.webp`, `screenshots/${id}/desktop-720.webp`, 720, 450, 0.8, false]);
   jobs.push([`screenshots/${id}/desktop.webp`, `screenshots/${id}/desktop-1200.webp`, 1200, 750, 0.8, false]);
+  jobs.push([`screenshots/${id}/desktop.webp`, `screenshots/${id}/thumb.webp`, 320, 200, 0.8, false]);
   jobs.push([`screenshots/${id}/mobile.webp`, `screenshots/${id}/mobile-480.webp`, 480, null, 0.8, false]);
 }
 jobs.push(['ratko/ratko-square.webp', 'ratko/ratko-square-l.webp', 800, 800, 0.7, true]);

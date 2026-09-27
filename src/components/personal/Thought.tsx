@@ -1,11 +1,9 @@
 import thought from '../../data/daily-message.json';
 import { personal } from '../../data/personal';
-import { fill } from '../../lib/format';
 
 /**
  * Today’s thought, rotated each morning by the daily GitHub Action. Like every Personal
- * section, the label holds columns 1–5 and the quote starts on column 6. The provenance
- * line reads the real pool size from daily-message.json.
+ * section, the label holds columns 1–5 and the quote starts on column 6.
  */
 export default function Thought(): JSX.Element {
   return (
@@ -22,10 +20,7 @@ export default function Thought(): JSX.Element {
               <span className="p-q">”</span>
             </p>
           </blockquote>
-          <figcaption>
-            <span className="p-author">{thought.author}</span>
-            <span className="label">{fill(personal.thought.provenance, { poolSize: thought.poolSize })}</span>
-          </figcaption>
+          <figcaption>{thought.author}</figcaption>
         </figure>
       </div>
     </section>

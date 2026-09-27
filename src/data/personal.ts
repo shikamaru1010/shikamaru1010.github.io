@@ -1,5 +1,4 @@
 // Everything the Personal mode says, in one place so I can edit it.
-// Templates use {placeholders}, filled by fill() in src/lib/format.ts.
 import { profile } from './profile';
 
 export type NowItem = { lead: string; text: string };
@@ -62,26 +61,11 @@ export const personal = {
     height: 800,
     alt: 'Ratko outdoors in bright sun, wearing sunglasses and a hoodie',
   },
-  log: {
-    heading: 'Work log',
-    asOf: 'As of {date}',
-    headline: '{total} entries on {days} days since {first}.',
-    note: 'I keep an engineering work log, written in Serbian. Only the entry dates are shown here.',
-    busiest: 'Busiest day: {count} entries on {date}',
-    /** Read by screen readers, one per month (the figure's marks are hidden from them). */
-    monthSummary: '{month}: {entries} entries on {days} days',
-    oneEntry: 'One entry',
-    /** The templates say "entries" and "days"; where a count is 1, these words replace them. */
-    singular: { entries: 'entry', days: 'day' },
-  },
   nowHeading: 'Now',
   now,
   toolsLead: 'Daily tools:',
   tools: ['Obsidian', 'the terminal', 'Git', 'Claude Code', 'Grok'],
-  thought: {
-    heading: 'Today’s thought',
-    provenance: 'Selected each morning by a GitHub Action from a list of {poolSize} quotes.',
-  },
+  thought: { heading: 'Today’s thought' },
   brain: {
     heading: 'Side projects',
     lede: 'One Obsidian vault, organized into three domains (student, developer and life), with notes and queries that link across them.',

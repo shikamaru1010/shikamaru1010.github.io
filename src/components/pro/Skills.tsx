@@ -1,50 +1,11 @@
-import { Fragment } from 'react';
-import { projectById } from '../../data/projects';
-import { alsoUsed, siteSkillGroups, type Evidence } from '../../data/skills';
+import { alsoUsed, siteSkillGroups } from '../../data/skills';
 import { site } from '../../data/site';
 import { capitalize, fill, listJoin } from '../../lib/format';
 import './skills.css';
 
 const S = site.skills;
 
-/**
- * One piece of evidence, as plain text: a project (plus the part of it) or a FON course, with the
- * comma that follows it inside, so a line never starts with the comma. Not links: the projects
- * are all in Work, just above, so a link would only point back up the page.
- */
-function EvidenceItem({ e, sep }: { e: Evidence; sep: string }): JSX.Element | null {
-  if ('project' in e) {
-    const p = projectById(e.project);
-    if (!p) return null; // data.test.ts guarantees every id resolves
-    return (
-      <span className="skills-ev">
-        {p.title}
-        {e.part ? <span className="skills-part"> ({e.part})</span> : null}
-        {sep}
-      </span>
-    );
-  }
-  if ('course' in e) {
-    return (
-      <span className="skills-ev">
-        {e.course} <span className="skills-part">{S.course}</span>
-        {sep}
-      </span>
-    );
-  }
-  return (
-    <span className="skills-ev">
-      {e.text}
-      {sep}
-    </span>
-  );
-}
-
-/**
- * Skills as a table on the grid: area | skill | where I used it.
- * The ARIA roles repeat the native ones on purpose: on phones the cells are
- * display: block, and some browsers drop table semantics when that happens.
- */
+/** Skills by area: each group a label over a short list, the groups on the page grid. */
 export default function Skills(): JSX.Element {
   return (
     <section className="sec" id="skills" aria-labelledby="skills-h">
@@ -55,53 +16,20 @@ export default function Skills(): JSX.Element {
           </h2>
         </header>
 
-        <table className="skills-table" role="table">
-          <caption className="sr-only">{S.caption}</caption>
-          <colgroup>
-            <col className="skills-col-area" />
-            <col className="skills-col-skill" />
-            <col />
-          </colgroup>
-          <thead className="skills-head" role="rowgroup">
-            <tr role="row">
-              <th scope="col" role="columnheader">
-                {S.columns.area}
-              </th>
-              <th scope="col" role="columnheader">
-                {S.columns.skill}
-              </th>
-              <th scope="col" role="columnheader">
-                {S.columns.used}
-              </th>
-            </tr>
-          </thead>
+        <div className="sk-groups grid">
           {siteSkillGroups.map((g) => (
-            <tbody key={g.label} className="skills-group" role="rowgroup">
-              {g.skills.map((s, i) => (
-                <tr key={s.name} role="row">
-                  {i === 0 ? (
-                    <th scope="rowgroup" rowSpan={g.skills.length} className="skills-area" role="rowheader">
-                      {g.label}
-                    </th>
-                  ) : null}
-                  <th scope="row" className="skills-name" role="rowheader">
-                    {capitalize(s.name)}
-                  </th>
-                  <td className="skills-used" role="cell">
-                    {s.evidence.map((e, j) => (
-                      <Fragment key={j}>
-                        {j > 0 ? ' ' : null}
-                        <EvidenceItem e={e} sep={j < s.evidence.length - 1 ? ',' : ''} />
-                      </Fragment>
-                    ))}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+            <div key={g.label} className="sk-group">
+              <h3 className="sk-label">{g.label}</h3>
+              <ul className="sk-items">
+                {g.skills.map((s) => (
+                  <li key={s.name}>{capitalize(s.name)}</li>
+                ))}
+              </ul>
+            </div>
           ))}
-        </table>
+        </div>
 
-        <p className="skills-also">{fill(S.also, { list: listJoin(alsoUsed) })}</p>
+        <p className="sk-also">{fill(S.also, { list: listJoin(alsoUsed) })}</p>
       </div>
     </section>
   );

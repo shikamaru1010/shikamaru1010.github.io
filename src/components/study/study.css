@@ -151,7 +151,7 @@
 .study-next-back:hover { text-decoration-thickness: 1px; }
 .study-next-link:hover .study-next-title { text-underline-offset: .14em; text-decoration-thickness: 2px; }
 
-/* ---------------- footer: the colophon line (shell.css) ---------------- */
+/* ---------------- footer: the foot line (shell.css) ---------------- */
 .study-foot { margin-top: var(--sp-9); padding-bottom: var(--sp-6); }
 
 /* touch screens of any width: 44px targets */

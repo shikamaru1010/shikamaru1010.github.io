@@ -108,16 +108,27 @@ describe('projects data integrity', () => {
   });
 });
 
-describe('engineering notes', () => {
-  it('clients and systems carry at most 2 short notes (none where the stack says enough); smaller projects none', () => {
-    for (const p of [...clientProjects, ...systemProjects]) {
+describe('engineering notes and summaries', () => {
+  it('clients carry at most 2 short notes (none where the stack says enough); systems and smaller projects none', () => {
+    for (const p of clientProjects) {
       expect(p.notes?.length ?? 0, p.id).toBeLessThanOrEqual(2);
       for (const n of p.notes ?? []) {
         expect(n.trim()).not.toBe('');
         expect(n.length, n).toBeLessThanOrEqual(140);
       }
     }
-    for (const p of smallerProjects) expect(p.notes, p.id).toBeUndefined();
+    for (const p of [...systemProjects, ...smallerProjects]) expect(p.notes, p.id).toBeUndefined();
+  });
+
+  it('each system has a one-sentence summary for its entry in Work; nothing else has one', () => {
+    for (const p of systemProjects) {
+      const s = p.summary ?? '';
+      expect(s.trim(), p.id).not.toBe('');
+      expect(s, p.id).toMatch(/\.$/);
+      expect(s.slice(0, -1), p.id).not.toMatch(/[.!?](\s|$)/);
+      expect(s.length, p.id).toBeLessThanOrEqual(180);
+    }
+    for (const p of [...clientProjects, ...smallerProjects]) expect(p.summary, p.id).toBeUndefined();
   });
 });
 
@@ -157,35 +168,14 @@ describe('media', () => {
           expect(v.width).toBeLessThan(m.width);
           expect(Math.abs(size.height - (m.height * v.width) / m.width), v.src).toBeLessThanOrEqual(1);
         }
+        if (m.device === 'desktop') {
+          expect(m.thumb, p.id).toBeDefined();
+          expect(webpSize(readFileSync(publicFile(m.thumb!))), m.thumb).toEqual({ width: 320, height: 200 });
+        } else {
+          expect(m.thumb, p.id).toBeUndefined();
+        }
       }
     }
-  });
-});
-
-describe('figures', () => {
-  it('every system has a figure', () => {
-    for (const p of systemProjects) expect(p.figure, p.id).toBeDefined();
-    for (const p of [...clientProjects, ...smallerProjects]) expect(p.figure, p.id).toBeUndefined();
-  });
-
-  it('the pipeline has exactly one step where a person steps in', () => {
-    for (const p of systemProjects) {
-      if (p.figure?.kind !== 'pipeline') continue;
-      expect(p.figure.steps.filter((s) => s.actor === 'person')).toHaveLength(1);
-    }
-  });
-
-  it('the status axis is drawn to scale and matches the case study', () => {
-    const dd = projectById('dev-dashboard')!;
-    expect(dd.figure?.kind).toBe('status-axis');
-    if (dd.figure?.kind !== 'status-axis') return;
-    const { daysPerColumn, maxDays, thresholds } = dd.figure;
-    expect(maxDays / daysPerColumn).toBe(12);
-    expect(thresholds.active % daysPerColumn).toBe(0);
-    expect(thresholds.paused % daysPerColumn).toBe(0);
-    const decisions = dd.caseStudy!.decisions!.join(' ');
-    expect(decisions).toContain(`≤${thresholds.active}d`);
-    expect(decisions).toContain(`≤${thresholds.paused}d`);
   });
 });
 

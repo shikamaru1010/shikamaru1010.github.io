@@ -18,13 +18,13 @@ const MONTHS = [
 ] as const;
 
 /**
- * The ISO date the content was last stamped: "Updated <date>" in the colophon, the case
- * studies, the CV page and the PDF. `npm run pdf` writes it (src/data/updated.json) when it
- * regenerates the CV, so it moves with the content, not with the daily rebuild.
+ * The ISO date the content was last stamped: "Updated <date>" on the CV page and the PDF, and
+ * the sitemap's <lastmod>. `npm run pdf` writes it (src/data/updated.json) when it regenerates
+ * the CV, so it moves with the content, not with the daily rebuild.
  */
 export const UPDATED: string = updated.date;
 
-/** The year of that date: the © line. */
+/** The year of that date: the © at the foot of every site page. */
 export const updatedYear = Number(UPDATED.slice(0, 4));
 
 /** Replaces `{key}` in a template with `vars[key]`. Unknown keys are left as they are. */
@@ -65,18 +65,6 @@ export function shortPoint(value: string | number): string {
  */
 export function formatPeriod(start: string | number, end?: string | number): string {
   return `${shortPoint(start)}–${end === undefined || end === '' ? 'now' : shortPoint(end)}`;
-}
-
-/** '2026-06-09' → '9 June 2026'. */
-export function formatDate(iso: string): string {
-  const [y, m, d] = iso.split('-').map(Number);
-  return `${d} ${MONTHS[m - 1]} ${y}`;
-}
-
-/** '2026-09-25' → 'September 2026'; '2026-07' → 'July 2026'. */
-export function monthYear(iso: string): string {
-  const { year, month } = parseYearMonth(iso);
-  return month ? `${MONTHS[month - 1]} ${year}` : String(year);
 }
 
 /** ['a', 'b', 'c'] → 'a, b and c'. */

@@ -4,10 +4,8 @@ import {
   capitalize,
   domainOf,
   fill,
-  formatDate,
   formatPeriod,
   listJoin,
-  monthYear,
   ordinal,
   stackLine,
   updatedYear,
@@ -48,15 +46,6 @@ describe('formatPeriod', () => {
     expect(formatPeriod('2023')).toBe('2023–now');
     expect(formatPeriod(2023, 2027)).toBe('2023–2027');
     expect(formatPeriod('2025-01', '2025-06')).toBe('Jan 2025–Jun 2025');
-  });
-});
-
-describe('formatDate / monthYear', () => {
-  it('formats ISO dates without Intl', () => {
-    expect(formatDate('2026-06-09')).toBe('9 June 2026');
-    expect(formatDate('2026-09-25')).toBe('25 September 2026');
-    expect(monthYear('2026-09-25')).toBe('September 2026');
-    expect(monthYear('2026-07')).toBe('July 2026');
   });
 });
 

@@ -1,10 +1,10 @@
 /* ------------------------------------------------------------------
    Work: the case-study link and the smaller projects list. The client
-   rows, the systems and the figures have their own files; the gap under
-   the hero is in hero.css.
+   index and the systems have their own files; the gap under the hero is
+   in hero.css.
 ------------------------------------------------------------------- */
 
-/* "Case study →", in a client row and a system row: underlined in the accent on hover, like the hero's "View CV" */
+/* "Case study →", in a client row and a system entry: underlined in the accent on hover, like the hero's "View CV" */
 .case-link {
   display: inline-flex; align-items: center; min-height: 44px; font-weight: 600;
   text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px;

@@ -1,10 +1,10 @@
 import { personal } from '../../data/personal';
-import ColophonLine from '../shell/ColophonLine';
+import FootLine from '../shell/FootLine';
 import './personal.css';
 
 /**
  * The Personal close: my name in Serbian Cyrillic (the only Cyrillic moment on
- * the site), then the colophon line every page ends on, with the way back to
+ * the site), then the foot line every page ends on, with the way back to
  * the professional side. App renders it inside <footer class="only-personal">.
  */
 export default function PersonalFooter(): JSX.Element {
@@ -19,7 +19,7 @@ export default function PersonalFooter(): JSX.Element {
           </span>
         ))}
       </p>
-      <ColophonLine turn="professional" />
+      <FootLine turn="professional" />
     </div>
   );
 }

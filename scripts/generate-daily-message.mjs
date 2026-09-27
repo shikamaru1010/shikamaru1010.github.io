@@ -2,8 +2,7 @@
 // src/data/daily-message.json. Run by .github/workflows/daily-message.yml on a
 // 24h schedule, deterministic by calendar day (UTC), so re-running on the same
 // day always yields the same pick. It also records the pool size and the index
-// of the pick: the Personal page says how many quotes the pool holds, and
-// data.test.ts checks that number against quote-pool.mjs. After editing the
+// of the pick, and data.test.ts checks both against quote-pool.mjs. After editing the
 // pool, run `npm run daily-message` so the two stay in step.
 
 import { writeFile } from 'node:fs/promises';

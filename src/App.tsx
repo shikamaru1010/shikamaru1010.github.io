@@ -3,7 +3,7 @@ import CaseStudy from './components/study/CaseStudy';
 import Resume from './components/cv/Resume';
 import PersonalFooter from './components/personal/PersonalFooter';
 import PersonalHome from './components/personal/PersonalHome';
-import Colophon from './components/pro/Colophon';
+import ProFooter from './components/pro/ProFooter';
 import ProfessionalHome from './components/ProfessionalHome';
 import SiteHeader from './components/shell/SiteHeader';
 import SkipLink from './components/shell/SkipLink';
@@ -52,7 +52,7 @@ function inView(el: HTMLElement): boolean {
 /** The row or section at the top of the screen, just under the header. */
 function boxAtTop(): HTMLElement | null {
   const hit = document.elementFromPoint(window.innerWidth / 2, headerBottom() + 8);
-  const box = hit?.closest<HTMLElement>('article[id], section[id], li[id]');
+  const box = hit?.closest<HTMLElement>('article[id], section[id], li[id], tbody[id]');
   return box && box.id !== 'top' ? box : null;
 }
 
@@ -203,7 +203,7 @@ export default function App(): JSX.Element {
         </div>
       </main>
       <footer className="only-pro">
-        <Colophon />
+        <ProFooter />
       </footer>
       <footer className="only-personal">
         <PersonalFooter />

@@ -1,6 +1,6 @@
 import { domainOf } from '../lib/format';
 
-/** Where a project sits in Work: the client sites, the systems of my own (each with a figure), or the smaller projects. */
+/** Where a project sits in Work: the client sites, the systems of my own, or the smaller projects. */
 export type ProjectGroup = 'client' | 'system' | 'smaller';
 
 /**
@@ -19,27 +19,9 @@ export type ProjectMedia = {
   device: 'desktop' | 'phone';
   /** Smaller copies of the same capture for `srcset` (scripts/image-variants.mjs writes them). */
   variants?: Array<{ src: string; width: number }>;
+  /** Desktop item only: the 320 × 200 thumbnail in the client index's contact strip. */
+  thumb?: string;
 };
-
-/** One stop of a pipeline figure. `person` stops are drawn as circles, `system` stops as squares. */
-export type PipelineStep = { label: string; note: string; actor: 'system' | 'person' };
-
-/** The figure drawn on the page grid for a system project. */
-export type SystemFigure =
-  | { kind: 'pipeline'; caption: string; steps: PipelineStep[] }
-  | {
-      kind: 'status-axis';
-      caption: string;
-      daysPerColumn: number;
-      maxDays: number;
-      thresholds: { active: number; paused: number };
-    }
-  | {
-      kind: 'signal';
-      caption: string;
-      online: { label: string; note: string };
-      offline: { label: string; note: string };
-    };
 
 /** One box in the architecture grid of a case study. */
 export type ArchNode = {
@@ -102,10 +84,10 @@ export type Project = {
   media?: ProjectMedia[];
   /** Source note, not rendered: repository access and status. */
   note?: string;
-  /** 1–2 short, checkable engineering facts, reworded from highlights / caseStudy. */
+  /** Clients only: 1–2 short, checkable engineering facts, reworded from highlights / caseStudy. */
   notes?: string[];
-  /** Systems only: the figure drawn on the page grid. */
-  figure?: SystemFigure;
+  /** Systems only: the one sentence their entry in Work shows (the blurb is the CV’s longer text). */
+  summary?: string;
   caseStudy?: ProjectCaseStudy;
 };
 
@@ -121,6 +103,7 @@ const desktop = (id: string, alt: string): ProjectMedia => ({
     { src: `/screenshots/${id}/desktop-720.webp`, width: 720 },
     { src: `/screenshots/${id}/desktop-1200.webp`, width: 1200 },
   ],
+  thumb: `/screenshots/${id}/thumb.webp`,
 });
 
 const phone = (id: string, alt: string): ProjectMedia => ({
@@ -330,19 +313,8 @@ export const projects: Project[] = [
       'Designed to fail safely and leave a clear audit trail: the system has to be debuggable when external APIs misbehave.',
     ],
     note: 'Private repo (proprietary strategy). Architecture and code walk-through available on request.',
-    notes: ['Every decision is logged, so a bad day can be traced when an external API misbehaves.'],
-    figure: {
-      kind: 'pipeline',
-      caption: 'One trading day',
-      steps: [
-        { label: 'Check', note: 'Is the market open today?', actor: 'system' },
-        { label: 'Fetch', note: 'Prices for ~500 tickers, concurrently, with retries', actor: 'system' },
-        { label: 'Score', note: 'Technical and fundamental, with an SPY‑overlap penalty', actor: 'system' },
-        { label: 'Size', note: 'Against circuit breakers and position limits', actor: 'system' },
-        { label: 'Approve', note: 'Me, on Telegram. Nothing executes before this.', actor: 'person' },
-        { label: 'Execute', note: 'Place the order', actor: 'system' },
-      ],
-    },
+    summary:
+      'A Python and Claude agent that runs a daily S&P 500 rotation and waits for my approval on Telegram before it places an order.',
   },
   {
     id: 'dev-dashboard',
@@ -362,17 +334,8 @@ export const projects: Project[] = [
       'Part of a larger personal automation + agent system (with a planned orchestrator that routes requests to the right agent).',
     ],
     note: 'Used daily as my own monitoring and productivity layer.',
-    notes: [
-      'It never changes a source repository.',
-      'A repository that fails to scan is logged and skipped, and the rest of the sync continues.',
-    ],
-    figure: {
-      kind: 'status-axis',
-      caption: 'Status, by days since the last activity',
-      daysPerColumn: 30,
-      maxDays: 360,
-      thresholds: { active: 30, paused: 180 },
-    },
+    summary:
+      'Scans the git repositories on my machine and my GitHub account into one dashboard, and writes a note for each active project into my Obsidian vault.',
     // Detailed case study of my own tooling; secrets, paths and email scrubbed.
     caseStudy: {
       intro:
@@ -477,12 +440,8 @@ export const projects: Project[] = [
       'Heavy focus on graceful degradation and genuinely helpful error states.',
     ],
     note: 'Large solo product with a full spec and a phased roadmap, in active development.',
-    figure: {
-      kind: 'signal',
-      caption: 'What works where',
-      online: { label: 'Online', note: 'AI chat and the real‑time features' },
-      offline: { label: 'No signal', note: 'The phrasebook and FAQ keep working' },
-    },
+    summary:
+      'A React Native and Supabase app for international visitors to Belgrade, with an AI chat that picks a model for each question and a phrasebook that works offline.',
   },
 
   // ---------- Smaller projects ----------
@@ -542,7 +501,7 @@ export const projects: Project[] = [
 
 /** Client sites, live. */
 export const clientProjects = projects.filter((p) => p.group === 'client');
-/** Systems of my own (each with a figure). */
+/** Systems of my own. */
 export const systemProjects = projects.filter((p) => p.group === 'system');
 /** Smaller projects (the compact list). */
 export const smallerProjects = projects.filter((p) => p.group === 'smaller');

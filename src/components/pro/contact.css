@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------
-   Contact and colophon: Professional ends on one ink plate: the
-   address at --s4, the ways in, and the one-line colophon.
+   Contact and the footer: Professional ends on one ink plate: the
+   address at --s4, the ways in, and the foot line.
 ------------------------------------------------------------------- */
 
 /* The plate re-scopes the tokens, so every primitive inside (.sec-head, .h2,
@@ -59,7 +59,7 @@
 .reach dd a { display: inline-flex; align-items: center; min-height: 32px; }
 .reach .reach-walk dd { max-width: 36ch; }
 
-/* ---------------- the colophon on the plate (the line itself is shell.css) ---------------- */
+/* ---------------- the foot line on the plate (the line itself is shell.css) ---------------- */
 .foot { padding: var(--sp-9) 0 var(--sp-6); }
 
 /* touch screens of any width: 44px targets */

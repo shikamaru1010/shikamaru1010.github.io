@@ -6,7 +6,7 @@ import { returnHome } from '../../lib/history';
 import { keepCompounds } from '../../lib/compounds';
 import { mediaOf, srcSet } from '../../lib/media';
 import { useMode } from '../../lib/useMode';
-import ColophonLine from '../shell/ColophonLine';
+import FootLine from '../shell/FootLine';
 import ExternalLink from '../shell/ExternalLink';
 import SkipLink from '../shell/SkipLink';
 import StudyFlow from './StudyFlow';
@@ -257,7 +257,7 @@ export default function CaseStudy({ project }: { project: StudyProject }): JSX.E
       </main>
 
       <footer className="study-foot wrap">
-        <ColophonLine />
+        <FootLine />
       </footer>
     </>
   );

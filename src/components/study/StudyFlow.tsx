@@ -1,11 +1,10 @@
 import type { WorkflowStep } from '../../data/projects';
 import { site } from '../../data/site';
 
-// "How it works": the steps on a vertical stop line (the home pipeline's phone
-// form, at every width). Shape code: a square is the system, a filled circle is
-// a person stepping in (the step's `kind`). The actor is also written out next
-// to every step, so the shape is never the only signal. A step is its title
-// only: the architecture above says what each part does.
+// "How it works": the steps on a vertical stop line. Shape code: a square is
+// the system, a filled circle is a person stepping in (the step's `kind`). The
+// actor is also written out next to every step, so the shape is never the only
+// signal. A step is its title only: the architecture above says what each part does.
 
 export default function StudyFlow({ steps }: { steps: WorkflowStep[] }): JSX.Element {
   return (

@@ -4,7 +4,7 @@ import Hero from './pro/Hero';
 import Skills from './pro/Skills';
 import Work from './work/Work';
 
-/** The Professional tree: Hero, Work, Experience, Skills, Contact. The colophon is App's footer. */
+/** The Professional tree: Hero, Work, Experience, Skills, Contact. The footer line is App's footer. */
 export default function ProfessionalHome(): JSX.Element {
   return (
     <>

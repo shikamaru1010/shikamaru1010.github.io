@@ -7,7 +7,6 @@ import { personal } from './personal';
 import { profile } from './profile';
 import { projectById } from './projects';
 import { alsoUsed, siteSkillGroups, skillGroups } from './skills';
-import worklog from './worklog.json';
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 const isCalendarDate = (iso: string) => {
@@ -18,41 +17,8 @@ const isCalendarDate = (iso: string) => {
 };
 const publicFile = (src: string) => new URL(`../../public${src}`, import.meta.url);
 
-describe('worklog.json (dates and counts only)', () => {
-  const log = worklog as { asOf: string; total: number; days: Record<string, number> };
-
-  it('has exactly asOf, total and days', () => {
-    expect(Object.keys(log).sort()).toEqual(['asOf', 'days', 'total']);
-    expect(isCalendarDate(log.asOf)).toBe(true);
-    expect(Number.isInteger(log.total)).toBe(true);
-  });
-
-  it('days are real dates, sorted, unique, within the log period, with positive counts', () => {
-    const keys = Object.keys(log.days);
-    expect([...keys].sort()).toEqual(keys);
-    expect(new Set(keys).size).toBe(keys.length);
-    for (const day of keys) {
-      expect(isCalendarDate(day), day).toBe(true);
-      expect(day >= '2026-06-01', day).toBe(true);
-      expect(day <= log.asOf, day).toBe(true);
-      const n = log.days[day];
-      expect(Number.isInteger(n) && n > 0, `${day}: ${n}`).toBe(true);
-    }
-  });
-
-  it('total is the sum of the days', () => {
-    expect(Object.values(log.days).reduce((a, b) => a + b, 0)).toBe(log.total);
-  });
-
-  it('carries no other data (no file names or slugs)', () => {
-    // Apart from the three key names, the file is digits and punctuation only.
-    const text = JSON.stringify(log).replace(/"(asOf|total|days)":/g, '');
-    expect(text).not.toMatch(/[A-Za-z]/);
-  });
-});
-
 describe('daily-message.json', () => {
-  it('has the fields the Personal page reads', () => {
+  it('has the fields scripts/generate-daily-message.mjs writes (the page reads text and author)', () => {
     expect(Object.keys(dailyMessage).sort()).toEqual(['author', 'generatedAt', 'index', 'poolSize', 'text']);
     expect(isCalendarDate(dailyMessage.generatedAt)).toBe(true);
   });
@@ -64,26 +30,12 @@ describe('daily-message.json', () => {
   });
 });
 
-describe('skills.ts: each skill next to where it was used', () => {
-  const courseNames = new Set(education.courses.map((c) => c.name));
-
-  it('every skill has evidence that resolves to a real project or course', () => {
+describe('skills.ts: skills by area', () => {
+  it('every group has a label and at least one named skill', () => {
     for (const group of skillGroups) {
       expect(group.label.trim()).not.toBe('');
       expect(group.skills.length).toBeGreaterThan(0);
-      for (const skill of group.skills) {
-        expect(skill.evidence.length, skill.name).toBeGreaterThanOrEqual(1);
-        for (const e of skill.evidence) {
-          if ('project' in e) {
-            expect(projectById(e.project), `${skill.name}: ${e.project}`).toBeDefined();
-            if (e.part !== undefined) expect(e.part.trim()).not.toBe('');
-          } else if ('course' in e) {
-            expect(courseNames.has(e.course), `${skill.name}: ${e.course}`).toBe(true);
-          } else {
-            expect(e.text.trim()).not.toBe('');
-          }
-        }
-      }
+      for (const skill of group.skills) expect(skill.name.trim(), group.label).not.toBe('');
     }
   });
 
@@ -97,7 +49,7 @@ describe('skills.ts: each skill next to where it was used', () => {
     for (const s of alsoUsed) expect(s.trim()).not.toBe('');
   });
 
-  it('the site table leaves out exactly the CV-only groups and skills', () => {
+  it('the site leaves out exactly the CV-only groups and skills', () => {
     const onSite = siteSkillGroups.flatMap((g) => g.skills.map((s) => s.name));
     const all = skillGroups.flatMap((g) => g.skills.map((s) => ({ name: s.name, cvOnly: Boolean(g.cvOnly || s.cvOnly) })));
     expect(onSite).toEqual(all.filter((s) => !s.cvOnly).map((s) => s.name));
@@ -113,7 +65,6 @@ describe('personal.ts', () => {
       expect(item.lead.trim()).not.toBe('');
       expect(item.text.trim()).not.toBe('');
     }
-    expect(personal.thought.provenance).toContain('{poolSize}');
   });
 
   it('the photo and every srcset candidate exist under public/', () => {

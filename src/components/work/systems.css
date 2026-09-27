@@ -1,32 +1,44 @@
 /* ------------------------------------------------------------------
-   Systems of my own: title | blurb | stack, engineering notes and the
-   case-study link, then a figure on the page grid.
+   Systems of my own: one compact entry each, between hairlines, on the
+   columns of the smaller projects under them (work.css):
+   name and status 1–3 · sentence 4–8 · stack and case study 9–11 · years 12.
+   No figures: the hero's axis is the only timeline on the page.
 ------------------------------------------------------------------- */
 
-.systems { margin-top: var(--sp-10); }
-.sys { border-top: 1px solid var(--rule); padding: var(--sp-5) 0 var(--sp-8); }
-.sys:first-of-type { border-top: 0; padding-top: 0; }   /* the sub-head's rule is its top rule */
-.sys-row { align-items: start; }
-.sys-title { grid-column: 1 / span 3; }
-.sys-title h4 { font-size: var(--s3); line-height: 1.05; letter-spacing: -.03em; font-weight: 600; }
-.sys-title .label { margin-top: 10px; }
-.sys-body { grid-column: 4 / span 5; max-width: 46ch; text-wrap: pretty; }
-.sys-stack { grid-column: 9 / -1; }
-.sys-stack p,
-.sys-stack .notes li { text-wrap: pretty; }
-.sys-acts { margin-top: var(--sp-2); }
+.systems { margin-top: var(--sp-9); }
+.sys { border-top: 1px solid var(--rule); padding: 20px 0 22px; align-items: baseline; }
+.sys:first-child { border-top: 0; padding-top: 0; }   /* the sub-head's rule is its top rule */
+.sys:last-child { border-bottom: 1px solid var(--rule); }
 
+.sys-name { grid-column: 1 / span 3; }
+.sys-name h4 { font-size: var(--s3); line-height: 1.1; letter-spacing: -.025em; font-weight: 600; text-wrap: balance; }
+.sys-name .label { margin-top: 6px; }
+.sys-what { grid-column: 4 / span 5; max-width: 52ch; text-wrap: pretty; }
+.sys-stack { grid-column: 9 / span 3; color: var(--ink-2); line-height: 1.4; }
+.sys-stack p { text-wrap: pretty; }
+.sys-stack .case-link { color: var(--ink); margin-top: 2px; }
+.sys-year { grid-column: 12; color: var(--ink-2); text-align: right; white-space: nowrap; }
+
+/* ---------------- tablets: name 1–4 · sentence, then stack, 5–10 · years 11–12 ---------------- */
 @media (min-width: 721px) and (max-width: 1100px) {
-  .sys-title { grid-column: 1 / span 4; }
-  .sys-body { grid-column: 5 / -1; }
-  .sys-stack { grid-column: 5 / -1; margin-top: var(--sp-4); }
+  .sys-name,
+  .sys-what,
+  .sys-year { grid-row: 1; }
+  .sys-name { grid-column: 1 / span 4; }
+  .sys-what { grid-column: 5 / span 6; }
+  .sys-stack { grid-column: 5 / span 6; grid-row: 2; margin-top: var(--sp-3); }
+  .sys-year { grid-column: 11 / -1; }
 }
 
+/* ---------------- phones: name and years on one line, then the rest at the full width ---------------- */
 @media (max-width: 720px) {
-  .systems { margin-top: var(--sp-9); }
-  .sys { padding: var(--sp-5) 0 var(--sp-7); }
-  .sys-row { row-gap: 14px; }
-  .sys-title,
-  .sys-body,
+  .systems { margin-top: var(--sp-8); }
+  /* the years take their own width ("2025–now" is wider than a phone column at 320px) */
+  .sys { padding: 18px 0 20px; grid-template-columns: minmax(0, 1fr) auto; }
+  .sys-name { grid-column: 1; grid-row: 1; }
+  .sys-year { grid-column: 2; grid-row: 1; }
+  .sys-what,
   .sys-stack { grid-column: 1 / -1; }
+  .sys-what { margin-top: var(--sp-3); max-width: none; }
+  .sys-stack { margin-top: var(--sp-2); }
 }

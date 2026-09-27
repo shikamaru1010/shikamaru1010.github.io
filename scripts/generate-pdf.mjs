@@ -5,8 +5,8 @@
 // Writes public/Ratko_Sisovic_CV.pdf (committed) and dist/Ratko_Sisovic_CV.pdf,
 // and fails if the sheet does not fit on exactly one page.
 //
-// updated.json is the site's one "Updated" date (the CV page and this PDF, the colophon and the
-// case studies all print it, and public/sitemap.xml carries it as <lastmod>). It moves when the
+// updated.json is the site's one "Updated" date (the CV page and this PDF print it, the © at the
+// foot of the site pages takes its year, and public/sitemap.xml carries it as <lastmod>). It moves when the
 // CV is regenerated, not with the daily rebuild that refreshes the quote. It also keeps `cvHash`,
 // a fingerprint of the text the PDF was printed from: render.test.tsx computes the same from the
 // data and fails when they differ, so a data edit cannot ship without a new PDF.

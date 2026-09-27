@@ -13,8 +13,8 @@ The site has two personas, and the URL decides which one you see:
 
 | URL | Mode |
 | --- | --- |
-| `/` or `/?mode=professional` | **Professional**: paper and ink, one vermilion mark. Work (each client site with its own screenshots), experience, skills, contact. |
-| `/?mode=personal` | **Personal**: warm ink, bone text. First name, now, work log, today’s thought, side projects, links. |
+| `/` or `/?mode=professional` | **Professional**: paper and ink, one vermilion mark. Work (the client index with a desktop and phone plate, systems, other projects), experience, skills, contact. |
+| `/?mode=personal` | **Personal**: warm ink, bone text. First name, now, today’s thought, side projects, links. |
 
 - Any other value (or none) means Professional. The mode is never stored: a shared link decides.
 - The **Professional | Personal** switch in the header changes mode in place (no reload), updates the URL
@@ -50,7 +50,6 @@ Scripts that import `.ts` data files use Node’s type stripping: **Node ≥ 22.
 | `npm run check` | drives the running dev server (or `node scripts/check-behaviour.mjs <url>`) through Back, Forward, the mode switch and keyboard returns; exits 1 on any failure. Local only, like `npm run pdf`. |
 | `npm run images` | writes the smaller copies of the screenshots and the photo that `srcset` uses (`scripts/image-variants.mjs`). Run after replacing a screenshot or the photo. |
 | `npm run daily-message` | picks today’s quote from `scripts/quote-pool.mjs` into `src/data/daily-message.json` (also run every morning by a GitHub Action). |
-| `npm run worklog` | counts my work-log entries per day into `src/data/worklog.json` (see below). |
 | `npm run og` | renders `public/og-image.png` (2400 × 1260). |
 
 ---
@@ -62,29 +61,21 @@ Every visible fact comes from `src/data/`. You almost never touch the components
 | What to change | File |
 | --- | --- |
 | Name, role, lede, contact, site URL, meta description | `src/data/profile.ts` |
-| Projects: clients, systems, smaller projects, screenshots, engineering notes, figures, case studies | `src/data/projects.ts` |
+| Projects: clients, systems, smaller projects, screenshots, engineering notes, case studies | `src/data/projects.ts` |
 | Roles, education, courses, languages | `src/data/experience.ts` |
-| Skills, each with the projects or courses where it was used (`cvOnly` keeps one on the CV only) | `src/data/skills.ts` |
+| Skills by area (`cvOnly` keeps a skill or a group on the CV only) | `src/data/skills.ts` |
 | Everything the Personal mode says | `src/data/personal.ts` |
 | Interface labels, titles and templates (not facts) | `src/data/site.ts` |
-| Work-log counts (generated, dates and counts only) | `src/data/worklog.json` |
 | Today’s thought (generated daily) | `src/data/daily-message.json` |
 
 Rules the tests enforce (`src/copy.test.ts`, `src/data/*.test.ts`):
 
 - Say **CV**, never the accented French word. The degree is in its 4th year.
 - Data strings use typographic quotes and apostrophes (’ “ ”) and no em dashes.
-- Every skill’s evidence points at a real project id or FON course.
 - Every client has two real screenshots in `public/screenshots/<id>/` (desktop 1440 × 900, phone 780 × 1688)
   whose alt text starts with the site’s domain.
-- After editing `scripts/quote-pool.mjs`, run `npm run daily-message`: the page says how many quotes the
-  pool holds, and a test checks that number.
-
-### Work log
-
-`npm run worklog [-- <dir>]` lists `../dokumentacija/dnevnik` (or `<dir>`) and looks only at file names that
-start with a date (`YYYY-MM-DD…txt|md`). It never opens a file and never writes a name: `worklog.json` is
-`{ asOf, total, days: { "YYYY-MM-DD": count } }`. Local only; it does not run in CI.
+- After editing `scripts/quote-pool.mjs`, run `npm run daily-message`: `daily-message.json` records the
+  pool size and the quote’s index, and a test checks both against the pool.
 
 ### CV and PDF
 
@@ -94,8 +85,8 @@ start with a date (`YYYY-MM-DD…txt|md`). It never opens a file and never write
 - `updated.json` also keeps `cvHash`, a fingerprint of the text the PDF was printed from. `npm test`
   computes the same from the data and fails with “CV content changed: run npm run pdf” when a CV line
   changed without a new PDF.
-- `src/data/updated.json` is the site’s one “Updated” date: the colophon line that ends every page, the CV
-  page, the PDF and the sitemap all carry it, so they always agree. It moves when you regenerate the CV,
+- `src/data/updated.json` is the site’s one “Updated” date: the CV page, the PDF and the sitemap carry it
+  (the © at the foot of the site pages takes its year), so they always agree. It moves when you regenerate the CV,
   not with the daily rebuild that refreshes the quote.
 
 ---
@@ -114,7 +105,7 @@ start with a date (`YYYY-MM-DD…txt|md`). It never opens a file and never write
 - **Colour:** Professional paper `#F2F1EC`, ink `#111110`, one vermilion `#D83218`; Personal `#15130F` /
   `#EEE6D8` / `#FF6A3D`. Hairline rules, no shadows, no rounded corners.
 - **Files:** `src/styles/tokens.css` (tokens), `base.css` (reset, grid, type roles, shared primitives),
-  `shell.css` (header, switch, colophon line, wipe). Each section imports its own CSS next to its component.
+  `shell.css` (header, switch, foot line, wipe). Each section imports its own CSS next to its component.
 - **Motion:** only the mode wipe and short hover transitions; all of it respects `prefers-reduced-motion`.
 - **Links:** every external link is an `ExternalLink` (`src/components/shell/`): a new tab, `rel`, the
   hidden “(opens in a new tab)” and, where it is shown, the ↗. A case study has no in-page `#` links:

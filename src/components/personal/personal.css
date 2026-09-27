@@ -3,7 +3,7 @@
    Column 6 is the second axis everywhere: the photo and every block of
    content start on it; names and labels hold columns 1–5.
    Every selector starts with .p-, so nothing here reaches the Professional
-   tree that shares the document. The work-log figure is worklog.css.
+   tree that shares the document.
 ------------------------------------------------------------------- */
 
 /* ---------------- hero ----------------
@@ -33,19 +33,14 @@
 
 /* ---------------- sections: a label on columns 1–5, the content from column 6 ---------------- */
 .p-sec { margin-top: var(--sp-10); }
-/* the label and the text beside it share a baseline, not a top edge (the log's sentence is larger) */
+/* the label and the text beside it share a baseline, not a top edge (the quote is larger) */
 .p-row { align-items: baseline; }
 .p-label { grid-column: 1 / span 5; }
 .p-label h2 { font-size: var(--s2); line-height: 1.4; font-weight: 600; }
 .p-label p { margin-top: 2px; }
 
-/* work log (text; the figure is in worklog.css) */
-.p-log-text { grid-column: 6 / span 6; }
-.p-log-t { font-size: var(--s3); line-height: 1.2; letter-spacing: -.02em; max-width: 22em; text-wrap: pretty; }
-.p-log-note { color: var(--ink-2); margin-top: 14px; max-width: 38ch; text-wrap: pretty; }
-
 /* now: run-in lead words, reads like a note, not a table. Running text is body size; --s3 is kept for
-   the hero line and the log's one sentence (owner feedback: not a lot of big text) */
+   the hero line (owner feedback: not a lot of big text) */
 .p-now { grid-column: 6 / span 6; }
 .p-now li { max-width: 60ch; text-wrap: pretty; }
 .p-now li + li { margin-top: var(--sp-4); }
@@ -58,8 +53,7 @@
 .p-thought { grid-column: 6 / span 6; }
 .p-thought blockquote { font-size: var(--s4); line-height: 1.06; letter-spacing: -.04em; font-weight: 500; text-indent: -.4em; text-wrap: balance; }
 .p-q { color: var(--accent); }
-.p-thought figcaption { margin-top: var(--sp-6); display: flex; flex-wrap: wrap; gap: 4px 24px; align-items: baseline; }
-.p-author { font-weight: 400; }
+.p-thought figcaption { margin-top: var(--sp-6); }
 
 /* side projects (the vault and its domains): each domain a row, its name on columns 1–5 and
    what writes into it from column 6 */
@@ -98,19 +92,19 @@
 .p-handle { color: var(--ink-2); font-size: var(--s1); margin-left: 12px; font-weight: 400; transition: color .15s; }
 .p-else a:hover .p-handle { color: var(--ink); }
 
-/* ---------------- footer: the name in Cyrillic, then the colophon line (shell.css) ---------------- */
+/* ---------------- footer: the name in Cyrillic, then the foot line (shell.css) ---------------- */
 .p-end { margin-top: var(--sp-10); padding-bottom: var(--sp-6); }   /* the same gap as between sections */
 .p-cap { color: var(--ink-2); margin-bottom: var(--sp-3); }
 .p-sign {
   font-size: var(--s4); line-height: 1.1; letter-spacing: -.03em; font-weight: 600; color: var(--accent);
   margin-left: -.04em;
 }
-.p-end .colophon { margin-top: var(--sp-6); }
+.p-end .foot-line { margin-top: var(--sp-6); }
 
 /* ---------------- tablet (721–1100): the photo takes six columns, text runs to the edge ---------------- */
 @media (min-width: 721px) and (max-width: 1100px) {
   .p-photo { grid-column: 6 / span 6; }
-  .p-log-text, .p-now, .p-tools, .p-lede, .p-off, .p-thought, .p-orch { grid-column: 6 / -1; }
+  .p-now, .p-tools, .p-lede, .p-off, .p-thought, .p-orch { grid-column: 6 / -1; }
   .p-domains p { grid-column: 6 / -1; }
 }
 
@@ -142,11 +136,11 @@
 
   .p-sec { margin-top: var(--sp-9); }
   .p-row { row-gap: var(--sp-4); }
-  .p-label, .p-log-text, .p-now, .p-tools, .p-thought, .p-lede, .p-off, .p-else { grid-column: 1 / -1; }
+  .p-label, .p-now, .p-tools, .p-thought, .p-lede, .p-off, .p-else { grid-column: 1 / -1; }
   .p-tools { margin-top: var(--sp-6); }
 
   .p-thought blockquote { text-indent: 0; }
-  .p-thought figcaption { gap: var(--sp-2) var(--sp-4); margin-top: var(--sp-5); }
+  .p-thought figcaption { margin-top: var(--sp-5); }
 
   .p-domains { margin-top: var(--sp-6); }
   .p-domains li { display: block; padding-bottom: 32px; }

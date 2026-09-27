@@ -1,10 +1,10 @@
 import { site } from '../../data/site';
-import Clients from './Clients';
+import ClientIndex from './ClientIndex';
 import SmallerProjects from './SmallerProjects';
 import Systems from './Systems';
 import './work.css';
 
-/** Work: the client sites with their screenshots, the systems with their figures, the smaller projects. */
+/** Work: the client index with its plate, the systems of my own, the smaller projects. */
 export default function Work(): JSX.Element {
   return (
     <section className="sec work" id="work" aria-labelledby="work-h">
@@ -14,7 +14,7 @@ export default function Work(): JSX.Element {
             {site.work.heading}
           </h2>
         </header>
-        <Clients />
+        <ClientIndex />
         <Systems />
         <SmallerProjects />
       </div>

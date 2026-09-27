@@ -56,16 +56,16 @@ export const site = {
     clients: 'Client work',
     systems: 'Systems and automation',
     smaller: 'Other projects',
-    caseStudy: 'Case study',
-    legend: { system: 'Automated step', person: 'Human approval' },
-    axis: {
-      active: 'Active',
-      paused: 'Paused',
-      abandoned: 'Abandoned',
-      activeNote: 'Up to {days} days',
-      pausedNote: '{from} to {to} days',
-      abandonedNote: 'More than {days} days',
+    tableCaption: 'Client websites, with the stack, engineering notes and years of each',
+    columns: {
+      client: 'Client',
+      about: 'About',
+      stack: 'Stack and engineering notes',
+      year: 'Year',
+      shot: 'Phone screenshot',
     },
+    plateLabel: 'Screenshots of the selected client site',
+    caseStudy: 'Case study',
   },
   experience: {
     heading: 'Experience',
@@ -74,10 +74,6 @@ export const site = {
   },
   skills: {
     heading: 'Skills',
-    caption: 'Skills by area, each with the projects or courses where I used it',
-    columns: { area: 'Area', skill: 'Skill', used: 'Where I used it' },
-    /** After a FON course's name in the evidence column. */
-    course: '(FON)',
     also: 'Also: {list}.',
   },
   contact: {
@@ -89,10 +85,6 @@ export const site = {
     linkedin: 'LinkedIn',
     code: 'Code',
     codeNote: 'Client repositories and the trading strategy are private. I am happy to walk through the code and architecture on request.',
-  },
-  colophon: {
-    set: 'Built with React, TypeScript and Vite, set in Golos Text',
-    updated: 'Updated',
   },
   cv: {
     label: 'CV',

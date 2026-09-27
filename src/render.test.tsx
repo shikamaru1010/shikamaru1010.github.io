@@ -4,11 +4,11 @@ import { describe, expect, it } from 'vitest';
 import Resume from './components/cv/Resume';
 import PersonalFooter from './components/personal/PersonalFooter';
 import PersonalHome from './components/personal/PersonalHome';
-import Colophon from './components/pro/Colophon';
+import ProFooter from './components/pro/ProFooter';
 import ProfessionalHome from './components/ProfessionalHome';
 import CaseStudy from './components/study/CaseStudy';
 import { education, experience } from './data/experience';
-import { studyProjects } from './data/projects';
+import { clientProjects, studyProjects } from './data/projects';
 import updated from './data/updated.json';
 import { BUILD_DATE, careerAxis } from './lib/timeline';
 
@@ -23,7 +23,7 @@ const pages: Array<[string, string]> = [
   ['ProfessionalHome', renderToStaticMarkup(<ProfessionalHome />)],
   ['PersonalHome', renderToStaticMarkup(<PersonalHome />)],
   ['PersonalFooter', renderToStaticMarkup(<PersonalFooter />)],
-  ['Colophon', renderToStaticMarkup(<Colophon />)],
+  ['ProFooter', renderToStaticMarkup(<ProFooter />)],
   ['Resume', renderToStaticMarkup(<Resume />)],
   ...studyProjects.map((p): [string, string] => [`CaseStudy ${p.id}`, renderToStaticMarkup(<CaseStudy project={p} />)]),
 ];
@@ -63,19 +63,35 @@ describe('render', () => {
     expect(html.ProfessionalHome).toContain('href="#resume"');
   });
 
-  it('each client has its own row with both screenshots, and the full-size capture is a srcset candidate', () => {
-    for (const id of ['mesara', 'pilatiq', 'stan-pro-tim', 'kutlesic-vikendice']) {
-      expect(html.ProfessionalHome).toContain(`id="client-${id}"`);
-      expect(html.ProfessionalHome).toContain(`/screenshots/${id}/desktop.webp 1440w`);
-      expect(html.ProfessionalHome).toContain(`/screenshots/${id}/mobile.webp 780w`);
+  it('the client index: a row per client with its phone capture, one plate, one thumbnail each in the strip', () => {
+    const P = html.ProfessionalHome;
+    for (const p of clientProjects) {
+      expect(P).toContain(`id="client-${p.id}"`);
+      expect(P).toContain(`/screenshots/${p.id}/mobile.webp 780w`);
+      expect(P).toContain(`src="/screenshots/${p.id}/thumb.webp"`);
     }
+    expect(count(P, /<figure class="plate"/g)).toBe(1);
+    // the plate opens on the first client, with the full-size capture as a srcset candidate
+    expect(P).toContain(`/screenshots/${clientProjects[0].id}/desktop.webp 1440w`);
     expect(html['CaseStudy mesara']).toContain('/screenshots/mesara/desktop.webp 1440w');
   });
 
-  it('the colophon keeps a space around each hidden dot, so screen readers do not run the parts together', () => {
-    for (const markup of [html.Colophon, html.PersonalFooter, html['CaseStudy mesara']]) {
-      expect(markup).toMatch(/ <span class="colophon-sep" aria-hidden="true">·<\/span> /);
+  it('the hero axis is the only timeline: Work draws no figures', () => {
+    const P = html.ProfessionalHome;
+    const work = P.slice(P.indexOf('id="work"'), P.indexOf('id="experience"'));
+    expect(work).not.toMatch(/<figure(?! class="plate")/);
+    expect(work).not.toMatch(/abandoned|180 days/i);
+  });
+
+  it('no site page carries a build line or an Updated date (the CV sheet keeps its date)', () => {
+    for (const [name, markup] of pages) {
+      if (name === 'Resume') continue;
+      expect(markup, name).not.toMatch(/Built with|Golos Text|Updated/);
     }
+  });
+
+  it('Personal shows the quote and its author, not where it was picked from', () => {
+    expect(html.PersonalHome).not.toMatch(/GitHub Action|\d+ quotes/);
   });
 
   it('the Professional hero puts who and since when on its time axis', () => {
@@ -109,12 +125,12 @@ describe('render', () => {
     expect(html.PersonalFooter).toContain('lang="sr-Cyrl"');
   });
 
-  it.each(pages.filter(([name]) => !['PersonalFooter', 'Colophon'].includes(name)))('%s has exactly one h1', (_, markup) => {
+  it.each(pages.filter(([name]) => !['PersonalFooter', 'ProFooter'].includes(name)))('%s has exactly one h1', (_, markup) => {
     expect(count(markup, /<h1[\s>]/g)).toBe(1);
   });
 
   it('ids are unique across the home document (both modes and both footers)', () => {
-    const home = html.ProfessionalHome + html.PersonalHome + html.Colophon + html.PersonalFooter;
+    const home = html.ProfessionalHome + html.PersonalHome + html.ProFooter + html.PersonalFooter;
     const ids = [...home.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
     const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);
     expect(dupes).toEqual([]);
@@ -123,6 +139,7 @@ describe('render', () => {
 
   it('the home trees carry the anchor contract', () => {
     for (const id of ['name', 'work', 'experience', 'skills', 'contact']) expect(html.ProfessionalHome).toContain(`id="${id}"`);
-    for (const id of ['p-name', 'log', 'now', 'thought', 'brain', 'elsewhere']) expect(html.PersonalHome).toContain(`id="${id}"`);
+    for (const id of ['p-name', 'now', 'thought', 'brain', 'elsewhere']) expect(html.PersonalHome).toContain(`id="${id}"`);
+    expect(html.PersonalHome).not.toContain('id="log"');
   });
 });
