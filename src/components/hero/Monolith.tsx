@@ -17,8 +17,15 @@ type Props = {
   decorative?: boolean;
 };
 
-/** Where the entrance is: held before the fonts are in, the sentence split into words to find its lines, then playing. */
-type Enter = { phase: 'hold' } | { phase: 'measure' } | { phase: 'play'; lines: string[] };
+/**
+ * Where the entrance is: held before the fonts are in, the sentence split into words to find
+ * its lines, playing, then at rest on the same line nodes (see the second effect).
+ */
+type Enter =
+  | { phase: 'hold' }
+  | { phase: 'measure' }
+  | { phase: 'play'; lines: string[] }
+  | { phase: 'rest'; lines: string[] };
 
 const START = 160; // the first line starts while the circle is still low
 const WIPE = 480; // one line's wipe
@@ -40,9 +47,10 @@ function sleep(ms: number): Promise<void> {
  * switch keeps the circle in place and the wipe only swaps what is inside it.
  *
  * The entrance (motion allowed, first load only): the circle opens from a hairline on its
- * baseline, the sentence is wiped in line by line, the action fades in, all within 900 ms.
- * Render stays pure (the server render and reduced motion get the finished hero); the
- * layout effect holds the hero before its first paint, so nothing is seen twice.
+ * baseline, the sentence is wiped in line by line, the action fades in, all within 900 ms;
+ * after it the sentence stays on its line nodes until its column changes width. Render stays
+ * pure (the server render and reduced motion get the finished hero); the layout effect holds
+ * the hero before its first paint, so nothing is seen twice.
  */
 export default function Monolith({ nameId, name, lines, lede, action, disc, decorative }: Props): JSX.Element {
   const section = useRef<HTMLElement>(null);
@@ -80,14 +88,36 @@ export default function Monolith({ nameId, name, lines, lede, action, disc, deco
     };
   }, [lede, name]);
 
-  // 2. The sentence is in words: group them by their rendered line and play; at the end, back to plain text.
+  // 2. The sentence is in words: group them by their rendered line and play; at the end, rest on the
+  // same line nodes. Swapping them for plain text there would paint the sentence as a new, larger
+  // text at ~1 s, and the browser would report that as the page's LCP. The lines go back to plain
+  // text only when they could be wrong: the column changes width, or a font arrives late.
   useLayoutEffect(() => {
     if (enter?.phase === 'play') {
+      const { lines } = enter;
       const t = setTimeout(() => {
         finished.current = true;
-        setEnter(null);
+        setEnter({ phase: 'rest', lines });
       }, END + 80);
       return () => clearTimeout(t);
+    }
+    if (enter?.phase === 'rest') {
+      const col = sentence.current?.parentElement;
+      if (!col) return;
+      const plain = () => setEnter(null);
+      const w0 = col.getBoundingClientRect().width;
+      const ro =
+        typeof ResizeObserver === 'function'
+          ? new ResizeObserver(() => {
+              if (Math.abs(col.getBoundingClientRect().width - w0) > 0.5) plain();
+            })
+          : null;
+      ro?.observe(col);
+      document.fonts?.addEventListener?.('loadingdone', plain);
+      return () => {
+        ro?.disconnect();
+        document.fonts?.removeEventListener?.('loadingdone', plain);
+      };
     }
     if (enter?.phase !== 'measure' || !sentence.current) return;
     const rows: string[][] = [];
@@ -111,23 +141,25 @@ export default function Monolith({ nameId, name, lines, lede, action, disc, deco
         <span data-w="">{w}</span>
       </Fragment>
     ));
-  } else if (enter?.phase === 'play') {
+  } else if (enter?.phase === 'play' || enter?.phase === 'rest') {
+    const play = enter.phase === 'play';
     const n = enter.lines.length;
     const step = Math.min(80, (END - WIPE - START) / n);
     body = enter.lines.map((l, i) => (
       <Fragment key={i}>
         {i > 0 && ' '}
         <span className="mono-line">
-          <span className="mono-ink" style={{ animationDelay: `${Math.round(START + i * step)}ms` }}>
+          <span className="mono-ink" style={play ? { animationDelay: `${Math.round(START + i * step)}ms` } : undefined}>
             {l}
           </span>
         </span>
       </Fragment>
     ));
-    actStyle = { animationDelay: `${Math.round(Math.min(START + n * step, END - FADE))}ms` };
+    if (play) actStyle = { animationDelay: `${Math.round(Math.min(START + n * step, END - FADE))}ms` };
   }
 
-  const state = enter ? (enter.phase === 'play' ? ' is-play' : ' is-hold') : '';
+  const state =
+    enter?.phase === 'play' ? ' is-play' : enter?.phase === 'hold' || enter?.phase === 'measure' ? ' is-hold' : '';
 
   return (
     <section ref={section} className={`mono wrap${state}`} aria-labelledby={nameId}>

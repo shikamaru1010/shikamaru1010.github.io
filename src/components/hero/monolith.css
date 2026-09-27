@@ -87,7 +87,8 @@
 .mono.is-play .mono-disc { animation: mono-open 720ms cubic-bezier(.7, 0, .16, 1) both; }
 /* each rendered line is a block; its ink is an inline-block padded past the ascenders and
    descenders (and pulled back by the same margin, so the line box does not change): a mask
-   clips to its box, and the trimmed line box alone would cut the descenders */
+   clips to its box, and the trimmed line box alone would cut the descenders. The lines stay
+   after the entrance (Monolith.tsx), so this box is also the sentence at rest */
 .mono-line { display: block; }
 .mono-ink { display: inline-block; width: 100%; padding-block: .3em; margin-block: -.3em; }
 .mono.is-play .mono-ink {
