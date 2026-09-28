@@ -1,6 +1,5 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { personal } from '../data/personal';
 import { studyProjects } from '../data/projects';
 import { site } from '../data/site';
 import { DEFAULT_MODE, MODES, isPlainClick, metaFor, parseMode, withMode } from './mode';
@@ -202,22 +201,14 @@ describe('pre-paint script parity', () => {
     expect(rec.attrs['data-route']).toBe(route);
     expect(rec.attrs['data-route']).toBe(parseRoute(u.hash).kind);
 
+    // nothing to preload in either mode: the Personal circle is an inline drawing (ContourArt)
+    expect(rec.links).toHaveLength(0);
     if (mode === 'personal' && route === 'home') {
       expect(rec.title).toBe(site.titles.personal);
       expect(rec.themeColor).toBe(site.themeColor.personal);
-      expect(rec.links).toHaveLength(1);
-      expect(rec.links[0]).toMatchObject({
-        rel: 'preload',
-        as: 'image',
-        href: personal.photo.src,
-        imagesrcset: personal.photo.srcset,
-        imagesizes: personal.photo.sizes,
-        fetchpriority: 'high',
-      });
     } else {
       expect(rec.title).toBe(site.titles.professional);
       expect(rec.themeColor).toBe(site.themeColor.professional);
-      expect(rec.links).toHaveLength(0);
     }
   });
 });

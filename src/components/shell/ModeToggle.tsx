@@ -1,7 +1,7 @@
 import { useEffect, useState, type KeyboardEvent, type MouseEvent } from 'react';
 import { site } from '../../data/site';
 import { MODES, isPlainClick, type Mode } from '../../lib/mode';
-import { setMode, useMode, useModeHref, warmPortrait } from '../../lib/useMode';
+import { setMode, useMode, useModeHref } from '../../lib/useMode';
 
 /**
  * The Professional | Personal switch. Two real links (`?mode=…`), so modifier-clicks open
@@ -61,12 +61,11 @@ export default function ModeToggle(): JSX.Element {
     <div className="switch" role={enhanced ? 'radiogroup' : 'navigation'} aria-label={site.mode.groupLabel}>
       {MODES.map((m, i) => {
         const checked = m === mode;
-        const warm = m === 'personal' ? { onPointerEnter: warmPortrait, onFocus: warmPortrait } : { onFocus: warmPortrait };
         const state = enhanced
           ? { role: 'radio', 'aria-checked': checked, tabIndex: checked ? 0 : -1, onKeyDown: onKeyDown(i) }
           : { 'aria-current': checked ? ('page' as const) : undefined };
         return (
-          <a key={m} className="switch-cell" data-mode-radio={m} href={hrefs[m]} onClick={onClick(m)} {...warm} {...state}>
+          <a key={m} className="switch-cell" data-mode-radio={m} href={hrefs[m]} onClick={onClick(m)} {...state}>
             {site.mode.labels[m]}
           </a>
         );

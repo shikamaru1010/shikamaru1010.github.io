@@ -6,8 +6,8 @@
    ending on column 4 so it locks against the sentence. The tombstone
    stands on the circle's column; the circle's top edge is the sentence's
    cap line and its bottom edge is View CV's baseline (text-box trims
-   both). The circle holds the code loop (Professional) or the photo
-   (Personal), on the accent until it has loaded.
+   both). The circle holds the code loop (Professional), on the accent until
+   it has loaded, or the contour drawing on its own accent field (Personal).
 
    Vertical steps grow down the page: --sp-8 under the header, --sp-9 to
    the lockup, then the first section's own --sp-10.
@@ -31,8 +31,8 @@
 .mono-sub { color: var(--ink-2); }
 
 /* the circle: a clip, not a radius, so the entrance can open it from a hairline on its baseline.
-   The accent under the loop or the photo stops 1.5px inside the clip: the clip's antialiased
-   edge would otherwise mix it into the photo's rim as an orange hairline */
+   The accent under the loop stops 1.5px inside the clip: the clip's antialiased edge would
+   otherwise mix it into the poster's rim as an orange hairline */
 .mono-disc {
   grid-column: 3 / span 2; grid-row: 2; align-self: start;
   position: relative; aspect-ratio: 1 / 1; overflow: hidden;

@@ -48,7 +48,7 @@ Scripts that import `.ts` data files use Node’s type stripping: **Node ≥ 22.
 | `npm run dev` / `build` / `preview` / `test` | as above |
 | `npm run pdf` | stamps today’s date into `src/data/updated.json` and the `<lastmod>` of `public/sitemap.xml`, builds, and renders `/#resume` to `public/Ratko_Sisovic_CV.pdf`; fails unless it is exactly one A4 page. `-- --keep-date` re-renders without moving the date. |
 | `npm run check` | drives the running dev server (or `node scripts/check-behaviour.mjs <url>`) through Back, Forward, the mode switch and keyboard returns; exits 1 on any failure. Local only, like `npm run pdf`. |
-| `npm run images` | writes the smaller copies of the screenshots and the photo that `srcset` uses (`scripts/image-variants.mjs`). Run after replacing a screenshot or the photo. |
+| `npm run images` | writes the smaller copies of the screenshots that `srcset` uses (`scripts/image-variants.mjs`). Run after replacing a screenshot. |
 | `npm run daily-message` | picks today’s quote from `scripts/quote-pool.mjs` into `src/data/daily-message.json` (also run every morning by a GitHub Action). |
 | `npm run og` | renders `public/og-image.png` (2400 × 1260). |
 

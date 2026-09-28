@@ -107,33 +107,6 @@ function applyMode(next: Mode, opts?: SetModeOptions): void {
   if (opts?.focusToggle || needsFocusRescue()) focusRadio(next);
 }
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function portrait(): HTMLImageElement | null {
-  return document.querySelector<HTMLImageElement>('img[data-warm]');
-}
-
-/** Start loading the Personal photo early (the toggle calls this on hover and focus). */
-export function warmPortrait(): void {
-  if (typeof document === 'undefined') return;
-  const img = portrait();
-  if (img && img.loading !== 'eager') img.loading = 'eager';
-}
-
-/**
- * Warm the photo and, if it is already downloaded, wait for it to decode (capped at `ms`), so the
- * wipe reveals a finished photo. A photo still downloading is not waited for beyond 150ms: the
- * browser shows a frozen frame meanwhile, and the photo's own placeholder holds its place.
- */
-export async function warmAndDecode(ms: number): Promise<void> {
-  const img = portrait();
-  if (!img) return;
-  if (img.loading !== 'eager') img.loading = 'eager';
-  await Promise.race([img.decode().catch(() => {}), sleep(img.complete ? ms : Math.min(ms, 150))]);
-}
-
 /** Brings <html data-mode> in line with ?mode after Back / Forward (the URL carries the mode). */
 export function syncModeFromUrl(): void {
   if (typeof document === 'undefined') return;
@@ -179,11 +152,9 @@ export function setMode(next: Mode, opts?: SetModeOptions): void {
 
   // 5. The wipe: down to Personal, up to Professional.
   root.dataset.dir = next === 'personal' ? 'down' : 'up';
-  const transition = document.startViewTransition(async () => {
+  const transition = document.startViewTransition(() => {
     root.classList.add('is-wiping');
-    const m = latest ?? next;
-    flushSync(() => applyMode(m, opts));
-    if (m === 'personal') await warmAndDecode(300);
+    flushSync(() => applyMode(latest ?? next, opts));
   });
   active = transition;
   const done = () => {

@@ -11,7 +11,7 @@ type Props = {
   lede: string;
   /** The line whose baseline is the circle's bottom edge (View CV). */
   action?: ReactNode;
-  /** What the circle holds: the code loop (Professional) or the photo (Personal). */
+  /** What the circle holds: the code loop (Professional) or the contour drawing (Personal). */
   disc: ReactNode;
   /** The circle is decoration (the code loop): hidden from screen readers. */
   decorative?: boolean;

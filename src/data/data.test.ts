@@ -1,4 +1,3 @@
-import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { quotePool } from '../../scripts/quote-pool.mjs';
 import dailyMessage from './daily-message.json';
@@ -15,7 +14,6 @@ const isCalendarDate = (iso: string) => {
   const t = new Date(Date.UTC(y, m - 1, d));
   return t.getUTCFullYear() === y && t.getUTCMonth() === m - 1 && t.getUTCDate() === d;
 };
-const publicFile = (src: string) => new URL(`../../public${src}`, import.meta.url);
 
 describe('daily-message.json', () => {
   it('has the fields scripts/generate-daily-message.mjs writes (the page reads text and author)', () => {
@@ -64,16 +62,6 @@ describe('personal.ts', () => {
     for (const item of personal.now) {
       expect(item.lead.trim()).not.toBe('');
       expect(item.text.trim()).not.toBe('');
-    }
-  });
-
-  it('the photo and every srcset candidate exist under public/', () => {
-    expect(existsSync(publicFile(personal.photo.src))).toBe(true);
-    const candidates = personal.photo.srcset.split(',').map((c) => c.trim().split(/\s+/));
-    expect(candidates.map(([src]) => src)).toContain(personal.photo.src);
-    for (const [src, w] of candidates) {
-      expect(existsSync(publicFile(src)), src).toBe(true);
-      expect(w).toMatch(/^\d+w$/);
     }
   });
 
