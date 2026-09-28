@@ -1,7 +1,6 @@
 import { personal } from '../../data/personal';
-import { listJoin } from '../../lib/format';
 
-/** What I am doing now: run-in lead words, then the tools I live in. */
+/** What I am doing now: run-in lead words, then the tools I work with every day, by group. */
 export default function Now(): JSX.Element {
   return (
     <section className="wrap p-sec" id="now" aria-labelledby="now-h">
@@ -16,9 +15,19 @@ export default function Now(): JSX.Element {
             </li>
           ))}
         </ul>
-        <p className="p-tools">
-          {personal.toolsLead} <b>{listJoin(personal.tools)}</b>.
-        </p>
+        <div className="p-tools">
+          <h3 className="p-tools-h">{personal.toolsLead}</h3>
+          <dl className="p-tools-grid">
+            {personal.tools.map((group) => (
+              <div key={group.label}>
+                <dt>{group.label}</dt>
+                {group.items.map((item) => (
+                  <dd key={item}>{item}</dd>
+                ))}
+              </div>
+            ))}
+          </dl>
+        </div>
       </div>
     </section>
   );

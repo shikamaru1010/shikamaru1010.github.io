@@ -5,6 +5,8 @@ export type NowItem = { lead: string; text: string };
 /** A domain of the vault. Only domains with a project or a text are drawn; the lede names all three. */
 export type BrainDomain = { name: string; project?: { id: string; label: string }; text?: string };
 export type ElsewhereLink = { label: string; href: string; text: string };
+/** A group of the tools I work with every day: 5–10 in total, the ones I'd name first. */
+export type ToolGroup = { label: string; items: string[] };
 
 const now: NowItem[] = [
   { lead: 'Interning', text: 'at Podyx since July 2026, on a SaaS platform used by more than 200 studios.' },
@@ -67,8 +69,13 @@ export const personal = {
   },
   nowHeading: 'Now',
   now,
-  toolsLead: 'Daily tools:',
-  tools: ['Obsidian', 'the terminal', 'Git', 'Claude Code', 'Grok'],
+  toolsLead: 'Daily tools',
+  tools: [
+    { label: 'Editor & AI', items: ['VS Code', 'Cursor', 'Claude Code'] },
+    { label: 'Frontend', items: ['TypeScript', 'React', 'Next.js'] },
+    { label: 'Backend', items: ['Python', 'Node.js', 'Supabase'] },
+    { label: 'Workflow', items: ['Git', 'Docker'] },
+  ] as ToolGroup[],
   thought: { heading: 'Today’s thought' },
   brain: {
     heading: 'Side projects',

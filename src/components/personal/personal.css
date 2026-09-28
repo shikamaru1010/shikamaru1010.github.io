@@ -26,8 +26,13 @@
 .p-now li { max-width: 60ch; text-wrap: pretty; }
 .p-now li + li { margin-top: var(--sp-4); }
 .p-now b { font-weight: 600; }
-.p-tools { grid-column: 6 / span 6; margin-top: var(--sp-7); padding-top: 14px; border-top: 1px solid var(--rule); color: var(--ink-2); }
-.p-tools b { color: var(--ink); font-weight: 400; }
+.p-tools { grid-column: 6 / span 6; margin-top: var(--sp-7); padding-top: 14px; border-top: 1px solid var(--rule); }
+.p-tools-h { font-size: var(--s1); font-weight: 500; color: var(--ink-2); }
+/* four small columns, like the Skills groups on the professional side */
+.p-tools-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--g); row-gap: var(--sp-5); margin-top: 12px; }
+.p-tools-grid dt { font-size: var(--s1); color: var(--ink-2); margin-bottom: 4px; }
+.p-tools-grid dd { color: var(--ink); line-height: 1.55; }
+@media (max-width: 1100px) { .p-tools-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 /* today's thought: on the column-6 axis like the rest; the opening quote hangs in the gutter
    so the words start on the column */
