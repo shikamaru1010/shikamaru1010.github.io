@@ -13,6 +13,7 @@ import { focusMain, visibleLinks } from './lib/focus';
 import { navState, patchNavState, type NavState } from './lib/history';
 import { isPlainClick } from './lib/mode';
 import { parseRoute, routeKey, scrollStep, type Route } from './lib/route';
+import { isSection, scrollToSection } from './lib/scroll';
 import { syncModeFromUrl, useMode } from './lib/useMode';
 
 function visibleElement(id: string | undefined): HTMLElement | null {
@@ -179,8 +180,17 @@ export default function App(): JSX.Element {
       return;
     } else if (scroll.kind === 'anchor') {
       target = visibleElement(scroll.id);
-      if (target) target.scrollIntoView();
+      // An in-page jump glides; opening a link that already carries the hash does not.
+      if (target && isSection(target)) scrollToSection(target, before !== null);
+      else if (target) target.scrollIntoView();
       else if (before !== null) window.scrollTo(0, 0); // the anchor is hidden in this mode
+    } else if (scroll.kind === 'native' && route.kind === 'home' && route.anchor) {
+      // Back/Forward onto a section entry: the browser jumps to the padded section box after
+      // this effect; line the content up the same way the nav click did (lib/scroll.ts).
+      const section = visibleElement(route.anchor);
+      if (section && isSection(section)) {
+        requestAnimationFrame(() => requestAnimationFrame(() => scrollToSection(section, false)));
+      }
     }
     if (focus) focusPage(target);
   }, [route]);
