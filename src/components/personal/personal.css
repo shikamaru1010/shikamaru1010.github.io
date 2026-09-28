@@ -8,22 +8,9 @@
 ------------------------------------------------------------------- */
 
 /* ---------------- hero ----------------
-   The Professional composition (hero/monolith.css); here only the drawing in the
-   circle (ContourArt.tsx). Nothing in it takes the pointer but the mouth, and the
-   clouds are the only thing that moves: a few px over about a minute. */
+   The Professional composition (hero/monolith.css); here only the picture in the
+   circle (ContourArt.tsx). Nothing in it takes the pointer but the mouth. */
 .p-art { pointer-events: none; }
-.p-cloud { animation: p-drift 56s ease-in-out infinite alternate; }
-.p-cloud + .p-cloud { animation-duration: 44s; animation-delay: -20s; }
-.p-cloud.p-far { animation-duration: 62s; animation-delay: -41s; }
-@keyframes p-drift { to { transform: translateX(18px); } }
-
-/* phones: the circle is one column (75–160px), so the lines are drawn in screen pixels, and the
-   far cloud and the grass are left out */
-@media (max-width: 720px) {
-  .p-art-ink { stroke-width: 1.25px; }
-  .p-art-ink > * { vector-effect: non-scaling-stroke; }
-  .p-fine { display: none; }
-}
 
 /* the easter egg: a mouse resting on the mouth lights a joint; it fades out when the mouse leaves.
    The smoke and the ember only run while it shows */
@@ -44,9 +31,9 @@
 }
 @keyframes p-ember { from { opacity: .55; } to { opacity: 1; } }
 
-/* reduced motion: the clouds stay put, and the egg is the joint with one still wisp */
+/* reduced motion: the egg is the joint with one still wisp */
 @media (prefers-reduced-motion: reduce) {
-  .p-cloud, .p-smoke > *, .p-ember { animation: none; }
+  .p-smoke > *, .p-ember { animation: none; }
   .p-smoke > * + * { display: none; }
 }
 

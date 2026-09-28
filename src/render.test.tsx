@@ -1,9 +1,9 @@
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import Resume from './components/cv/Resume';
-import ContourArt from './components/personal/ContourArt';
+import ContourArt, { ART_SRC } from './components/personal/ContourArt';
 import PersonalFooter from './components/personal/PersonalFooter';
 import PersonalHome from './components/personal/PersonalHome';
 import ProFooter from './components/pro/ProFooter';
@@ -146,14 +146,17 @@ describe('render', () => {
     expect(disc.includes('class="p-art-mouth"')).toBe(personal.contourEasterEgg);
   });
 
-  it('the drawing: one self-contained SVG under 12 KB; the easter egg is hidden, unfocusable and switchable', () => {
+  it('the picture: one small inline SVG around the local ink image; the easter egg is hidden, unfocusable and switchable', () => {
     const on = renderToStaticMarkup(<ContourArt alt="a" egg />);
     const off = renderToStaticMarkup(<ContourArt alt="a" egg={false} />);
     expect(on.length).toBeLessThan(12 * 1024);
     for (const svg of [on, off]) {
-      expect(svg).not.toMatch(/<(script|text|image|use|foreignObject|style)\b|href=|url\((?!#p-art-arm\))|font/i);
+      // the only file it loads is the ink layer in public/, and the only url() is the circle clip
+      expect(svg).not.toMatch(/<(script|text|use|foreignObject|style)\b|url\((?!#p-art-clip\))|font/i);
+      expect(svg.match(/href="[^"]*"/g)).toEqual([`href="${ART_SRC}"`]);
+      expect(existsSync(new URL(`../public${ART_SRC}`, import.meta.url))).toBe(true);
     }
-    expect(off).not.toMatch(/p-art-mouth|p-art-egg|<mask/);
+    expect(off).not.toMatch(/p-art-mouth|p-art-egg/);
     expect(on).toMatch(/<circle class="p-art-mouth" [^>]*fill="none"><\/circle>/);
     expect(on).toContain('<g class="p-art-egg" aria-hidden="true"');
     expect(on).not.toMatch(/tabindex|<title|cursor/i);
@@ -161,7 +164,7 @@ describe('render', () => {
     const block = (at: string) => css.slice(css.indexOf(at), css.indexOf('\n}', css.indexOf(at)));
     // the egg answers only a hovering mouse, and under reduced motion nothing drifts or rises
     expect(block('@media (hover: hover) and (pointer: fine)')).toContain('.p-art-mouth { pointer-events: all; }');
-    expect(block('@media (prefers-reduced-motion: reduce)')).toContain('.p-cloud, .p-smoke > *, .p-ember { animation: none; }');
+    expect(block('@media (prefers-reduced-motion: reduce)')).toContain('.p-smoke > *, .p-ember { animation: none; }');
   });
 
   // The PDF recruiters download is committed; this ties it to the data (generate-pdf.mjs writes cvHash).
