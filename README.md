@@ -1,6 +1,6 @@
 # Ratko Šišović, portfolio
 
-A data-driven personal site in two modes, plus a one-page CV that also exports to PDF.
+A data-driven personal site in two modes, plus a one-page CV exported to PDF, DOCX, Markdown and JSON Resume.
 Built with **Vite + React + TypeScript** and plain CSS (no UI framework, no animation library).
 
 **Live:** https://shikamaru1010.github.io
@@ -46,7 +46,9 @@ Scripts that import `.ts` data files use Node’s type stripping: **Node ≥ 22.
 | Script | What it does |
 | --- | --- |
 | `npm run dev` / `build` / `preview` / `test` | as above |
-| `npm run pdf` | stamps today’s date into `src/data/updated.json` and the `<lastmod>` of `public/sitemap.xml`, builds, and renders `/#resume` to `public/Ratko_Sisovic_CV.pdf`; fails unless it is exactly one A4 page. `-- --keep-date` re-renders without moving the date. |
+| `npm run pdf` | stamps today’s date into `src/data/updated.json` and the `<lastmod>` of `public/sitemap.xml`, writes the CV’s other formats (`cv:export`), builds, and renders `/#resume` to a tagged `public/Ratko_Sisovic_CV.pdf` with Title, Author, Subject and Keywords set; fails unless it is exactly one A4 page. `-- --keep-date` re-renders without moving the date. |
+| `npm run cv:export` | writes `public/cv.md`, `public/resume.json` (JSON Resume v1.0.0), `public/Ratko_Sisovic_CV.docx` and `public/llms.txt` from the same CV model as the PDF (`scripts/export-cv.mjs`). |
+| `npm run cv:audit` | grades the committed CV the way ATS and CV graders do: the PDF’s text layer and reading order (needs poppler’s `pdftotext`), contact details, length, bullets, verbs, numbers, keywords, dates, and the other formats; prints a score, exits 1 on a hard failure. |
 | `npm run check` | drives the running dev server (or `node scripts/check-behaviour.mjs <url>`) through Back, Forward, the mode switch and keyboard returns; exits 1 on any failure. Local only, like `npm run pdf`. |
 | `npm run images` | writes the smaller copies of the screenshots that `srcset` uses (`scripts/image-variants.mjs`). Run after replacing a screenshot. |
 | `npm run daily-message` | picks today’s quote from `scripts/quote-pool.mjs` into `src/data/daily-message.json` (also run every morning by a GitHub Action). |
@@ -77,15 +79,32 @@ Rules the tests enforce (`src/copy.test.ts`, `src/data/*.test.ts`):
 - After editing `scripts/quote-pool.mjs`, run `npm run daily-message`: `daily-message.json` records the
   pool size and the quote’s index, and a test checks both against the pool.
 
-### CV and PDF
+### CV and its formats
 
-- The CV is the same data rendered as a print-ready A4 sheet at **`/#resume`** (the “CV” link in the header).
+- The CV copy lives in **`src/data/cv.ts`**, in CV register: no first person, every point opens with a
+  verb, numbers where the data has them, standard section names (Summary, Technical Skills, Experience,
+  Projects, Education, Languages). Names, dates, schools and links come from the other data files.
+- `src/lib/cv.ts` joins them into one CV model. The page at **`/#resume`** renders it (one column, in
+  reading order, contact details in the body, real `•` bullets in the text layer: the layout ATS parsers
+  read correctly), and so does every export:
+
+  | URL | For |
+  | --- | --- |
+  | `/Ratko_Sisovic_CV.pdf` | uploads; one tagged A4 page with document info |
+  | `/Ratko_Sisovic_CV.docx` | sites and recruiters that ask for Word (real headings and bullets, no tables) |
+  | `/cv.md` | pasting into forms, and AI tools |
+  | `/resume.json` | JSON Resume tools and AI agents |
+  | `/llms.txt` | AI agents looking for the CV (llmstxt.org) |
+
+- `src/lib/cv.test.ts` holds the copy to those rules and fails when a committed export no longer matches
+  the data (“run npm run cv:export”). `npm run cv:audit` grades the PDF itself.
+- `profile.phone` is empty until set; the CV and every export show it once it is (graders expect one).
 - `public/Ratko_Sisovic_CV.pdf` is committed and served at `/Ratko_Sisovic_CV.pdf`. Regenerate it after
   changing data: `npm run pdf`, then commit the PDF, `src/data/updated.json` **and** `public/sitemap.xml`.
 - `updated.json` also keeps `cvHash`, a fingerprint of the text the PDF was printed from. `npm test`
   computes the same from the data and fails with “CV content changed: run npm run pdf” when a CV line
   changed without a new PDF.
-- `src/data/updated.json` is the site’s one “Updated” date: the CV page, the PDF and the sitemap carry it
+- `src/data/updated.json` is the site’s one “Updated” date: the PDF’s metadata, `resume.json` and the sitemap carry it
   (the © at the foot of the site pages takes its year), so they always agree. It moves when you regenerate the CV,
   not with the daily rebuild that refreshes the quote.
 
