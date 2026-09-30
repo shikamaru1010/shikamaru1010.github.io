@@ -1,5 +1,6 @@
-// Regenerates the CV: stamps today's date into src/data/updated.json, builds, and renders the
-// CV page (#resume) from the production build to a one-page A4 PDF.
+// Regenerates the CV: stamps today's date into src/data/updated.json, writes the text formats
+// (cv.md, resume.json, the DOCX, llms.txt: scripts/export-cv.mjs), builds, and renders the CV page
+// (#resume) from the production build to a one-page, tagged A4 PDF with its document information set.
 // Usage: npm run pdf              (stamp, build, render)
 //        npm run pdf -- --keep-date (build and render with the date already in updated.json)
 // Writes public/Ratko_Sisovic_CV.pdf (committed) and dist/Ratko_Sisovic_CV.pdf,
@@ -18,6 +19,7 @@ import { readFile, writeFile, copyFile, access } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, extname, resolve, sep } from 'node:path';
 import puppeteer from 'puppeteer';
+import { setPdfInfo } from './lib/pdf-info.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -76,6 +78,8 @@ if (!process.argv.includes('--keep-date')) {
     console.log('Stamped public/sitemap.xml lastmod:', date);
   }
 }
+// Every other format first, so the build copies the fresh files from public/ into dist/.
+execSync('node scripts/export-cv.mjs', { cwd: root, stdio: 'inherit' });
 execSync('npm run build', { cwd: root, stdio: 'inherit' });
 
 if (!(await exists(join(dist, 'index.html')))) {
@@ -116,13 +120,27 @@ try {
   await page.evaluate(() => document.fonts.ready);
   const sheetText = await page.$eval('.resume-sheet', (el) => el.textContent ?? '');
 
-  const pdf = Buffer.from(
+  const raw = Buffer.from(
     await page.pdf({
       format: 'A4',
       printBackground: true,
-      margin: { top: '12mm', bottom: '12mm', left: '14mm', right: '14mm' },
+      // a structure tree (headings, lists, links in reading order) for screen readers and parsers
+      tagged: true,
+      margin: { top: '10mm', bottom: '10mm', left: '12mm', right: '12mm' },
     }),
   );
+  // Title, Author, Subject and Keywords: what a viewer's title bar, a search index and a CV
+  // parser read before the text. From the JSON Resume the export just wrote (same data).
+  const resume = JSON.parse(await readFile(join(root, 'public', 'resume.json'), 'utf8'));
+  const { date } = await readUpdated();
+  const pdf = setPdfInfo(raw, {
+    title: `${resume.basics.name} – CV`,
+    author: resume.basics.name,
+    subject: `${resume.basics.label}, ${resume.basics.location.city}`,
+    keywords: resume.skills.flatMap((g) => g.keywords).slice(0, 24).join(', '),
+    creator: 'shikamaru1010.github.io (scripts/generate-pdf.mjs)',
+    date,
+  });
 
   // Chrome writes one "/Type /Page" object per page (and "/Type /Pages" once for the tree).
   const pages = (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;

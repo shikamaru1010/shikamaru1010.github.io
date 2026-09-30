@@ -1,0 +1,17 @@
+# Ratko Šišović
+
+> Software Developer · Full-stack web and automation, based in Belgrade, Serbia. Software engineering intern at Podyx and 4th-year Information Systems & Technologies student at FON, University of Belgrade (B.Sc. expected 2027).
+
+## CV
+
+- [CV in Markdown](https://shikamaru1010.github.io/cv.md): the full CV as text
+- [JSON Resume](https://shikamaru1010.github.io/resume.json): the same CV as structured data (jsonresume.org v1.0.0)
+- [CV as PDF](https://shikamaru1010.github.io/Ratko_Sisovic_CV.pdf): one A4 page
+- [CV as DOCX](https://shikamaru1010.github.io/Ratko_Sisovic_CV.docx): the same content for Word and application forms
+
+## Links
+
+- [Portfolio](https://shikamaru1010.github.io/): client work, projects and experience
+- [GitHub](https://github.com/shikamaru1010)
+- [LinkedIn](https://www.linkedin.com/in/ratko%C5%A1i%C5%A1ovi%C4%87/)
+- Email: ralesisko@gmail.com

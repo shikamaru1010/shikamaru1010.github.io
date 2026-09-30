@@ -1,0 +1,195 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
+  "basics": {
+    "name": "Ratko Šišović",
+    "label": "Software Developer · Full-stack web and automation",
+    "email": "ralesisko@gmail.com",
+    "url": "https://shikamaru1010.github.io",
+    "summary": "Software engineering intern at Podyx and 4th-year Information Systems & Technologies student at FON, University of Belgrade (B.Sc. expected 2027). Since 2023, delivered four production websites and an internal operations system for local businesses, working directly with the owners from requirements to deployment.",
+    "location": {
+      "city": "Belgrade",
+      "countryCode": "RS"
+    },
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "username": "ratkošišović",
+        "url": "https://www.linkedin.com/in/ratko%C5%A1i%C5%A1ovi%C4%87/"
+      },
+      {
+        "network": "GitHub",
+        "username": "shikamaru1010",
+        "url": "https://github.com/shikamaru1010"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "Podyx",
+      "position": "Software Engineering Intern",
+      "url": "https://www.podyx.com/",
+      "location": "Belgrade, Serbia (hybrid)",
+      "startDate": "2026-07",
+      "highlights": [
+        "Ship features and fixes in the production codebase of an all-in-one SaaS platform for podcast and creative studios (bookings, payments, invoicing), used by more than 200 studios worldwide.",
+        "Work through tickets and code review in an established engineering team."
+      ]
+    },
+    {
+      "name": "Self-employed",
+      "position": "Freelance Web and Internal Tools Developer",
+      "location": "Belgrade, Serbia",
+      "startDate": "2023",
+      "highlights": [
+        "Delivered four production websites for local businesses (Mesara Šisko, Pilatiq Reformeri, Stan Pro Tim, Kutlešić Vikendice), working directly with the owners from requirements to deployment and support.",
+        "Built the internal operations system for Mesara Šisko (Django, APScheduler, Claude agents): scheduled daily sales, cost and P&L reports and the PDF declarations Serbian regulations require, replacing daily manual work.",
+        "Built the same client’s bilingual (Serbian/English) QR menu and ordering app in Next.js, React and Supabase: real-time order sync between kitchen and guests, server-side validation of order totals, email notifications; Dockerized and deployed on Vercel."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Faculty of Organizational Sciences (FON), University of Belgrade",
+      "area": "Information Systems & Technologies",
+      "studyType": "B.Sc.",
+      "startDate": "2023",
+      "endDate": "2027",
+      "courses": [
+        "Software design (GoF patterns, 3-tier architecture)",
+        "databases",
+        "data structures and algorithms",
+        "information systems design (UML)",
+        "computer networks (TCP/IP, HTTP)",
+        "operations research"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "name": "Programming languages",
+      "keywords": [
+        "TypeScript",
+        "JavaScript",
+        "Python",
+        "Java",
+        "SQL",
+        "HTML",
+        "CSS"
+      ]
+    },
+    {
+      "name": "Frontend",
+      "keywords": [
+        "React",
+        "Next.js",
+        "React Native (Expo)",
+        "Tailwind CSS",
+        "Vite",
+        "Zustand"
+      ]
+    },
+    {
+      "name": "Backend and data",
+      "keywords": [
+        "Node.js",
+        "FastAPI",
+        "Django",
+        "REST APIs",
+        "PostgreSQL",
+        "Supabase",
+        "SQLite",
+        "MySQL",
+        "Oracle"
+      ]
+    },
+    {
+      "name": "AI and automation",
+      "keywords": [
+        "Claude API (tool use)",
+        "OpenRouter",
+        "LLM agent pipelines",
+        "APScheduler"
+      ]
+    },
+    {
+      "name": "DevOps and tools",
+      "keywords": [
+        "Git",
+        "GitHub Actions (CI/CD)",
+        "Docker",
+        "Vercel",
+        "Linux",
+        "Bash",
+        "PowerShell",
+        "Figma"
+      ]
+    },
+    {
+      "name": "Testing and practice",
+      "keywords": [
+        "Vitest",
+        "Testing Library",
+        "i18n",
+        "logging and observability",
+        "Agile"
+      ]
+    }
+  ],
+  "languages": [
+    {
+      "language": "Serbian",
+      "fluency": "Native"
+    },
+    {
+      "language": "English",
+      "fluency": "Professional working proficiency"
+    }
+  ],
+  "projects": [
+    {
+      "name": "tradingAgent",
+      "highlights": [
+        "Automated a daily S&P 500 rotation: concurrent price fetch for about 500 tickers, technical and fundamental scoring, risk-aware sizing, and FastAPI dashboards for the portfolio, P&L and each decision.",
+        "Added circuit breakers, position limits, retries and persisted state; no order executes before a human approves it on Telegram."
+      ],
+      "keywords": [
+        "Python",
+        "FastAPI",
+        "Claude API",
+        "Interactive Brokers / Alpaca",
+        "Telegram"
+      ],
+      "startDate": "2025"
+    },
+    {
+      "name": "dev-dashboard + Brain",
+      "highlights": [
+        "Built a dashboard that scans dozens of local and GitHub repositories, marks each project active, paused or abandoned, and writes a note per active project into an Obsidian vault; the git, GitHub and Obsidian integrations use no third-party runtime dependencies."
+      ],
+      "keywords": [
+        "Next.js",
+        "TypeScript",
+        "Node.js",
+        "GitHub API"
+      ],
+      "startDate": "2025"
+    },
+    {
+      "name": "BelgradeBuddy AI",
+      "highlights": [
+        "Building a mobile app for international visitors to Belgrade: an AI chat that picks a model for each question by quality, latency and cost, plus an offline phrasebook and FAQ."
+      ],
+      "keywords": [
+        "React Native (Expo)",
+        "Supabase",
+        "OpenRouter / Claude"
+      ],
+      "startDate": "2025"
+    }
+  ],
+  "meta": {
+    "canonical": "https://shikamaru1010.github.io/resume.json",
+    "version": "v1.0.0",
+    "lastModified": "2026-09-30"
+  }
+}

@@ -1,68 +1,59 @@
 import './resume.css';
-import { education, experience, languages } from '../../data/experience';
-import { profile } from '../../data/profile';
-import { cvProjectIds, projectById, projectDomain, type Project } from '../../data/projects';
 import { site } from '../../data/site';
-import { alsoUsed, skillGroups } from '../../data/skills';
-import { UPDATED, capitalize, domainOf, fill, formatPeriod, listJoin, ordinal } from '../../lib/format';
+import { buildCv, type CvEntry, type CvLink } from '../../lib/cv';
 import { returnHome } from '../../lib/history';
 import ExternalLink from '../shell/ExternalLink';
 import SkipLink from '../shell/SkipLink';
 
-// The CV (#resume): a no-print toolbar over one white A4 sheet. `.resume-sheet`
-// is the selector scripts/generate-pdf.mjs waits for, and the sheet must print on
-// exactly one A4 page. Every line below is derived from src/data; nothing is typed in.
+// The CV (#resume): a no-print toolbar over one white A4 sheet. `.resume-sheet` is the selector
+// scripts/generate-pdf.mjs waits for, and the sheet must print on exactly one A4 page.
+// One column in reading order, standard section names, contact details in the body: the layout
+// ATS parsers read correctly. Every line comes from buildCv() (src/lib/cv.ts), the same structure
+// the Markdown, JSON Resume and DOCX exports are written from.
 
-type ContactItem = { text: string; href?: string; external?: boolean };
-
-function ContactLine({ item }: { item: ContactItem }): JSX.Element {
-  if (!item.href) return <li>{item.text}</li>;
-  return (
-    <li>
-      {item.external ? (
-        <ExternalLink className="resume-link" href={item.href}>
-          {item.text}
-        </ExternalLink>
-      ) : (
-        <a className="resume-link" href={item.href}>
-          {item.text}
-        </a>
-      )}
-    </li>
+function Link({ link, className = 'resume-link' }: { link: CvLink; className?: string }): JSX.Element {
+  if (!link.href) return <>{link.text}</>;
+  return /^https?:/.test(link.href) ? (
+    <ExternalLink className={className} href={link.href}>
+      {link.text}
+    </ExternalLink>
+  ) : (
+    <a className={className} href={link.href}>
+      {link.text}
+    </a>
   );
 }
 
-/** A project: its title and the blurb (which already says what it is), then the stack and the live site. */
-function ProjectEntry({ project }: { project: Project }): JSX.Element {
-  const domain = projectDomain(project);
+/** A role or a project: title (and employer) with the dates on the same line, then the details and the points. */
+function Entry({ entry }: { entry: CvEntry }): JSX.Element {
   return (
     <div className="resume-entry">
-      <h3 className="resume-h3">{project.title}</h3>
-      <p className="resume-text">{project.blurb}</p>
-      <p className="resume-meta resume-meta-row">
-        <span>{project.tech.join(', ')}</span>
-        {domain && project.liveUrl && (
-          <ExternalLink className="resume-link" href={project.liveUrl}>
-            {domain}
-          </ExternalLink>
-        )}
-      </p>
+      <div className="resume-entry-head">
+        <h3 className="resume-h3">
+          {entry.title}
+          {entry.org && <span className="resume-org"> · {entry.org}</span>}
+        </h3>
+        <p className="resume-when tnum">{entry.when}</p>
+      </div>
+      {(entry.detail || entry.link) && (
+        <p className="resume-meta">
+          {entry.detail}
+          {entry.detail && entry.link && <span aria-hidden="true"> · </span>}
+          {entry.link && <Link link={entry.link} />}
+        </p>
+      )}
+      <ul className="resume-points">
+        {entry.points.map((point) => (
+          <li key={point}>{point}</li>
+        ))}
+      </ul>
     </div>
   );
 }
 
 export default function Resume(): JSX.Element {
-  const now = experience[0];
-  const roleLine = fill(site.cv.roleLine, { role: now.role, org: now.org, ordinal: ordinal(education.year), school: education.short });
-  const contact: ContactItem[] = [
-    { text: profile.email, href: `mailto:${profile.email}` },
-    { text: `github.com/${profile.githubHandle}`, href: profile.github, external: true },
-    { text: `linkedin.com/in/${profile.linkedinHandle}`, href: profile.linkedin, external: true },
-    { text: profile.location },
-    { text: domainOf(profile.siteUrl), href: profile.siteUrl },
-  ];
-  const cvProjects = cvProjectIds.map((id) => projectById(id)).filter((p): p is Project => Boolean(p));
-  const coursework = education.courses.filter((c) => c.featured).map((c) => c.name);
+  const cv = buildCv();
+  const h = cv.headings;
 
   return (
     <div className="resume-page">
@@ -88,122 +79,99 @@ export default function Resume(): JSX.Element {
       <main id="main" className="resume-main">
         <article className="resume-sheet" aria-labelledby="resume-name">
           <header className="resume-head">
-            <div className="resume-id">
-              <h1 className="resume-name" id="resume-name" tabIndex={-1} data-focus-target="">
-                {profile.name}
-                <span className="resume-mark" aria-hidden="true" />
-              </h1>
-              <p className="resume-role">{roleLine}</p>
-              <p className="resume-summary">{profile.cvSummary}</p>
-            </div>
+            <h1 className="resume-name" id="resume-name" tabIndex={-1} data-focus-target="">
+              {cv.name}
+              <span className="resume-mark" aria-hidden="true" />
+            </h1>
+            <p className="resume-title">{cv.title}</p>
             <address className="resume-contact">
               <ul>
-                {contact.map((item) => (
-                  <ContactLine key={item.text} item={item} />
+                {cv.contact.map((c) => (
+                  <li key={c.text}>
+                    <Link link={c} />
+                  </li>
                 ))}
               </ul>
             </address>
           </header>
 
-          <div className="resume-cols">
-            <div className="resume-col-main">
-              <section className="resume-sec" aria-labelledby="resume-experience">
-                <h2 className="resume-h2" id="resume-experience">
-                  {site.cv.experience}
-                </h2>
-                {experience.map((x) => (
-                  <div className="resume-entry" key={`${x.org}-${x.start}`}>
-                    <div className="resume-entry-head">
-                      <h3 className="resume-h3">{x.role}</h3>
-                      <p className="resume-meta">
-                        {x.location ? `${x.org} · ${x.location}` : x.org}
-                      </p>
-                      <p className="resume-meta resume-when tnum">{formatPeriod(x.start, x.end)}</p>
-                    </div>
-                    <ul className="resume-points">
-                      {x.points.map((point) => (
-                        <li key={point}>{point}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </section>
+          <section className="resume-sec" aria-labelledby="resume-summary">
+            <h2 className="resume-h2" id="resume-summary">
+              {h.summary}
+            </h2>
+            <p className="resume-text">{cv.summary}</p>
+          </section>
 
-              <section className="resume-sec" aria-labelledby="resume-projects">
-                <h2 className="resume-h2" id="resume-projects">
-                  {site.cv.projects}
-                </h2>
-                {cvProjects.map((p) => (
-                  <ProjectEntry key={p.id} project={p} />
-                ))}
-              </section>
-            </div>
-
-            <div className="resume-col-side">
-              <section className="resume-sec" aria-labelledby="resume-education">
-                <h2 className="resume-h2" id="resume-education">
-                  {site.cv.education}
-                </h2>
-                <div className="resume-entry">
-                  <h3 className="resume-h3">{education.degree}</h3>
-                  <p className="resume-meta">{education.school}</p>
-                  <p className="resume-meta tnum">
-                    {fill(site.cv.eduYears, {
-                      period: formatPeriod(education.start, education.expectedEnd),
-                      ordinal: ordinal(education.year),
-                    })}
-                  </p>
+          <section className="resume-sec" aria-labelledby="resume-skills">
+            <h2 className="resume-h2" id="resume-skills">
+              {h.skills}
+            </h2>
+            <dl className="resume-skills">
+              {cv.skills.map((g) => (
+                <div key={g.label}>
+                  <dt>{g.label}:</dt> <dd>{g.items.join(', ')}</dd>
                 </div>
-                <dl className="resume-dl">
-                  <div>
-                    <dt>{site.cv.coursework}</dt>
-                    <dd>{coursework.join(', ')}</dd>
-                  </div>
-                </dl>
-              </section>
+              ))}
+            </dl>
+          </section>
 
-              <section className="resume-sec" aria-labelledby="resume-skills">
-                <h2 className="resume-h2" id="resume-skills">
-                  {site.cv.skills}
-                </h2>
-                <dl className="resume-dl">
-                  {skillGroups.map((g) => (
-                    // the CV lists every group, the CV-only ones included
-                    <div key={g.label}>
-                      <dt>{g.label}</dt>
-                      <dd>{capitalize(g.skills.map((s) => s.name).join(', '))}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </section>
+          <section className="resume-sec" aria-labelledby="resume-experience">
+            <h2 className="resume-h2" id="resume-experience">
+              {h.experience}
+            </h2>
+            {cv.experience.map((e) => (
+              <Entry key={e.title} entry={e} />
+            ))}
+          </section>
 
-              <section className="resume-sec" aria-labelledby="resume-languages">
-                <h2 className="resume-h2" id="resume-languages">
-                  {site.cv.languages}
-                </h2>
-                <ul className="resume-plain">
-                  {languages.map((l) => (
-                    <li key={l.name}>
-                      {l.name}, {l.level}
-                    </li>
-                  ))}
-                </ul>
-              </section>
+          <section className="resume-sec" aria-labelledby="resume-projects">
+            <h2 className="resume-h2" id="resume-projects">
+              {h.projects}
+            </h2>
+            {cv.projects.map((e) => (
+              <Entry key={e.title} entry={e} />
+            ))}
+          </section>
 
-              <section className="resume-sec" aria-labelledby="resume-also">
-                <h2 className="resume-h2" id="resume-also">
-                  {site.cv.also}
-                </h2>
-                <p className="resume-text">{listJoin(alsoUsed)}</p>
-              </section>
+          <section className="resume-sec" aria-labelledby="resume-education">
+            <h2 className="resume-h2" id="resume-education">
+              {h.education}
+            </h2>
+            <div className="resume-entry">
+              <div className="resume-entry-head">
+                <h3 className="resume-h3">{cv.education.degree}</h3>
+                <p className="resume-when tnum">{cv.education.when}</p>
+              </div>
+              <p className="resume-meta">
+                {cv.education.school}
+                <span aria-hidden="true"> · </span>
+                {cv.education.status}
+              </p>
+              <p className="resume-text resume-course">
+                <b>{site.cv.coursework}:</b> {cv.education.coursework}.
+              </p>
             </div>
-          </div>
+          </section>
 
-          {/* the site's address is in the contact block */}
-          <footer className="resume-foot">
-            <p className="tnum">{fill(site.cv.updated, { date: UPDATED })}</p>
-          </footer>
+          <section className="resume-sec" aria-labelledby="resume-languages">
+            <h2 className="resume-h2" id="resume-languages">
+              {h.languages}
+            </h2>
+            <p className="resume-text">{cv.languages.join(' · ')}</p>
+          </section>
         </article>
+
+        <p className="resume-formats">
+          {site.cv.formatsLead}{' '}
+          {site.cv.formats.map((f, i) => (
+            <span key={f.href}>
+              {i > 0 && <span aria-hidden="true"> · </span>}
+              <a className="resume-link" href={f.href} download={f.download || undefined}>
+                {f.label}
+              </a>
+            </span>
+          ))}
+        </p>
       </main>
     </div>
   );

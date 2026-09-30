@@ -95,18 +95,15 @@ export const site = {
     back: 'Back to the site',
     download: 'Download PDF',
     print: 'Print',
-    experience: 'Experience',
-    projects: 'Selected projects',
-    education: 'Education',
-    skills: 'Skills',
-    languages: 'Languages',
-    coursework: 'Coursework',
-    also: 'Also',
-    updated: 'Updated {date}',
-    /** The line under the name: the current role and the year of study. */
-    roleLine: '{role} at {org} · {ordinal}-year student at {school}',
-    /** The degree's period and year of study. */
-    eduYears: '{period}, {ordinal} year',
+    coursework: 'Relevant coursework',
+    /** Under the sheet, never printed: the same CV in the formats job sites and AI tools ask for
+     *  (all written by scripts/export-cv.mjs from the data the sheet renders). */
+    formatsLead: 'The same CV as',
+    formats: [
+      { label: 'Word (DOCX)', href: '/Ratko_Sisovic_CV.docx', download: true },
+      { label: 'Markdown', href: '/cv.md', download: false },
+      { label: 'JSON Resume', href: '/resume.json', download: false },
+    ],
   },
   study: {
     label: 'Case study',

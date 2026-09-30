@@ -8,6 +8,9 @@ export const profile = {
   location: 'Belgrade, Serbia',
   city: 'Belgrade',
   email: 'ralesisko@gmail.com',
+  /** International format, e.g. '+381 6x xxx xxxx'. Shown on the CV (and in every export) only when set;
+   *  ATS and CV graders count a phone number as part of complete contact details. */
+  phone: '',
   github: 'https://github.com/shikamaru1010',
   githubHandle: 'shikamaru1010',
   linkedin: 'https://www.linkedin.com/in/ratko%C5%A1i%C5%A1ovi%C4%87/',

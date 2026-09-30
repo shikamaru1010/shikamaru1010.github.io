@@ -13,7 +13,9 @@
     "pdf": "node scripts/generate-pdf.mjs",
     "daily-message": "node scripts/generate-daily-message.mjs",
     "og": "node scripts/generate-og.mjs",
-    "images": "node scripts/image-variants.mjs"
+    "images": "node scripts/image-variants.mjs",
+    "cv:export": "node scripts/export-cv.mjs",
+    "cv:audit": "node scripts/cv-audit.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
