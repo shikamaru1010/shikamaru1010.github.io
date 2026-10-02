@@ -15,7 +15,7 @@ export default function PersonalHero(): JSX.Element {
       name={personal.firstName}
       lines={[personal.intro]}
       lede={personal.line}
-      disc={<ContourArt alt={personal.art.alt} egg={personal.contourEasterEgg} />}
+      disc={<ContourArt alt={personal.art.alt} />}
     />
   );
 }

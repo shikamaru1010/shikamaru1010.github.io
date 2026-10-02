@@ -56,8 +56,6 @@ export const personal = {
   art: {
     alt: 'Shikamaru Nara from Naruto, drawn in ink on orange',
   },
-  /** Hovering the picture's mouth with a mouse shows a joint and a little smoke; false removes it. */
-  contourEasterEgg: true,
   nowHeading: 'Now',
   now,
   toolsLead: 'Daily tools',

@@ -143,28 +143,20 @@ describe('render', () => {
     expect(disc).toMatch(/^<div class="mono-disc"><svg class="mono-media p-art" viewBox="0 0 720 720" role="img" /);
     expect(disc).toContain(`aria-label="${personal.art.alt}"`);
     expect(disc).not.toMatch(/<img|<video|filter/);
-    expect(disc.includes('class="p-art-mouth"')).toBe(personal.contourEasterEgg);
+    expect(disc).not.toMatch(/p-art-mouth|p-art-egg|p-smoke/);
   });
 
-  it('the picture: one small inline SVG around the local ink image; the easter egg is hidden, unfocusable and switchable', () => {
-    const on = renderToStaticMarkup(<ContourArt alt="a" egg />);
-    const off = renderToStaticMarkup(<ContourArt alt="a" egg={false} />);
-    expect(on.length).toBeLessThan(12 * 1024);
-    for (const svg of [on, off]) {
-      // the only file it loads is the ink layer in public/, and the only url() is the circle clip
-      expect(svg).not.toMatch(/<(script|text|use|foreignObject|style)\b|url\((?!#p-art-clip\))|font/i);
-      expect(svg.match(/href="[^"]*"/g)).toEqual([`href="${ART_SRC}"`]);
-      expect(existsSync(new URL(`../public${ART_SRC}`, import.meta.url))).toBe(true);
-    }
-    expect(off).not.toMatch(/p-art-mouth|p-art-egg/);
-    expect(on).toMatch(/<circle class="p-art-mouth" [^>]*fill="none"><\/circle>/);
-    expect(on).toContain('<g class="p-art-egg" aria-hidden="true"');
-    expect(on).not.toMatch(/tabindex|<title|cursor/i);
+  it('the picture: one small inline SVG around the local ink image, with nothing hidden in it', () => {
+    const svg = renderToStaticMarkup(<ContourArt alt="a" />);
+    expect(svg.length).toBeLessThan(12 * 1024);
+    // the only file it loads is the ink layer in public/, and the only url() is the circle clip
+    expect(svg).not.toMatch(/<(script|text|use|foreignObject|style)\b|url\((?!#p-art-clip\))|font/i);
+    expect(svg.match(/href="[^"]*"/g)).toEqual([`href="${ART_SRC}"`]);
+    expect(existsSync(new URL(`../public${ART_SRC}`, import.meta.url))).toBe(true);
+    // no interactive layer: no hit areas, no hover-only artwork, nothing focusable
+    expect(svg).not.toMatch(/p-art-mouth|p-art-egg|p-smoke|p-ember|tabindex|<title|cursor/i);
     const css = readFileSync(new URL('./components/personal/personal.css', import.meta.url), 'utf8');
-    const block = (at: string) => css.slice(css.indexOf(at), css.indexOf('\n}', css.indexOf(at)));
-    // the egg answers only a hovering mouse, and under reduced motion nothing drifts or rises
-    expect(block('@media (hover: hover) and (pointer: fine)')).toContain('.p-art-mouth { pointer-events: all; }');
-    expect(block('@media (prefers-reduced-motion: reduce)')).toContain('.p-smoke > *, .p-ember { animation: none; }');
+    expect(css).not.toMatch(/p-art-mouth|p-art-egg|p-smoke|p-ember/);
   });
 
   // The PDF recruiters download is committed; this ties it to the data (generate-pdf.mjs writes cvHash).
