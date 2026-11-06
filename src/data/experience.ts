@@ -1,75 +1,84 @@
+// Roles, education and languages. `start` / `end` are 'YYYY' or 'YYYY-MM';
+// src/lib/format.ts turns them into periods ('Jul 2026–now').
 export type Experience = {
   role: string;
   org: string;
   location: string;
-  period: string;
+  start: string;
+  end?: string;
+  /** What the role is, one fact per point; the home page and the CV show all of them. */
   points: string[];
-  tech?: string[];
+  /** The role in a word or two, for the hero's line under the name ('Intern at Podyx'). `role` when absent. */
+  roleShort?: string;
 };
 
 export const experience: Experience[] = [
   {
     role: 'Software Engineering Intern',
     org: 'Podyx',
-    location: 'Belgrade, Serbia (hybrid/remote)',
-    period: 'Jul 2026 — Present',
+    location: 'Belgrade, hybrid/remote',
+    start: '2026-07',
+    roleShort: 'Intern',
     points: [
-      'Professional internship at Podyx — an all-in-one SaaS platform for podcast and creative studio management (bookings, payments, invoicing, client management) used by 200+ studios worldwide.',
-      'Contribute features and fixes to a production SaaS codebase, working in an established team workflow with code review and ticket-based delivery.',
+      'Podyx is an all-in-one platform for podcast and creative studios: bookings, payments, invoicing and client management, used by more than 200 studios worldwide.',
+      'I ship features and fixes in its production codebase, working through tickets and code review in an established team.',
     ],
   },
   {
-    role: 'Freelance Web & Internal Tools Developer',
-    org: 'Independent',
-    location: 'Belgrade, Serbia',
-    period: '2023 — Present',
+    role: 'Web and Internal Tools Developer',
+    org: 'Freelance',
+    location: 'Belgrade',
+    start: '2023',
     points: [
-      'Deliver production web apps and internal tools for local businesses — from understanding the problem through development, deployment and ongoing support.',
-      'Built a Django + AI internal system for a butcher/grill business: daily P&L reports, Serbian-regulation PDF declarations and scheduled cycles.',
-      'Shipped a production catalog site (Pilatiq Reformeri) and several client websites, working directly with owners on requirements and iteration.',
+      'I work directly with business owners, from the first conversation to deployment and ongoing support.',
+      'For Mesara Šisko I built the internal system that produces daily P&L reports and the PDF declarations Serbian regulations require, on a schedule.',
     ],
-    tech: ['Python/Django', 'JavaScript', 'Node.js', 'Docker', 'Tailwind', 'AI integrations'],
   },
   {
-    role: 'Independent Systems Builder — Automation & Reliability',
+    role: 'Independent Developer',
     org: 'Personal projects',
-    location: 'Remote',
-    period: '2025 — Present',
-    points: [
-      'Build complex automated systems that must run reliably and stay diagnosable — agents, data pipelines and observability tooling.',
-      'Built tradingAgent — a daily AI trading pipeline with live FastAPI dashboards, risk guardrails, circuit breakers and human-in-the-loop approval.',
-      'Built dev-dashboard + "Brain" — monitoring over dozens of repos, syncing into a structured knowledge base with zero runtime dependencies.',
-    ],
-    tech: ['Python', 'TypeScript', 'Next.js', 'React Native', 'FastAPI', 'REST APIs'],
+    location: '',
+    start: '2025',
+    // tradingAgent and dev-dashboard are told in Work (home) and Selected projects (CV), not again here
+    points: ['Agent pipelines, data pipelines and monitoring, with guardrails and logging.'],
   },
 ];
 
-export type Education = {
-  school: string;
-  degree: string;
-  period: string;
-  detail: string;
-  courses: string[];
-};
+export type Course = { name: string; detail?: string; featured?: boolean };
 
-export const education: Education = {
+const courses: Course[] = [
+  { name: 'Computer networks and internet technologies', detail: 'TCP/IP, HTTP, Wireshark, Python sockets', featured: true },
+  { name: 'Software design', detail: 'GoF patterns, 3-tier architecture, Java and JDBC, a client-server project', featured: true },
+  { name: 'Information systems design', detail: 'UML, requirements analysis, system modeling', featured: true },
+  { name: 'Operations research 1 and 2', detail: 'linear programming, optimization, Markov chains', featured: true },
+  { name: 'Mathematics', detail: 'calculus, discrete mathematics, probability and statistics, numerical analysis' },
+  { name: 'Management and organization', detail: 'management, economics, systems theory' },
+  { name: 'Databases', featured: true },
+  { name: 'Data structures and algorithms', featured: true },
+];
+
+export const education = {
   school: 'Faculty of Organizational Sciences (FON), University of Belgrade',
-  degree: 'B.Sc. — Information Systems & Technologies (TEP module)',
-  period: '2023 — Present (3rd year, expected 2027)',
+  short: 'FON',
+  university: 'University of Belgrade',
+  field: 'Information Systems & Technologies',
+  degree: 'B.Sc. Information Systems & Technologies',
+  start: 2023,
+  expectedEnd: 2027,
+  year: 4,
   detail:
-    'FON is the Faculty of Organizational Sciences — alongside the technical core, the programme builds management, economics and strong mathematics foundations (organizational + analytical thinking). Beyond the curriculum I work hands-on with Wireshark, GNS3, Cisco Packet Tracer, Docker and Linux tooling.',
-  courses: [
-    'Computer Networks & Internet Technologies — TCP/IP, HTTP, Wireshark, Python sockets',
-    'Software Design — GoF patterns, 3-tier architecture, Java / JDBC, client-server project',
-    'Information Systems Design — UML, requirements analysis, system modeling',
-    'Operations Research 1 & 2 — linear programming, optimization, Markov chains',
-    'Mathematics — Calculus, Discrete Mathematics, Probability & Statistics, Numerical Analysis',
-    'Management & Organization — management, economics, systems theory (FON core)',
-    'Databases, Data Structures & Algorithms',
-  ],
+    'FON combines information systems with management, economics and mathematics. Outside the curriculum I work with GNS3, Cisco Packet Tracer, Docker and Linux tooling.',
+  courses,
 };
 
-export const languages = [
-  { name: 'Serbian', level: 'Native' },
-  { name: 'English', level: 'Professional working proficiency' },
+export type Education = typeof education;
+
+export type Language = {
+  name: string;
+  level: string;
+};
+
+export const languages: Language[] = [
+  { name: 'Serbian', level: 'native' },
+  { name: 'English', level: 'professional working proficiency' },
 ];

@@ -1,0 +1,26 @@
+/* ------------------------------------------------------------------
+   Skills: the groups on the page grid, three to a row (four columns
+   each) from 1024px, two on tablets, one on phones. Each group is a
+   hairline, its label and a tight list at the body size.
+------------------------------------------------------------------- */
+
+.sk-groups { row-gap: var(--sp-6); align-items: start; }
+.sk-group { grid-column: span 4; border-top: 1px solid var(--rule); padding-top: 14px; }
+.sk-label { font-size: var(--s1); line-height: 1.4; font-weight: 500; color: var(--ink-2); }
+.sk-items { margin-top: var(--sp-2); }
+.sk-items li { line-height: 1.45; text-wrap: pretty; }
+.sk-items li + li { margin-top: 2px; }
+
+.sk-also { margin-top: var(--sp-6); color: var(--ink-2); text-wrap: pretty; }
+
+/* ---------------- tablets: two groups to a row ---------------- */
+@media (max-width: 1023px) {
+  .sk-group { grid-column: span 6; }
+}
+
+/* ---------------- phones: one group to a row ---------------- */
+@media (max-width: 720px) {
+  .sk-groups { row-gap: var(--sp-5); }
+  .sk-group { grid-column: 1 / -1; }
+  .sk-also { margin-top: var(--sp-5); }
+}

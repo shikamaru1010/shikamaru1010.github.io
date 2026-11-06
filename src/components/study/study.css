@@ -1,0 +1,218 @@
+/* ------------------------------------------------------------------
+   Case studies (#project/<id>). The home page's language: paper, ink,
+   hairlines, the 12-column grid and the quiet type scale (nothing above
+   --s4 here, weight 600 at most). Column 4 is the page's second axis:
+   the kicker in the header, the intro and the flow's titles start on it
+   (the flow's stop line runs in the gutter just before it).
+   Always the Professional palette (tokens.css).
+------------------------------------------------------------------- */
+
+/* ---------------- header (shell's .site-head / .brand / .nav, read-only) ---------------- */
+.study-kicker { grid-column: 4 / span 4; justify-self: start; }
+
+/* ---------------- top ---------------- */
+.study-top { padding-top: var(--sp-7); }
+.study-title {
+  font-size: var(--s4); line-height: 1.05; letter-spacing: -.03em; font-weight: 600;
+}
+.study-title:focus { outline: none; }
+.study-sub {
+  margin-top: var(--sp-4); max-width: 36em;
+  font-size: var(--s3); line-height: 1.22; letter-spacing: -.02em; font-weight: 400; text-wrap: balance;
+}
+.study-meta { margin-top: var(--sp-7); border-top: 1px solid var(--rule-strong); padding-top: 14px; row-gap: var(--sp-5); }
+.study-meta > div { grid-column: span 3; }
+.study-meta > .study-meta-stack.is-wide { grid-column: span 6; }
+.study-meta dd { margin-top: 4px; max-width: 34ch; text-wrap: pretty; }
+.study-meta dd a { display: inline-flex; align-items: center; min-height: 32px; margin-top: -5px; }
+.study-intro {
+  margin-top: var(--sp-7); margin-left: calc((100% + var(--g)) * 3 / 12);   /* from column 4 */
+  max-width: min(31em, calc((100% + var(--g)) * 8 / 12 - var(--g)));
+  font-size: var(--s3); line-height: 1.4; letter-spacing: -.01em; text-wrap: pretty;
+}
+
+/* ---------------- at a glance (optional; hairlines like the modules below it) ---------------- */
+.study-glance { padding-top: var(--sp-8); }
+.study-metrics { row-gap: var(--sp-6); }
+.study-metrics > div {
+  grid-column: span 3; display: flex; flex-direction: column;
+  border-top: 1px solid var(--rule); padding-top: 14px;
+}
+.study-metrics dt { order: 2; margin-top: 10px; }
+.study-metric {
+  order: 1;
+  font-size: var(--s3); line-height: 1.1; letter-spacing: -.02em; font-weight: 600;
+}
+
+/* ---------------- the screenshots, on the page grid ----------------
+   The desktop capture takes columns 1–9, the phone 10–12 (3 and 1 of the phone's 4).
+   The phone is cropped from the top to the desktop's height, so the two end on one
+   line: --desk-h is the desktop's height from the grid (the figure is a .wrap, so
+   100cqi is its measure). Phones show the desktop capture alone, across the measure. */
+.study-plate { margin-top: var(--sp-9); }
+.study-plate-grid {
+  --desk-span: 9;
+  --desk-h: calc(((100cqi + var(--g)) * var(--desk-span) / var(--cols) - var(--g)) * 10 / 16);
+  display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--g); align-items: start;
+}
+.study-shot {
+  width: 100%; height: auto; background: var(--rule);
+  outline: 1px solid var(--rule); outline-offset: -1px;
+}
+.study-shot-desk { grid-column: 1 / span var(--desk-span); aspect-ratio: 1440 / 900; }
+.study-shot-phone { grid-column: calc(var(--desk-span) + 1) / -1; height: var(--desk-h); object-fit: cover; object-position: top; }
+
+/* ---------------- sections ---------------- */
+.study-sec { padding-top: var(--sp-9); }
+.study-sec-head {
+  display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-2) var(--sp-5); flex-wrap: wrap;
+  border-top: 1px solid var(--rule-strong); padding-top: 14px; margin-bottom: var(--sp-6);
+}
+.study-h2 { font-size: var(--s3); line-height: 1.1; letter-spacing: -.02em; font-weight: 600; }
+.study-sec-aside { display: flex; align-items: baseline; gap: var(--sp-2) var(--sp-6); flex-wrap: wrap; }
+
+/* architecture: modules on the grid, three to a row; each says what the part does, once */
+.study-arch { align-items: stretch; }
+.study-arch li { grid-column: span 4; border-top: 1px solid var(--rule); padding: 14px 0 var(--sp-5); }
+.study-arch-title { font-size: var(--s2); line-height: 1.35; font-weight: 600; }
+.study-arch-detail { margin-top: 4px; max-width: 40ch; text-wrap: pretty; }
+.study-arch-tech { margin-top: 10px; }
+
+/* how it works: who acts and the step's name on one stop line; square = the system, filled circle = a person */
+.study-legend { display: flex; gap: var(--sp-5); }
+.study-legend li { display: inline-flex; align-items: center; }
+.study-key {
+  display: inline-block; width: 11px; height: 11px; margin-right: 8px;
+  background: var(--paper); border: 1px solid var(--rule-strong);
+}
+.study-key.is-person { border-radius: 50%; background: var(--ink); }
+
+.study-flow {
+  /* the stop line runs down the gutter before column 4; 5.5px is half the 11px marker */
+  --x: calc((100% + var(--g)) * 3 / 12 - var(--g) / 2 - 5.5px);
+  --c: calc(var(--s3) * .56);                   /* marker centre: the middle of the title's capitals */
+  --pad: 0px;                                   /* so the titles start on column 4, with the intro above */
+}
+.study-step { position: relative; align-items: baseline; }
+.study-step::before {
+  content: ''; position: absolute; z-index: 1; left: var(--x); top: calc(var(--c) - 5.5px);
+  width: 11px; height: 11px; background: var(--paper); border: 1px solid var(--rule-strong);
+}
+.study-step.is-person::before { border-radius: 50%; background: var(--ink); }
+.study-step::after {
+  content: ''; position: absolute; left: calc(var(--x) + 5px); width: 1px;
+  top: var(--c); bottom: calc(-1 * var(--c)); background: var(--rule-strong);
+}
+.study-step:last-child::after { display: none; }
+.study-actor { grid-column: 1 / span 3; }
+.study-step-title {
+  grid-column: 4 / span 7; padding-bottom: var(--sp-6);
+  font-size: var(--s3); line-height: 1.05; letter-spacing: -.02em; font-weight: 600;
+}
+.study-step:last-child .study-step-title { padding-bottom: 0; }
+
+/* decisions | guardrails; what was hard; outcomes. Running text stays near 68 characters a line:
+   in Golos 1ch (the zero) is wider than the average letter, so 52ch holds about 68 of them. */
+.study-pair { align-items: start; }
+.study-half { grid-column: span 6; }
+.study-list li { border-top: 1px solid var(--rule); padding: 12px 0 14px; max-width: 52ch; text-wrap: pretty; }
+.study-list li:last-child { border-bottom: 1px solid var(--rule); }
+/* side by side, rows of different heights would step their hairlines past each other: the pair has none */
+.study-pair .study-list li { border: 0; padding: 0; }
+.study-pair .study-list li + li { margin-top: 14px; }
+/* the ruled lists and the privacy line end on a column line: columns 1–5 here (about 70 characters),
+   1–7 on small laptops, 1–8 on tablets, the full measure on phones */
+.study-wide, .study-private-wrap { --measure: 5; }
+.study-wide .study-list,
+.study-private { max-width: calc((100% + var(--g)) * var(--measure) / var(--cols) - var(--g)); }
+.study-wide .study-list li { max-width: none; }
+
+/* privacy: a label and a line, set apart by space alone (the list above ends on a hairline) */
+.study-private-wrap { padding-top: var(--sp-8); }
+.study-private dd { margin-top: 4px; text-wrap: pretty; }
+
+/* ---------------- next ---------------- */
+.study-next { margin-top: var(--sp-9); }
+.study-next-row { border-top: 1px solid var(--rule-strong); padding-top: 14px; align-items: start; }
+.study-next-back {
+  grid-column: 1 / span 6; justify-self: start;
+  display: inline-flex; align-items: center; min-height: 44px; margin-top: -10px; font-weight: 600;
+}
+.study-next-link { grid-column: 7 / -1; justify-self: end; display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+.study-next-title {
+  margin-top: 4px;
+  font-size: var(--s3); line-height: 1.1; letter-spacing: -.025em; font-weight: 600;
+  text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .14em;
+  text-decoration-color: transparent; transition: text-decoration-color .15s;
+}
+.study-next-back:hover, .study-next-link:hover .study-next-title {
+  text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: .3em;
+}
+.study-next-back:hover { text-decoration-thickness: 1px; }
+.study-next-link:hover .study-next-title { text-underline-offset: .14em; text-decoration-thickness: 2px; }
+
+/* ---------------- footer: the foot line (shell.css) ---------------- */
+.study-foot { margin-top: var(--sp-9); padding-bottom: var(--sp-6); }
+
+/* touch screens of any width: 44px targets */
+@media (pointer: coarse) {
+  .study-meta dd a { min-height: 44px; margin-top: -10px; }
+}
+
+/* ---------------- tablet (721–1100) ---------------- */
+@media (min-width: 721px) and (max-width: 1100px) {
+  .study-meta > div { grid-column: span 4; }
+  .study-meta > .study-meta-stack, .study-meta > .study-meta-stack.is-wide { grid-column: 1 / -1; grid-row: 2; }
+  .study-intro { margin-left: 0; max-width: 34em; }
+  .study-metrics > div { grid-column: span 6; }
+  .study-arch li { grid-column: span 6; }
+  .study-step-title { grid-column: 4 / -1; }
+  .study-wide, .study-private-wrap { --measure: 7; }
+}
+@media (min-width: 721px) and (max-width: 900px) {
+  .study-wide, .study-private-wrap { --measure: 8; }
+}
+
+/* ---------------- phone ---------------- */
+@media (max-width: 720px) {
+  .study-kicker { display: none; }
+  .study-top { padding-top: var(--sp-6); }
+  .study-title { margin-top: 10px; }
+  .study-sub { margin-top: var(--sp-3); }
+  .study-meta { margin-top: var(--sp-6); row-gap: var(--sp-4); }
+  .study-meta > div { grid-column: span 2; }
+  .study-meta > .study-meta-stack, .study-meta > .study-meta-stack.is-wide { grid-column: 1 / -1; grid-row: 2; }
+  .study-meta dd a { min-height: 44px; margin-top: -10px; }
+  /* running text, not a lede, at this width: the body size and leading of the rest of the page */
+  .study-intro { margin: var(--sp-6) 0 0; max-width: none; font-size: var(--s2); line-height: 1.55; letter-spacing: 0; }
+
+  .study-glance { padding-top: var(--sp-7); }
+  .study-metrics { row-gap: var(--sp-5); }
+  .study-metrics > div { grid-column: span 2; }
+
+  .study-plate { margin-top: var(--sp-8); }
+  .study-plate-grid { --desk-span: 4; }
+  .study-shot-phone { display: none; }
+
+  .study-sec { padding-top: var(--sp-8); }
+  .study-sec-head { margin-bottom: var(--sp-5); }
+  .study-arch li { grid-column: 1 / -1; }
+
+  .study-flow { --x: 0px; --c: calc(var(--s1) * 1.4 + 4px + var(--s3) * .56); --pad: 28px; }
+  .study-step { display: block; padding-left: var(--pad); }
+  .study-actor { margin-bottom: 4px; }
+  .study-step-title { padding-bottom: var(--sp-5); }
+
+  .study-pair { row-gap: var(--sp-8); }
+  .study-half { grid-column: 1 / -1; }
+  .study-wide, .study-private-wrap { --measure: 4; }
+  .study-private-wrap { padding-top: var(--sp-7); }
+
+  .study-next { margin-top: var(--sp-8); }
+  .study-next-row { row-gap: var(--sp-5); }
+  /* the DOM order (back, then next) is the reading and tab order here too */
+  .study-next-back { grid-column: 1 / -1; margin-top: -10px; }
+  .study-next-link { grid-column: 1 / -1; justify-self: stretch; align-items: flex-start; text-align: left; min-height: 44px; }
+
+  .study-foot { margin-top: var(--sp-8); }
+}

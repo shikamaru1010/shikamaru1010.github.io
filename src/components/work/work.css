@@ -1,0 +1,41 @@
+/* ------------------------------------------------------------------
+   Work: the case-study link and the smaller projects list. The client
+   index and the systems have their own files.
+------------------------------------------------------------------- */
+
+/* "Case study →", in a client row and a system entry: underlined in the accent on hover, like the hero's "View CV" */
+.case-link {
+  display: inline-flex; align-items: center; min-height: 44px; font-weight: 600;
+  text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px;
+  text-underline-offset: .3em; transition: text-decoration-color .15s;
+}
+.case-link:hover { text-decoration-color: var(--accent); }
+
+/* ---------------- smaller projects: one line each on the grid ---------------- */
+.also { margin-top: var(--sp-8); }
+.also-list li { border-top: 1px solid var(--rule); padding: 14px 0 15px; align-items: baseline; }
+.also-list li:first-child { border-top: 0; padding-top: 0; }   /* the sub-head's rule is its top rule */
+.also-list li:last-child { border-bottom: 1px solid var(--rule); }
+.also-list .a-name { grid-column: 1 / span 3; font-weight: 600; }
+.also-list .a-what { grid-column: 4 / span 5; }
+.also-list .a-stack { grid-column: 9 / span 3; color: var(--ink-2); }
+.also-list .a-year { grid-column: 12; color: var(--ink-2); text-align: right; }
+
+/* tablets: the stack moves under the description instead of being dropped */
+@media (min-width: 721px) and (max-width: 1100px) {
+  .also-list li { row-gap: 2px; }
+  .also-list .a-name,
+  .also-list .a-what,
+  .also-list .a-year { grid-row: 1; }
+  .also-list .a-what { grid-column: 4 / span 7; }
+  .also-list .a-stack { grid-column: 4 / span 7; grid-row: 2; }
+  .also-list .a-year { grid-column: 11 / -1; }
+}
+
+@media (max-width: 720px) {
+  .also-list li { row-gap: 2px; }
+  .also-list .a-name { grid-column: 1 / span 3; grid-row: 1; }
+  .also-list .a-year { grid-column: 4; grid-row: 1; }
+  .also-list .a-what,
+  .also-list .a-stack { grid-column: 1 / -1; }
+}

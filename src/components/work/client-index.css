@@ -1,0 +1,176 @@
+/* ------------------------------------------------------------------
+   Client index: a semantic table (one <tbody> per client) and a sticky
+   plate with the selected site on a desktop and a phone, over a contact
+   strip of all four. The table's boxes are blocks and each row is a grid at every width, so
+   the name (the row header) and what it is (its own cell) stack in the
+   first column; ClientIndex.tsx repeats the table roles for that reason.
+------------------------------------------------------------------- */
+
+.index-wrap { align-items: start; }
+
+/* ---------------- desktop (≥1101): the table on columns 1–7, the plate on 8–12 ----------------
+   Name and what it is: columns 1–3 of the page · stack and notes: 4–6 · year: 7.
+   The notes get columns 4–6 (about 44 characters at 13px) at every desktop width. */
+.index { grid-column: 1 / span 7; width: 100%; }
+.index,
+.index thead,
+.index tbody,
+.index tr,
+.index th,
+.index td { display: block; }
+.index tr {
+  display: grid;
+  grid-template-columns: calc((100% + var(--g)) * 3 / 7) minmax(0, 1fr) calc((100% + var(--g)) / 7 - var(--g));
+  grid-template-rows: auto auto 1fr;
+  align-items: baseline;
+}
+.index th,
+.index td { text-align: left; font-weight: 400; padding: 0; }
+
+.index-head tr { padding-bottom: 10px; border-bottom: 1px solid var(--rule-strong); }
+.index-head th { font-size: var(--s1); line-height: 1.55; color: var(--ink-2); font-weight: 500; }
+.index-head .h-name { grid-column: 1; }
+.index-head .h-stack { grid-column: 2; }
+.index-head .h-year { grid-column: 3; text-align: right; }
+/* "About" is the column of the name's second line; the screenshot column only exists ≤1100 */
+.index-head .h-meta,
+.index-head .h-shot {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+.index tr.row { position: relative; cursor: pointer; padding: 20px 0 22px; border-bottom: 1px solid var(--rule); }
+.index .c-name { grid-column: 1; grid-row: 1; position: relative; padding-right: var(--g); }
+.index .c-meta { grid-column: 1; grid-row: 2 / -1; align-self: start; padding-right: var(--g); }
+.index .c-stack { grid-column: 2; grid-row: 1 / -1; color: var(--ink-2); padding-right: var(--g); line-height: 1.4; }
+.index .c-year { grid-column: 3; grid-row: 1 / -1; text-align: right; color: var(--ink-2); white-space: nowrap; }
+
+.index .nm { font-size: var(--s3); line-height: 1.1; letter-spacing: -.025em; font-weight: 600; }
+.index a.nm { text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 2px; text-underline-offset: .14em; transition: text-decoration-color .15s; }
+.index a.nm:hover,
+.index a.nm:focus-visible { text-decoration-color: var(--accent); }
+.index .what { display: block; color: var(--ink-2); margin-top: 6px; max-width: 30ch; line-height: 1.4; text-wrap: pretty; }
+.index .stk,
+.index .notes li { text-wrap: pretty; }
+.index .acts { display: flex; flex-wrap: wrap; gap: 0 20px; margin-top: 8px; }
+.index .acts a { display: inline-flex; align-items: center; min-height: 32px; }   /* "Case study →" is .case-link (work.css) */
+
+/* the accent square in the margin marks the row the plate is showing */
+.index .mark {
+  position: absolute; left: -26px; top: calc(var(--s3) * .6 - 5px); width: 10px; height: 10px;   /* centred on the name's capitals */
+  background: var(--accent); opacity: 0; transition: opacity .15s;
+}
+.index tr.is-active .mark { opacity: 1; }
+.index tr.is-active .c-year { color: var(--ink); }
+.index .shot-m { display: none; }
+
+/* ---------------- the plate ----------------
+   Desktop + phone of the same site at one height, then all four as a contact strip.
+   4 equal columns with a 4.94% gap: 3 columns + 2 gaps at 16:10 is exactly as tall as
+   1 column at 390:844, so the phone sits flush with the desktop and the strip lines up
+   under both. Sticky, so it keeps the right side filled while the taller rows scroll past. */
+.plate {
+  grid-column: 8 / -1;
+  position: sticky; top: calc(var(--head-h) + 24px); align-self: start;
+}
+.plate-head {
+  display: flex; justify-content: space-between; gap: 24px;
+  font-size: var(--s1); line-height: 1.55; color: var(--ink-2); font-weight: 500;
+  padding-bottom: 10px; border-bottom: 1px solid var(--rule-strong);
+}
+.plate-head b { color: var(--ink); font-weight: 600; }
+.plate-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 4.94%; margin-top: 20px; }
+.plate-grid .shot { margin: 0; }
+.plate-grid .desk { grid-column: 1 / span 3; }
+.plate-grid .phone { grid-column: 4; }
+.plate-grid img {
+  width: 100%; height: auto; background: var(--rule);
+  outline: 1px solid var(--rule-strong); outline-offset: -1px;
+}
+.plate-grid .desk img { aspect-ratio: 16 / 10; }
+.plate-grid .phone img { aspect-ratio: 780 / 1688; }
+
+.sheet { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; margin-top: var(--sp-5); }
+.sheet .thumb { position: relative; cursor: pointer; }
+.sheet .thumb img { aspect-ratio: 16 / 10; outline-color: var(--rule); opacity: .72; transition: opacity .15s; }
+.sheet .thumb:hover img { opacity: 1; }
+.sheet .thumb.is-active img { opacity: 1; outline-color: var(--rule-strong); }
+.sheet .thumb::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -9px; height: 3px;
+  background: var(--accent); opacity: 0; transition: opacity .15s;
+}
+.sheet .thumb.is-active::after { opacity: 1; }
+
+/* touch screens of any width: the row's links are 44px targets */
+@media (pointer: coarse) {
+  .index .acts a { min-height: 44px; }
+}
+
+/* Windows high contrast: keep the marks, in system colours */
+@media (forced-colors: active) {
+  .index .mark,
+  .sheet .thumb::after { forced-color-adjust: none; background: Highlight; }
+}
+
+/* ---------------- ≤1100: stacked rows, each with its phone capture; no plate ---------------- */
+@media (max-width: 1100px) {
+  .index-wrap { display: block; }
+  .plate { display: none; }
+  /* the column headers stay for screen readers */
+  .index-head {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .index tr.row { border-bottom: 0; border-top: 1px solid var(--rule); padding: 18px 0 22px; align-items: start; }
+  .index .client:last-child tr.row { border-bottom: 1px solid var(--rule); }
+  .index .c-name,
+  .index .c-meta,
+  .index .c-stack,
+  .index .c-year { padding-right: 0; }
+  .index .c-year { text-align: left; }
+  .index tr.is-active .c-year { color: var(--ink-2); }   /* no plate here, so no selected row */
+  .index .shot-m { display: block; }
+  .index .shot-m img {
+    width: 100%; aspect-ratio: 9 / 14; object-fit: cover; object-position: top;
+    background: var(--rule); outline: 1px solid var(--rule-strong); outline-offset: -1px;
+  }
+  .index .mark { display: none; }
+  .index .acts a { min-height: 44px; }
+  /* the name link's touch target grows to 44px without moving a line (padding out, margin back in);
+     it sits above the line under it, so that line cannot take its lower half */
+  .index a.nm { display: inline-block; min-height: 44px; padding-block: 12px; margin-block: -12px; position: relative; z-index: 1; }
+}
+
+/* tablets: name, what, links and year | stack and notes (from column 5 of the page) | phone capture */
+@media (min-width: 721px) and (max-width: 1100px) {
+  .index tr.row {
+    grid-template-columns: calc((100% + var(--g)) * 4 / 12 - var(--g)) minmax(0, 1fr) 200px;
+    grid-template-rows: auto auto auto 1fr;
+    column-gap: var(--g);
+  }
+  .index .c-name { grid-column: 1; grid-row: 1; }
+  .index .c-meta { grid-column: 1; grid-row: 2; }
+  .index .c-year { grid-column: 1; grid-row: 3; margin-top: 10px; }
+  .index .c-stack { grid-column: 2; grid-row: 1 / -1; margin-top: 4px; }
+  .index .shot-m { grid-column: 3; grid-row: 1 / -1; }
+}
+
+/* phones: name, what, links and year beside the capture (the 1fr row takes up the difference); the
+   stack and its notes below, full width, so the notes read at a real measure, not four words a line */
+@media (max-width: 720px) {
+  .index tr.row {
+    grid-template-columns: minmax(0, 1fr) 42%;
+    grid-template-rows: auto auto auto 1fr auto;
+    column-gap: 16px;
+  }
+  .index .c-name { grid-column: 1; grid-row: 1; }
+  .index .c-meta { grid-column: 1; grid-row: 2; }
+  .index .c-year { grid-column: 1; grid-row: 3; margin-top: 4px; }
+  .index .shot-m { grid-column: 2; grid-row: 1 / span 4; }
+  .index .c-stack { grid-column: 1 / -1; grid-row: 5; margin-top: 18px; }
+  .index .notes li { max-width: none; }
+}
+/* the narrowest phones: a little more room for the domain beside the capture */
+@media (max-width: 340px) {
+  .index tr.row { grid-template-columns: minmax(0, 1fr) 38%; }
+}

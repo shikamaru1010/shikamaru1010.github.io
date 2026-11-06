@@ -1,0 +1,148 @@
+/* ------------------------------------------------------------------
+   Personal home. Warm ink, bone, one vermilion-orange.
+   The hero is the Professional composition; below it, column 6 is the
+   second axis: every block of content starts on it, names and labels
+   hold columns 1–5.
+   Every selector starts with .p-, so nothing here reaches the Professional
+   tree that shares the document.
+------------------------------------------------------------------- */
+
+/* ---------------- hero ----------------
+   The Professional composition (hero/monolith.css); here only the drawing in the
+   circle (ContourArt.tsx). Nothing in it takes the pointer, and the clouds are the
+   only thing that moves: a few px over about a minute. */
+.p-art { pointer-events: none; }
+.p-cloud { animation: p-drift 56s ease-in-out infinite alternate; }
+.p-cloud + .p-cloud { animation-duration: 44s; animation-delay: -20s; }
+.p-cloud.p-far { animation-duration: 62s; animation-delay: -41s; }
+@keyframes p-drift { to { transform: translateX(18px); } }
+
+/* phones: the circle is one column (75–160px), so the lines are drawn in screen pixels, and the
+   far cloud and the grass are left out */
+@media (max-width: 720px) {
+  .p-art-ink { stroke-width: 1.25px; }
+  .p-art-ink > * { vector-effect: non-scaling-stroke; }
+  .p-fine { display: none; }
+}
+
+/* reduced motion: the clouds stay put */
+@media (prefers-reduced-motion: reduce) {
+  .p-cloud { animation: none; }
+}
+
+/* ---------------- sections: a label on columns 1–5, the content from column 6 ---------------- */
+.p-sec { margin-top: var(--sp-10); }
+/* the label and the text beside it share a baseline, not a top edge (the quote is larger) */
+.p-row { align-items: baseline; }
+.p-label { grid-column: 1 / span 5; }
+.p-label h2 { font-size: var(--s2); line-height: 1.4; font-weight: 600; }
+.p-label p { margin-top: 2px; }
+
+/* now: run-in lead words, reads like a note, not a table. Running text is body size; --s3 is kept for
+   the hero line (owner feedback: not a lot of big text) */
+.p-now { grid-column: 6 / span 6; }
+.p-now li { max-width: 60ch; text-wrap: pretty; }
+.p-now li + li { margin-top: var(--sp-4); }
+.p-now b { font-weight: 600; }
+.p-tools { grid-column: 6 / span 6; margin-top: var(--sp-7); padding-top: 14px; border-top: 1px solid var(--rule); }
+.p-tools-h { font-size: var(--s1); font-weight: 500; color: var(--ink-2); }
+/* four small columns, like the Skills groups on the professional side */
+.p-tools-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--g); row-gap: var(--sp-5); margin-top: 12px; }
+.p-tools-grid dt { font-size: var(--s1); color: var(--ink-2); margin-bottom: 4px; }
+.p-tools-grid dd { color: var(--ink); line-height: 1.55; }
+@media (max-width: 1100px) { .p-tools-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* today's thought: on the column-6 axis like the rest; the opening quote hangs in the gutter
+   so the words start on the column */
+.p-thought { grid-column: 6 / span 6; }
+.p-thought blockquote { font-size: var(--s4); line-height: 1.06; letter-spacing: -.04em; font-weight: 500; text-indent: -.4em; text-wrap: balance; }
+.p-q { color: var(--accent); }
+.p-thought figcaption { margin-top: var(--sp-6); }
+
+/* side projects (the vault and its domains): each domain a row, its name on columns 1–5 and
+   what writes into it from column 6 */
+.p-lede { grid-column: 6 / span 6; max-width: 60ch; text-wrap: pretty; }
+.p-domains { margin-top: var(--sp-8); }
+.p-domains li { border-top: 1px solid var(--rule); padding: 14px 0 var(--sp-6); align-items: baseline; }
+/* a domain is a label of the same tier as the section labels */
+.p-dom { grid-column: 1 / span 5; font-size: var(--s2); line-height: 1.4; font-weight: 600; }
+.p-domains p { grid-column: 6 / span 6; max-width: 60ch; }
+.p-domains strong { font-weight: 600; }
+.p-study { text-decoration-color: var(--ink-2); }
+.p-study:hover { text-decoration-color: var(--accent); }
+.p-orch { grid-column: 6 / span 6; margin-top: 4px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--ink-2); }
+.p-orch b { color: var(--ink); font-weight: 600; }
+
+/* off screen (only rendered when filled) */
+.p-off { grid-column: 6 / span 6; }
+.p-off li { max-width: 60ch; text-wrap: pretty; }
+.p-off li + li { margin-top: var(--sp-4); }
+
+/* elsewhere: on a subgrid of columns 6–12, two columns each, so each link starts on a column */
+.p-else { grid-column: 6 / -1; display: grid; grid-template-columns: subgrid; }
+.p-else li { grid-column: span 2; }
+/* name and handle share a baseline; the line sits centred in the 56px target (a wrapping
+   flex line, so align-content can centre it) */
+.p-else a {
+  display: inline-flex; flex-wrap: wrap; align-items: baseline; align-content: center; min-height: 56px;
+  font-size: var(--s2); line-height: 1.4; font-weight: 600;
+}
+/* one hairline under the name only (the handle sits on a different baseline) */
+.p-link {
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .22em;
+  text-decoration-color: var(--rule); transition: text-decoration-color .15s;
+}
+.p-else a:hover .p-link { text-decoration-color: var(--accent); }
+.p-handle { color: var(--ink-2); font-size: var(--s1); margin-left: 12px; font-weight: 400; transition: color .15s; }
+.p-else a:hover .p-handle { color: var(--ink); }
+
+/* ---------------- footer: the name in Cyrillic, then the foot line (shell.css) ---------------- */
+.p-end { margin-top: var(--sp-10); padding-bottom: var(--sp-6); }   /* the same gap as between sections */
+.p-cap { color: var(--ink-2); margin-bottom: var(--sp-3); }
+.p-sign {
+  font-size: var(--s4); line-height: 1.1; letter-spacing: -.03em; font-weight: 600; color: var(--accent);
+  margin-left: -.04em;
+}
+.p-end .foot-line { margin-top: var(--sp-6); }
+
+/* ---------------- tablet (721–1100): text runs to the edge ---------------- */
+@media (min-width: 721px) and (max-width: 1100px) {
+  .p-now, .p-tools, .p-lede, .p-off, .p-thought, .p-orch { grid-column: 6 / -1; }
+  .p-domains p { grid-column: 6 / -1; }
+}
+
+/* ≤1100: seven columns are too narrow for three links in a row; they stack as full rows,
+   between hairlines, the handle on the right (the phone treatment) */
+@media (max-width: 1100px) {
+  .p-else { display: flex; flex-direction: column; gap: 0; }
+  .p-else li { border-top: 1px solid var(--rule); }
+  .p-else li:last-child { border-bottom: 1px solid var(--rule); }
+  .p-else a { display: flex; justify-content: space-between; gap: 0 16px; }
+  .p-link { text-decoration: none; }
+  .p-handle { margin-left: 0; text-align: right; min-width: 0; overflow-wrap: anywhere; }
+}
+
+/* touch screens of any width: a taller hit area on the case-study link inside the sentence,
+   without moving the text */
+@media (max-width: 720px), (pointer: coarse) {
+  .p-study { position: relative; }
+  .p-study::before { content: ''; position: absolute; left: 0; right: 0; top: -12px; bottom: -12px; }
+}
+
+/* ---------------- phone (≤720): one column ---------------- */
+@media (max-width: 720px) {
+  .p-sec { margin-top: var(--sp-9); }
+  .p-row { row-gap: var(--sp-4); }
+  .p-label, .p-now, .p-tools, .p-thought, .p-lede, .p-off, .p-else { grid-column: 1 / -1; }
+  .p-tools { margin-top: var(--sp-6); }
+
+  .p-thought blockquote { text-indent: 0; }
+  .p-thought figcaption { margin-top: var(--sp-5); }
+
+  .p-domains { margin-top: var(--sp-6); }
+  .p-domains li { display: block; padding-bottom: 32px; }
+  .p-domains p { margin-top: 10px; }
+  .p-orch { grid-column: 1 / -1; }
+
+  .p-end { margin-top: var(--sp-9); }   /* the phone's gap between sections */
+}

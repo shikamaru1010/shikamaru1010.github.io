@@ -1,0 +1,122 @@
+/* ------------------------------------------------------------------
+   Base: reset, the grid, the type roles and the shared primitives.
+   Sections use these classes read-only: a section's own CSS never
+   redefines them.
+------------------------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--head-h) + 16px);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: var(--s2);
+  line-height: 1.55;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-synthesis-weight: none;
+  overflow-x: clip;
+  overflow-wrap: break-word;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+p, h1, h2, h3, h4, ul, ol, dl, dd, figure, blockquote { margin: 0; }
+h1, h2, h3, h4 { font-size: inherit; font-weight: 600; }
+ul, ol { padding: 0; list-style: none; }
+button { font: inherit; color: inherit; }
+table { border-collapse: collapse; }
+
+/* a phrase or a hyphenated name that never breaks inside */
+.nw { white-space: nowrap; }
+
+/* numbers: every year, date, period, count and dimension */
+.tnum, time { font-variant-numeric: tabular-nums; }
+
+::selection { background: var(--sel-bg); color: var(--sel-fg); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* the skip link focuses <main>, and a page change focuses the place it opened at (App):
+   a ring around a whole page or section is noise, the focus marks a place */
+main[tabindex="-1"]:focus,
+[data-focus-target]:focus { outline: none; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.skip {
+  position: absolute; left: var(--m); top: -60px; z-index: 50;
+  background: var(--ink); color: var(--paper);
+  padding: 10px 14px; font-size: var(--s1);
+}
+.skip:focus { top: 8px; }
+
+/* ---------------- the grid ---------------- */
+.wrap { padding-inline: var(--m); max-width: var(--max); margin-inline: auto; container-type: inline-size; }
+.grid { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--g); }
+
+/* ---------------- type roles ---------------- */
+.label { font-size: var(--s1); line-height: 1.4; color: var(--ink-2); font-weight: 500; }
+.u {
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .22em;
+  text-decoration-color: var(--rule); transition: text-decoration-color .15s;
+}
+.u:hover { text-decoration-color: var(--accent); }
+
+/* ---------------- section scaffolding ---------------- */
+.sec { padding-top: var(--sp-10); }
+/* the head and its note share the first baseline */
+.sec-head {
+  display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--g);
+  border-top: 1px solid var(--rule-strong); padding-top: 14px; margin-bottom: var(--sp-8); align-items: baseline;
+}
+.h2 { grid-column: 1 / span 6; font-size: var(--s4); line-height: .95; letter-spacing: -.04em; font-weight: 600; }
+.sec-note { grid-column: 9 / -1; color: var(--ink-2); max-width: 30ch; }
+.sub-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-top: 1px solid var(--rule); padding-top: 12px; margin-bottom: var(--sp-6);
+}
+.sub-head h3 { font-size: var(--s2); font-weight: 600; }
+
+/* ---------------- engineering notes (a short list under a stack) ----------------
+   The checkable facts of a row, so body size in ink; the stack above them is a label. */
+.notes { margin-top: 10px; }
+.notes li { position: relative; padding-left: 14px; font-size: var(--s2); line-height: 1.45; color: var(--ink); max-width: 44ch; }
+.notes li + li { margin-top: 6px; }
+.notes li::before { content: ''; position: absolute; left: 0; top: .72em; width: 7px; height: 1px; background: var(--ink-2); }
+/* Windows high contrast drops backgrounds: draw the dash in the text colour */
+@media (forced-colors: active) { .notes li::before { forced-color-adjust: none; background: CanvasText; } }
+
+/* ---------------- mode containers: both trees render, CSS shows one ---------------- */
+html[data-mode="personal"] .only-pro,
+html:not([data-mode="personal"]) .only-personal { display: none !important; }
+
+/* ---------------- tablet (721–1100) ---------------- */
+@media (min-width: 721px) and (max-width: 1100px) {
+  .sec-note { grid-column: 8 / -1; }
+}
+
+/* ---------------- phone ---------------- */
+@media (max-width: 720px) {
+  .sec { padding-top: var(--sp-9); }
+  .sec-head { margin-bottom: var(--sp-6); align-items: start; }
+  .h2 { grid-column: 1 / -1; }
+  .sec-note { grid-column: 1 / -1; padding-top: 14px; }
+  .sub-head { flex-wrap: wrap; gap: 4px 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+@media print {
+  html, body { background: #fff !important; }
+  .skip, .wipe-edge { display: none !important; }
+}

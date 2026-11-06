@@ -1,44 +1,73 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-mode="professional" data-route="home">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Ratko Šišović — Software Developer</title>
+    <title>Ratko Šišović · Software developer</title>
+    <meta name="theme-color" content="#F2F1EC" />
+    <!-- Resolve the mode and the route before first paint, so there is no flash of the other persona.
+         ES5 on purpose; src/lib/mode.test.ts runs it against parseMode / parseRoute. -->
+    <script data-prepaint>
+      (function () {
+        var d = document.documentElement, m = 'professional', h = '';
+        try {
+          m = new URLSearchParams(location.search).get('mode') === 'personal' ? 'personal' : 'professional';
+          h = location.hash;
+        } catch (e) {}
+        var S = ['mesara', 'dev-dashboard']; /* the ids with a case study (mode.test.ts checks) */
+        var r = h === '#resume' ? 'cv' : h.indexOf('#project/') === 0 && S.indexOf(h.slice(9)) >= 0 ? 'study' : 'home';
+        d.setAttribute('data-mode', m);
+        d.setAttribute('data-route', r);
+        if (m === 'personal' && r === 'home') {
+          document.title = 'Ratko · Personal';
+          var t = document.querySelector('meta[name="theme-color"]');
+          if (t) t.setAttribute('content', '#15130F');
+        }
+      })();
+    </script>
     <meta
       name="description"
-      content="Ratko Šišović (Ratko Sisovic) — Software Engineering Intern at Podyx and software developer (full-stack, automation & AI); 3rd-year Information Systems student at FON, University of Belgrade. Building reliable, observable systems, web & mobile apps, and real client tools."
+      content="Ratko Šišović, software developer in Belgrade. Software engineering intern at Podyx and 4th-year Information Systems student at FON, University of Belgrade."
     />
     <meta name="author" content="Ratko Šišović" />
 
     <link rel="canonical" href="https://shikamaru1010.github.io/" />
 
+    <!-- The CV as data and as text, for AI agents and resume tools (scripts/export-cv.mjs) -->
+
+    <link rel="alternate" type="application/json" href="/resume.json" title="JSON Resume" />
+
+    <link rel="alternate" type="text/markdown" href="/cv.md" title="CV (Markdown)" />
+
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://shikamaru1010.github.io/" />
-    <meta property="og:title" content="Ratko Šišović — Software Developer" />
+    <meta property="og:title" content="Ratko Šišović · Software developer" />
     <meta
       property="og:description"
-      content="Software Engineering Intern @ Podyx. Full-stack, automation & AI. Building reliable, observable systems and real client tools. FON, Belgrade."
+      content="Ratko Šišović, software developer in Belgrade. Software engineering intern at Podyx and 4th-year Information Systems student at FON, University of Belgrade."
     />
     <meta property="og:image" content="https://shikamaru1010.github.io/og-image.png" />
+    <meta property="og:image:width" content="2400" />
+    <meta property="og:image:height" content="1260" />
+    <meta property="og:image:alt" content="Ratko Šišović, software developer" />
 
     <!-- Twitter / X card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Ratko Šišović — Software Developer" />
+    <meta name="twitter:title" content="Ratko Šišović · Software developer" />
     <meta
       name="twitter:description"
-      content="Software Engineering Intern @ Podyx. Full-stack, automation & AI. Building reliable, observable systems and real client tools. FON, Belgrade."
+      content="Ratko Šišović, software developer in Belgrade. Software engineering intern at Podyx and 4th-year Information Systems student at FON, University of Belgrade."
     />
     <meta name="twitter:image" content="https://shikamaru1010.github.io/og-image.png" />
+    <meta name="twitter:image:alt" content="Ratko Šišović, software developer" />
 
-    <!-- Fonts -->
+    <!-- Fonts: Golos Text only (latin, latin-ext, cyrillic, cyrillic-ext), plus the arrows and ≤ as one more face -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap&text=%E2%86%90%E2%86%92%E2%86%97%E2%89%A4" rel="stylesheet" />
 
     <!-- Structured data for search engines -->
     <script type="application/ld+json">
@@ -47,8 +76,9 @@
         "@type": "Person",
         "name": "Ratko Šišović",
         "alternateName": "Ratko Sisovic",
-        "jobTitle": "Software Developer",
+        "jobTitle": "Software developer",
         "url": "https://shikamaru1010.github.io/",
+        "image": "https://shikamaru1010.github.io/ratko/ratko-square.webp",
         "email": "mailto:ralesisko@gmail.com",
         "address": {
           "@type": "PostalAddress",
@@ -70,18 +100,6 @@
         ],
         "knowsAbout": ["Full-stack web development", "Automation", "AI agents", "TypeScript", "React", "Python"]
       }
-    </script>
-
-    <!-- Set theme before paint to avoid flash -->
-    <script>
-      (function () {
-        try {
-          var stored = localStorage.getItem('theme');
-          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var dark = stored ? stored === 'dark' : prefersDark;
-          if (dark) document.documentElement.classList.add('dark');
-        } catch (e) {}
-      })();
     </script>
   </head>
   <body>

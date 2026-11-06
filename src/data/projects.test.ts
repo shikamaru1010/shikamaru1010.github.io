@@ -1,9 +1,39 @@
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { CATEGORIES, projects } from './projects';
+import {
+  clientProjects,
+  cvProjectIds,
+  projectById,
+  projectDomain,
+  projects,
+  smallerProjects,
+  studyProjects,
+  systemProjects,
+} from './projects';
 import { profile } from './profile';
 
-// Structural smoke tests for the data layer — the part of the site that
-// changes most often. They guard the invariants the UI relies on.
+// Structural tests for the data layer, the part of the site that changes most
+// often. They guard the invariants the UI relies on.
+
+const publicFile = (src: string) => new URL(`../../public${src}`, import.meta.url);
+
+/** Width and height from a webp header (VP8X, VP8 or VP8L). */
+function webpSize(buf: Buffer): { width: number; height: number } {
+  expect(buf.toString('ascii', 0, 4)).toBe('RIFF');
+  expect(buf.toString('ascii', 8, 12)).toBe('WEBP');
+  const chunk = buf.toString('ascii', 12, 16);
+  if (chunk === 'VP8X') {
+    return { width: 1 + buf.readUIntLE(24, 3), height: 1 + buf.readUIntLE(27, 3) };
+  }
+  if (chunk === 'VP8 ') {
+    return { width: buf.readUInt16LE(26) & 0x3fff, height: buf.readUInt16LE(28) & 0x3fff };
+  }
+  if (chunk === 'VP8L') {
+    const bits = buf.readUInt32LE(21);
+    return { width: (bits & 0x3fff) + 1, height: ((bits >> 14) & 0x3fff) + 1 };
+  }
+  throw new Error(`unknown webp chunk ${chunk}`);
+}
 
 describe('projects data integrity', () => {
   it('has at least one project', () => {
@@ -16,37 +46,24 @@ describe('projects data integrity', () => {
     for (const id of ids) expect(id).toMatch(/^[a-z0-9-]+$/);
   });
 
-  it('every project has the fields the card renders', () => {
+  it('every project has the fields the page renders', () => {
     for (const p of projects) {
       expect(p.title.trim()).not.toBe('');
       expect(p.subtitle.trim()).not.toBe('');
       expect(p.blurb.trim()).not.toBe('');
       expect(p.year.trim()).not.toBe('');
+      expect(p.year).toMatch(/^\d{4}(–(\d{4}|now))?$/);
       expect(p.tech.length).toBeGreaterThan(0);
-      expect(p.highlights.length).toBeGreaterThan(0);
     }
   });
 
-  it('categories reference the canonical CATEGORIES list', () => {
-    for (const p of projects) {
-      expect(p.categories.length).toBeGreaterThan(0);
-      for (const c of p.categories) expect(CATEGORIES).toContain(c);
-    }
+  it('every project is in one of the three groups of Work', () => {
+    for (const p of projects) expect(['client', 'system', 'smaller'], p.id).toContain(p.group);
   });
 
-  it('links and liveUrl are absolute http(s) urls', () => {
+  it('liveUrl is an absolute http(s) url', () => {
     for (const p of projects) {
       if (p.liveUrl) expect(p.liveUrl).toMatch(/^https?:\/\//);
-      for (const l of p.links ?? []) expect(l.href).toMatch(/^https?:\/\//);
-    }
-  });
-
-  it('media, when present, has valid src paths and non-empty alt text', () => {
-    for (const p of projects) {
-      for (const m of p.media ?? []) {
-        expect(m.src).toMatch(/^(\/|https?:\/\/)/);
-        expect(m.alt.trim()).not.toBe('');
-      }
     }
   });
 
@@ -55,13 +72,135 @@ describe('projects data integrity', () => {
       if (p.caseStudy) expect(p.caseStudy.intro.trim()).not.toBe('');
     }
   });
+
+  it('"At a glance" shows numbers only, never a word dressed as a figure', () => {
+    for (const p of studyProjects) {
+      for (const m of p.caseStudy.metrics ?? []) expect(m.value, `${p.id}: ${m.label}`).toMatch(/^\d[\d.,]*\+?$/);
+    }
+  });
+
+  it('every workflow step says whether a person or the system acts', () => {
+    for (const p of studyProjects) {
+      for (const s of p.caseStudy.workflow ?? []) {
+        expect(['person', 'system'], `${p.id}: ${s.title}`).toContain(s.kind);
+        expect(s.actor.trim(), `${p.id}: ${s.title}`).not.toBe('');
+      }
+    }
+  });
+
+  it('is grouped into four clients, three systems and four smaller projects, in page order', () => {
+    expect(projects.map((p) => p.id)).toEqual([
+      'mesara',
+      'pilatiq',
+      'stan-pro-tim',
+      'kutlesic-vikendice',
+      'trading-agent',
+      'dev-dashboard',
+      'belgrade-buddy',
+      'crypto-agent',
+      'student-brain-agent',
+      'brand-app',
+      'dsa-java',
+    ]);
+    expect(clientProjects.map((p) => p.id)).toEqual(['mesara', 'pilatiq', 'stan-pro-tim', 'kutlesic-vikendice']);
+    expect(systemProjects.map((p) => p.id)).toEqual(['trading-agent', 'dev-dashboard', 'belgrade-buddy']);
+    expect(smallerProjects.map((p) => p.id)).toEqual(['crypto-agent', 'student-brain-agent', 'brand-app', 'dsa-java']);
+  });
+});
+
+describe('engineering notes and summaries', () => {
+  it('clients carry at most 2 short notes (none where the stack says enough); systems and smaller projects none', () => {
+    for (const p of clientProjects) {
+      expect(p.notes?.length ?? 0, p.id).toBeLessThanOrEqual(2);
+      for (const n of p.notes ?? []) {
+        expect(n.trim()).not.toBe('');
+        expect(n.length, n).toBeLessThanOrEqual(140);
+      }
+    }
+    for (const p of [...systemProjects, ...smallerProjects]) expect(p.notes, p.id).toBeUndefined();
+  });
+
+  it('each system has a one-sentence summary for its entry in Work; nothing else has one', () => {
+    for (const p of systemProjects) {
+      const s = p.summary ?? '';
+      expect(s.trim(), p.id).not.toBe('');
+      expect(s, p.id).toMatch(/\.$/);
+      expect(s.slice(0, -1), p.id).not.toMatch(/[.!?](\s|$)/);
+      expect(s.length, p.id).toBeLessThanOrEqual(180);
+    }
+    for (const p of [...clientProjects, ...smallerProjects]) expect(p.summary, p.id).toBeUndefined();
+  });
+});
+
+describe('media', () => {
+  it('every client has a desktop and a phone screenshot of its live site', () => {
+    for (const p of clientProjects) {
+      const domain = projectDomain(p);
+      expect(domain, p.id).toBeDefined();
+      expect(p.media, p.id).toHaveLength(2);
+      const [desk, phone] = p.media!;
+      expect(desk).toMatchObject({ device: 'desktop', width: 1440, height: 900 });
+      expect(phone).toMatchObject({ device: 'phone', width: 780, height: 1688 });
+      for (const m of p.media!) {
+        expect(m.src).toMatch(/^\/screenshots\/[a-z0-9-]+\/(desktop|mobile)\.webp$/);
+        expect(m.alt.startsWith(`${domain} `), m.alt).toBe(true);
+      }
+    }
+  });
+
+  it('every media file exists and its webp header matches width and height', () => {
+    for (const p of projects) {
+      for (const m of p.media ?? []) {
+        const file = publicFile(m.src);
+        expect(existsSync(file), m.src).toBe(true);
+        expect(webpSize(readFileSync(file)), m.src).toEqual({ width: m.width, height: m.height });
+      }
+    }
+  });
+
+  it('the smaller copies (npm run images) exist, keep the aspect ratio and are smaller', () => {
+    for (const p of clientProjects) {
+      for (const m of p.media!) {
+        expect(m.variants?.length, m.src).toBeGreaterThan(0);
+        for (const v of m.variants!) {
+          const size = webpSize(readFileSync(publicFile(v.src)));
+          expect(size.width, v.src).toBe(v.width);
+          expect(v.width).toBeLessThan(m.width);
+          expect(Math.abs(size.height - (m.height * v.width) / m.width), v.src).toBeLessThanOrEqual(1);
+        }
+        if (m.device === 'desktop') {
+          expect(m.thumb, p.id).toBeDefined();
+          expect(webpSize(readFileSync(publicFile(m.thumb!))), m.thumb).toEqual({ width: 320, height: 200 });
+        } else {
+          expect(m.thumb, p.id).toBeUndefined();
+        }
+      }
+    }
+  });
+});
+
+describe('helpers', () => {
+  it('the CV lists real projects', () => {
+    for (const id of cvProjectIds) expect(projectById(id), id).toBeDefined();
+  });
+
+  it('exactly Mesara and dev-dashboard have case studies', () => {
+    expect(studyProjects.map((p) => p.id)).toEqual(['mesara', 'dev-dashboard']);
+  });
+
+  it('projectDomain drops www and the path', () => {
+    expect(projectDomain(projectById('mesara')!)).toBe('rostiljsisko.rs');
+    expect(projectDomain(projectById('trading-agent')!)).toBeUndefined();
+  });
 });
 
 describe('profile data integrity', () => {
   it('contact and site urls are well-formed', () => {
     expect(profile.email).toMatch(/^[^@\s]+@[^@\s]+\.[^@\s]+$/);
     expect(profile.github).toMatch(/^https:\/\/github\.com\//);
+    expect(profile.github.endsWith(profile.githubHandle)).toBe(true);
     expect(profile.linkedin).toMatch(/^https:\/\/www\.linkedin\.com\//);
     expect(profile.siteUrl).toMatch(/^https:\/\//);
+    expect(profile.name).toBe(`${profile.firstName} ${profile.lastName}`);
   });
 });

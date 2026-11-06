@@ -1,0 +1,155 @@
+/* =====================================================================
+   The hero, in both modes ("Monolith", the owner's choice).
+
+   Three things on the grid: a small tombstone (name, role, now), one
+   sentence at --s4 on columns 5–11, and one circle, two columns wide,
+   ending on column 4 so it locks against the sentence. The tombstone
+   stands on the circle's column; the circle's top edge is the sentence's
+   cap line and its bottom edge is View CV's baseline (text-box trims
+   both). The circle holds the code loop (Professional), on the accent until
+   it has loaded, or the contour drawing on its own accent field (Personal).
+
+   Vertical steps grow down the page: --sp-8 under the header, --sp-9 to
+   the lockup, then the first section's own --sp-10.
+===================================================================== */
+
+.mono { padding-top: var(--sp-8); }
+.mono-grid { row-gap: var(--sp-9); }
+.mono-grid > * { min-width: 0; }
+
+/* the tombstone keeps the height of three lines in both modes (Personal has two), so the circle
+   below it sits in the same place to the pixel and a mode switch leaves it still. Its first cap
+   line is the top of the row: pulled up by Golos's half-leading plus ascent less cap height
+   ((1.5 - 1.2) / 2 + .98 - .70 = .43em), not trimmed with text-box, so both boxes are exactly
+   three 24px lines whatever the font's real metrics */
+.mono-id {
+  grid-column: 3 / span 4; grid-row: 1;
+  font-size: var(--s2); line-height: 1.5;
+  min-height: 4.5em; margin-top: -.43em;
+}
+.mono-name { font-size: var(--s2); font-weight: 600; line-height: inherit; letter-spacing: -.005em; }
+.mono-sub { color: var(--ink-2); }
+
+/* the circle: a clip, not a radius, so the entrance can open it from a hairline on its baseline.
+   The accent under the loop stops 1.5px inside the clip: the clip's antialiased edge would
+   otherwise mix it into the poster's rim as an orange hairline */
+.mono-disc {
+  grid-column: 3 / span 2; grid-row: 2; align-self: start;
+  position: relative; aspect-ratio: 1 / 1; overflow: hidden;
+  background: radial-gradient(closest-side, var(--accent) calc(100% - 2px), transparent calc(100% - 1px));
+  clip-path: ellipse(50% 50% at 50% 50%);
+}
+.mono-media {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover;
+}
+
+.mono-body {
+  grid-column: 5 / span 7; grid-row: 2; align-self: stretch;
+  display: flex; flex-direction: column; align-items: flex-start;
+}
+.mono-lede {
+  font-size: var(--s4); line-height: 1.14; font-weight: 400; letter-spacing: -.022em;
+  text-wrap: balance;
+  text-box: trim-both cap alphabetic;       /* first cap line = the circle's top edge */
+}
+.mono-act {
+  margin-top: auto; padding-top: var(--sp-6);
+  line-height: 1; text-box: trim-both cap alphabetic;   /* baseline = the circle's bottom edge */
+}
+.mono-cv { position: relative; font-weight: 600; white-space: nowrap; }
+/* a 44px target around the line without moving it */
+.mono-cv::before { content: ''; position: absolute; left: -8px; right: -8px; top: 50%; height: 44px; transform: translateY(-50%); }
+.mono-cv:hover {
+  text-decoration: underline; text-decoration-color: var(--accent);
+  text-underline-offset: .3em; text-decoration-thickness: 1px;
+}
+
+/* Without text-box, the same edges from Golos's metrics (ascent .98, descent .22, cap .70 em):
+   the cap line sits (line-height - 1.2) / 2 + .28 em below a line box's top, and the
+   baseline (line-height - 1.2) / 2 + .22 em above its bottom */
+@supports not (text-box: trim-both cap alphabetic) {
+  .mono-lede { margin-top: -.25em; margin-bottom: -.19em; }
+  .mono-act { margin-bottom: -.12em; }
+}
+
+/* ---------------- entrance (motion allowed, first load; Monolith.tsx sets the classes) ----------------
+   The circle opens on one axis from a hairline on its baseline (its bottom edge stays put); the
+   sentence is wiped in line by line with a soft edge; View CV follows. All of it ends by 900 ms,
+   then nothing moves. */
+/* while it opens, the accent fills the whole box, so the opening shape is the ellipse even before the poster is in */
+.mono.is-hold .mono-disc,
+.mono.is-play .mono-disc { background: var(--accent); }
+.mono.is-hold .mono-disc { clip-path: ellipse(50% 1px at 50% 100%); }
+.mono.is-hold .mono-lede,
+.mono.is-hold .mono-act { opacity: 0; }
+
+.mono.is-play .mono-disc { animation: mono-open 720ms cubic-bezier(.7, 0, .16, 1) both; }
+/* each rendered line is a block; its ink is an inline-block padded past the ascenders and
+   descenders (and pulled back by the same margin, so the line box does not change): a mask
+   clips to its box, and the trimmed line box alone would cut the descenders. The lines stay
+   after the entrance (Monolith.tsx), so this box is also the sentence at rest */
+.mono-line { display: block; }
+.mono-ink { display: inline-block; width: 100%; padding-block: .3em; margin-block: -.3em; }
+.mono.is-play .mono-ink {
+  -webkit-mask-image: linear-gradient(90deg, #000 44%, transparent 56%);
+          mask-image: linear-gradient(90deg, #000 44%, transparent 56%);
+  -webkit-mask-size: 300% 100%; mask-size: 300% 100%;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  animation: mono-wipe 480ms cubic-bezier(.33, 0, .2, 1) both;
+}
+.mono.is-play .mono-act { animation: mono-fade 320ms cubic-bezier(.33, 0, .2, 1) both; }
+
+@keyframes mono-open {
+  from { clip-path: ellipse(50% 1px at 50% 100%); }
+  to   { clip-path: ellipse(50% 50% at 50% 50%); }
+}
+@keyframes mono-wipe {
+  from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+  to   { -webkit-mask-position: 0 0;    mask-position: 0 0; }
+}
+@keyframes mono-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* Windows high contrast drops backgrounds: draw the circle in the text colour until its content paints */
+@media (forced-colors: active) { .mono-disc { forced-color-adjust: none; background: CanvasText; } }
+
+/* ---------------- ≤1279: the sentence takes column 12 too ---------------- */
+@media (max-width: 1279px) {
+  .mono-body { grid-column: 5 / -1; }
+}
+
+/* ---------------- tablet: the circle grows by whole columns (still ending on column 4)
+   so it stays as tall as the sentence and View CV ---------------- */
+@media (min-width: 721px) and (max-width: 1100px) {
+  .mono-id { grid-column: 2 / span 6; }
+  .mono-disc { grid-column: 2 / span 3; }
+}
+@media (min-width: 721px) and (max-width: 860px) {
+  .mono-id { grid-column: 1 / span 6; }
+  .mono-disc { grid-column: 1 / span 4; }
+  .mono-act { padding-top: var(--sp-5); }
+}
+
+/* ---------------- phone: a letterhead (tombstone left, the circle on column 4),
+   then the sentence and View CV ---------------- */
+@media (max-width: 720px) {
+  .mono { padding-top: var(--sp-7); }
+  .mono-grid { row-gap: var(--sp-8); }
+  .mono-id { grid-column: 1 / span 3; }
+  .mono-disc { grid-column: 4 / span 1; grid-row: 1; }
+  .mono-body { grid-column: 1 / -1; grid-row: 2; }
+  .mono-lede { line-height: 1.16; }
+  .mono-act { margin-top: 0; padding-top: var(--sp-6); }
+}
+/* the narrowest phones (under 360): the tombstone needs all four columns, so the circle
+   moves under the sentence, still one column, as the full stop */
+@media (max-width: 359px) {
+  .mono-id { grid-column: 1 / -1; }
+  .mono-disc { grid-column: 1 / span 1; grid-row: 3; }
+}
+@supports not (text-box: trim-both cap alphabetic) {
+  @media (max-width: 720px) {
+    .mono-lede { margin-top: -.26em; margin-bottom: -.2em; }
+    .mono-act { margin-top: -.18em; }   /* here View CV follows the sentence, so its cap line counts too */
+  }
+}

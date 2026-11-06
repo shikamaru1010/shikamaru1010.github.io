@@ -1,0 +1,98 @@
+/* ------------------------------------------------------------------
+   Design tokens. One family (Golos Text), a 12-column grid (4 on phones),
+   hairlines, one accent. Five sizes, --s1..--s5: labels, body, names of
+   things and ledes, section heads, and the one display size (the name).
+   Nothing is fitted to the width of the page.
+------------------------------------------------------------------- */
+
+/* Golos fallback with matched metrics (measured in Chrome: ascent .98em, descent .22em,
+   Golos/Arial width ratio 1.078 at 400 and 1.027 at 700; 1.06 splits the difference).
+   Android has no Arial: Roboto's average advance is within 0.3% of Arial's, so the same
+   overrides fit it, and the swap to Golos stays small there too. */
+@font-face {
+  font-family: 'Golos Fallback';
+  src: local('Arial'), local('ArialMT'), local('Roboto'), local('Roboto-Regular');
+  size-adjust: 106%;
+  ascent-override: 92.5%;
+  descent-override: 20.8%;
+  line-gap-override: 0%;
+}
+
+:root {
+  /* Professional: paper, ink, one vermilion */
+  --paper: #F2F1EC;
+  --ink: #111110;
+  --ink-2: #53514C;            /* 7.0:1 on paper */
+  --rule: rgba(17, 17, 16, .16);
+  --rule-strong: #111110;
+  --accent: #D83218;           /* 4.2:1: marks, focus ring, and type >= 24px (or >= 19px at 600) only */
+  --sel-bg: #D83218;
+  --sel-fg: #FFFFFF;           /* 4.8:1 */
+
+  /* grid */
+  --m: 40px;                   /* page margin */
+  --g: 24px;                   /* gutter */
+  --cols: 12;
+  --max: 1520px;               /* .wrap max width incl. margins */
+  --head-h: 64px;
+
+  /* spacing: one scale for margins, paddings and gaps; --sp-9 / --sp-10 are the steps between
+     blocks and sections, and every such step is one of these. The few small px values left in
+     the section files are optical, not spacing: they set a line's text under its hairline (14px)
+     or a mark on a line or a baseline (a marker's half width, a tick). The CV sheet (resume.css)
+     has its own print scale. */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 96px;
+  --sp-10: 144px;
+  --ease: cubic-bezier(.76, 0, .24, 1);
+  --wipe: 620ms;               /* the mode switch's one transition (shell.css) */
+
+  /* fixed palettes that do not follow the mode: the ink plate that ends Professional
+     (contact.css) and the white CV sheet (resume.css) */
+  --plate-paper: #111110;
+  --plate-ink: #F2F1EC;
+  --plate-ink-2: #9D9C98;      /* 6.9:1 on the plate */
+  --plate-rule: #3E3E3C;
+  --sheet: #FFFFFF;
+  --sheet-ink: #111110;
+  --sheet-ink-2: #53514C;
+  --sheet-accent: #D83218;
+  --sheet-rule: rgba(17, 17, 16, .16);
+
+  /* type scale: labels, body, names of things, section heads, display (the name).
+     Deliberately quiet (owner feedback, 2026-09-25): hierarchy comes from weight, space,
+     rules and the grid, not from size. Weight 600 at most. */
+  --t1: 13; --t2: 16; --t3: 21; --t4: 36; --t5: 56;
+  --s1: calc(var(--t1) * 1px);
+  --s2: calc(var(--t2) * 1px);
+  --s3: calc(var(--t3) * 1px);
+  --s4: calc(var(--t4) * 1px);
+  --s5: calc(var(--t5) * 1px);
+
+  --font: 'Golos Text', 'Golos Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: light;
+}
+
+/* Personal palette applies only on the home route. CV and case studies are always Professional. */
+html[data-mode="personal"][data-route="home"] {
+  --paper: #15130F;
+  --ink: #EEE6D8;
+  --ink-2: #A39B8E;            /* 6.75:1 */
+  --rule: rgba(238, 230, 216, .17);
+  --rule-strong: #EEE6D8;
+  --accent: #FF6A3D;           /* 6.5:1, so it may be used for small text in Personal */
+  --sel-bg: #FF6A3D;
+  --sel-fg: #15130F;           /* 6.5:1 */
+  color-scheme: dark;
+}
+
+@media (max-width: 1279px) { :root { --t3: 20; --t4: 32; --t5: 48; } }
+@media (max-width: 1100px) { :root { --m: 28px; --g: 20px; } }
+@media (max-width: 720px)  { :root { --m: 16px; --g: 16px; --cols: 4; --head-h: 56px; --t3: 18; --t4: 26; --t5: 38; } }
