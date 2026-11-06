@@ -54,7 +54,7 @@ export const personal = {
   intro: 'Based in Belgrade.',
   /** The hero circle's contour drawing (components/personal/ContourArt.tsx), a nod to shikamaru1010. */
   art: {
-    alt: 'Shikamaru Nara from Naruto, drawn in ink on orange',
+    alt: 'Line drawing: a figure lying on the grass, hands behind his head, watching the clouds; his long shadow reaches a shogi piece',
   },
   nowHeading: 'Now',
   now,

@@ -1,9 +1,9 @@
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import Resume from './components/cv/Resume';
-import ContourArt, { ART_SRC } from './components/personal/ContourArt';
+import ContourArt from './components/personal/ContourArt';
 import PersonalFooter from './components/personal/PersonalFooter';
 import PersonalHome from './components/personal/PersonalHome';
 import ProFooter from './components/pro/ProFooter';
@@ -146,13 +146,11 @@ describe('render', () => {
     expect(disc).not.toMatch(/p-art-mouth|p-art-egg|p-smoke/);
   });
 
-  it('the picture: one small inline SVG around the local ink image, with nothing hidden in it', () => {
+  it('the drawing: one self-contained original SVG under 12 KB, with nothing hidden in it', () => {
     const svg = renderToStaticMarkup(<ContourArt alt="a" />);
     expect(svg.length).toBeLessThan(12 * 1024);
-    // the only file it loads is the ink layer in public/, and the only url() is the circle clip
-    expect(svg).not.toMatch(/<(script|text|use|foreignObject|style)\b|url\((?!#p-art-clip\))|font/i);
-    expect(svg.match(/href="[^"]*"/g)).toEqual([`href="${ART_SRC}"`]);
-    expect(existsSync(new URL(`../public${ART_SRC}`, import.meta.url))).toBe(true);
+    // drawn inline: no images, no external files, no url() at all
+    expect(svg).not.toMatch(/<(script|text|image|use|foreignObject|style)\b|href=|url\(|font/i);
     // no interactive layer: no hit areas, no hover-only artwork, nothing focusable
     expect(svg).not.toMatch(/p-art-mouth|p-art-egg|p-smoke|p-ember|tabindex|<title|cursor/i);
     const css = readFileSync(new URL('./components/personal/personal.css', import.meta.url), 'utf8');
